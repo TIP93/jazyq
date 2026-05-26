@@ -455,11 +455,11 @@ const content = allLevels?.[level];
       <div className="mt-5">
 
         <p className="text-3xl font-medium tracking-tight">
-          {content.word.foreign}
+           {content?.word?.foreign ?? "Loading..."}
         </p>
 
         <p className="text-base text-gray-400 mt-1">
-          {content.word.czech}
+          {content?.word?.czech ?? ""}
         </p>
 
       </div>
@@ -493,7 +493,7 @@ const content = allLevels?.[level];
 
     {/* English always visible */}
     <p className="text-lg leading-relaxed text-gray-800">
-      {content.wordExample}
+       {content?.wordExample ?? ""}
     </p>
 
     {/* Czech appears BELOW, but without shifting layout */}
@@ -502,7 +502,7 @@ const content = allLevels?.[level];
         showExampleTranslation ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
-      {content.wordExampleTranslation}
+      {content?.wordExampleTranslation ?? ""}
     </p>
 
   </div>
@@ -523,12 +523,12 @@ const content = allLevels?.[level];
 
   {/* RULE */}
   <p className="text-sm text-gray-600 leading-relaxed mt-5">
-    {content.grammar.explanation}
+    {content?.grammar?.explanation ?? ""}
   </p>
 
   {/* ENGLISH EXAMPLE (ALWAYS VISIBLE) */}
   <p className="text-sm text-gray-800 mt-4 font-medium">
-    {content.grammar.example}
+    {content?.grammar?.example ?? ""}
   </p>
 
 </div>
@@ -561,7 +561,7 @@ const content = allLevels?.[level];
 
     {/* Czech sentence (always visible) */}
     <p className="text-base leading-relaxed text-gray-800">
-      {content.translation.cz}
+      {content?.translation?.cz ?? ""}
     </p>
 
     {/* English answer (appears below, no layout shift) */}
@@ -570,7 +570,7 @@ const content = allLevels?.[level];
         showAnswer ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
-      {content.translation.answer}
+      {content?.translation?.answer ?? ""}
     </p>
 
   </div>
@@ -601,11 +601,11 @@ const content = allLevels?.[level];
     {/* TEXT BLOCK (NO ABSOLUTE) */}
     <div className="transition-opacity duration-200">
       <p className={`text-base leading-8 text-gray-700 ${readingFlipped ? "hidden" : "block"}`}>
-        {content.reading}
+        {content?.reading ?? ""}
       </p>
 
       <p className={`text-base leading-8 text-gray-500 ${readingFlipped ? "block" : "hidden"}`}>
-        {content.readingCz}
+         {content?.readingCz ?? ""}
       </p>
     </div>
 
