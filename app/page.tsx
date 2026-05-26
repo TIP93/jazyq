@@ -271,7 +271,7 @@ const [allLevels, setAllLevels] = useState<any>(null);
 
 const [levelIndex, setLevelIndex] = useState(3);
 const level = levels[levelIndex];
-const content = allLevels;
+const content = allLevels?.levels?.[level];
 
   const [apiData, setApiData] = useState<any>(null);
 
