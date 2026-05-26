@@ -260,7 +260,6 @@ const mockContent = {
   },
 };
 
-
 export default function Home() {
   const [language, setLanguage] = useState<Language>("en");
   const [showAnswer, setShowAnswer] = useState(false);
@@ -272,7 +271,7 @@ const [allLevels, setAllLevels] = useState<any>(null);
 
 const [levelIndex, setLevelIndex] = useState(3);
 const level = levels[levelIndex];
-const content = allLevels?.[level];
+const content = allLevels?.levels?.[level];
 
   const [apiData, setApiData] = useState<any>(null);
 
