@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import {
   Globe,
@@ -260,6 +260,7 @@ const mockContent = {
   },
 };
 
+
 export default function Home() {
   const [language, setLanguage] = useState<Language>("en");
   const [levelIndex, setLevelIndex] = useState(3);
@@ -271,6 +272,17 @@ const [readingFlipped, setReadingFlipped] = useState(false);
   const [showExampleTranslation, setShowExampleTranslation] = useState(false);
 
   const content = mockContent[level];
+
+  useEffect(() => {
+  async function load() {
+    const res = await fetch(`/api/daily?lang=${language}&level=${levels[levelIndex]}`);
+    const data = await res.json();
+
+    console.log(data);
+  }
+
+  load();
+}, [language, levelIndex]);
 
   return (
     <div className="min-h-screen bg-[#F6F7FB] flex text-black font-[Poppins]">
