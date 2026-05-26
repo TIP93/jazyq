@@ -273,11 +273,14 @@ const [readingFlipped, setReadingFlipped] = useState(false);
 
   const content = mockContent[level];
 
+  const [apiData, setApiData] = useState<any>(null);
+
   useEffect(() => {
   async function load() {
     const res = await fetch(`/api/daily?lang=${language}&level=${levels[levelIndex]}`);
     const data = await res.json();
 
+    setApiData(data);
     console.log(data);
   }
 
