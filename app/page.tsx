@@ -263,29 +263,30 @@ const mockContent = {
 
 export default function Home() {
   const [language, setLanguage] = useState<Language>("en");
-  const [levelIndex, setLevelIndex] = useState(3);
   const [showAnswer, setShowAnswer] = useState(false);
   const [showGrammarExample, setShowGrammarExample] = useState(false);
 const [readingFlipped, setReadingFlipped] = useState(false);
+const [showExampleTranslation, setShowExampleTranslation] = useState(false);
 
-  const level = levels[levelIndex] as keyof typeof mockContent;
-  const [showExampleTranslation, setShowExampleTranslation] = useState(false);
+const [allLevels, setAllLevels] = useState<any>(null);
 
-  const content = mockContent[level];
+const [levelIndex, setLevelIndex] = useState(3);
+const level = levels[levelIndex];
+const content = allLevels?.[level];
 
   const [apiData, setApiData] = useState<any>(null);
 
+
   useEffect(() => {
   async function load() {
-    const res = await fetch(`/api/daily?lang=${language}&level=${levels[levelIndex]}`);
+    const res = await fetch(`/api/daily?lang=${language}`);
     const data = await res.json();
 
-    setApiData(data);
-    console.log(data);
+    setAllLevels(data);
   }
 
   load();
-}, [language, levelIndex]);
+}, [language]);
 
   return (
     <div className="min-h-screen bg-[#F6F7FB] flex text-black font-[Poppins]">
