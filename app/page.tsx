@@ -276,10 +276,14 @@ const content = allLevels?.levels?.[level];
   const [apiData, setApiData] = useState<any>(null);
 
 
-  useEffect(() => {
+ useEffect(() => {
+  console.log("USEEFFECT TRIGGERED");
+
   async function load() {
     const res = await fetch(`/api/daily?lang=${language}`);
     const data = await res.json();
+
+    console.log("API DATA:", data);
 
     setAllLevels(data);
   }
