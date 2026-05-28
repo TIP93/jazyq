@@ -503,7 +503,7 @@ console.log("CURRENT LEVEL:", level, content);
 
     {/* English always visible */}
     <p className="text-lg leading-relaxed text-gray-800">
-       {content?.wordExample ?? ""}
+       {content?.wordForeign ?? ""}
     </p>
 
     {/* Czech appears BELOW, but without shifting layout */}
@@ -512,7 +512,7 @@ console.log("CURRENT LEVEL:", level, content);
         showExampleTranslation ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
-      {content?.wordExampleTranslation ?? ""}
+      {content?.wordNative ?? ""}
     </p>
 
   </div>
@@ -533,12 +533,12 @@ console.log("CURRENT LEVEL:", level, content);
 
   {/* RULE */}
   <p className="text-sm text-gray-600 leading-relaxed mt-5">
-    {content?.grammar?.explanation ?? ""}
+    {content?.grammarExplanation ?? ""}
   </p>
 
   {/* ENGLISH EXAMPLE (ALWAYS VISIBLE) */}
   <p className="text-sm text-gray-800 mt-4 font-medium">
-    {content?.grammar?.example ?? ""}
+    {content?.grammarExample ?? ""}
   </p>
 
 </div>
@@ -571,7 +571,7 @@ console.log("CURRENT LEVEL:", level, content);
 
     {/* Czech sentence (always visible) */}
     <p className="text-base leading-relaxed text-gray-800">
-      {content?.translation?.cz ?? ""}
+      {content?.translationPrompt ?? ""}
     </p>
 
     {/* English answer (appears below, no layout shift) */}
@@ -580,7 +580,7 @@ console.log("CURRENT LEVEL:", level, content);
         showAnswer ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
-      {content?.translation?.answer ?? ""}
+      {content?.translationAnswer ?? ""}
     </p>
 
   </div>
