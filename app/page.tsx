@@ -272,6 +272,7 @@ const [allLevels, setAllLevels] = useState<any>(null);
 const [levelIndex, setLevelIndex] = useState(3);
 const level = levels[levelIndex];
 const content = allLevels?.levels?.[level];
+const isReady = !!allLevels?.levels;
 
   const [apiData, setApiData] = useState<any>(null);
 
@@ -290,6 +291,12 @@ const content = allLevels?.levels?.[level];
 
   load();
 }, [language]);
+
+useEffect(() => {
+  console.log("ALL LEVELS:", allLevels);
+}, [allLevels]);
+
+console.log("CURRENT LEVEL:", level, content);
 
   return (
     <div className="min-h-screen bg-[#F6F7FB] flex text-black font-[Poppins]">
@@ -604,11 +611,11 @@ const content = allLevels?.levels?.[level];
     {/* TEXT BLOCK (NO ABSOLUTE) */}
     <div className="transition-opacity duration-200">
       <p className={`text-base leading-8 text-gray-700 ${readingFlipped ? "hidden" : "block"}`}>
-        {content?.reading ?? ""}
+        {content?.readingForeign ?? ""}
       </p>
 
       <p className={`text-base leading-8 text-gray-500 ${readingFlipped ? "block" : "hidden"}`}>
-         {content?.readingCz ?? ""}
+         {content?.readingNative ?? ""}
       </p>
     </div>
 
