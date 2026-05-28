@@ -17,6 +17,9 @@ model DailyContent {
   wordForeign String
   wordNative String
 
+  wordExampleForeign String
+  wordExampleNative String
+
   grammarExplanation String
   grammarExample String
   grammarExampleTranslation String

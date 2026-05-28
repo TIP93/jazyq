@@ -465,11 +465,11 @@ console.log("CURRENT LEVEL:", level, content);
       <div className="mt-5">
 
         <p className="text-3xl font-medium tracking-tight">
-           {content?.word?.foreign ?? "Loading..."}
+           {content?.wordForeign ?? "Loading..."}
         </p>
 
         <p className="text-base text-gray-400 mt-1">
-          {content?.word?.czech ?? ""}
+          {content?.wordNative ?? ""}
         </p>
 
       </div>
@@ -503,7 +503,7 @@ console.log("CURRENT LEVEL:", level, content);
 
     {/* English always visible */}
     <p className="text-lg leading-relaxed text-gray-800">
-       {content?.wordForeign ?? ""}
+       {content?.wordExampleForeign ?? ""}
     </p>
 
     {/* Czech appears BELOW, but without shifting layout */}
@@ -512,7 +512,7 @@ console.log("CURRENT LEVEL:", level, content);
         showExampleTranslation ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
-      {content?.wordNative ?? ""}
+      {content?.wordExampleNative ?? ""}
     </p>
 
   </div>
