@@ -1,0 +1,29 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model DailyContent {
+  id Int @id @default(autoincrement())
+
+  language String
+  level String
+  contentDate DateTime
+
+  wordForeign String
+  wordNative String
+
+  grammarExplanation String
+  grammarExample String
+  grammarExampleTranslation String
+
+  translationPrompt String
+  translationAnswer String
+
+  readingForeign String
+  readingNative String
+}
