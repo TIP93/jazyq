@@ -28,6 +28,8 @@ export async function POST(req: Request) {
 
 console.log("TEST:", test);
 
+console.log("KEY START:", process.env.SUPABASE_SERVICE_ROLE_KEY?.slice(0, 10));
+
     // 1) CHECK: existuje dnešní content?
     const { data: existing, error: selectError } = await supabase
       .from("dailycontent")
