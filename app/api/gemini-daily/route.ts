@@ -117,9 +117,16 @@ Return format:
       );
     }
 
+    const test = await supabase
+  .from("DailyContent")
+  .select("*")
+  .limit(1);
+
+console.log("TEST:", test);
+
     // 7) INSERT DO DailyContent
     const { data: inserted, error: insertError } = await supabase
-      .from("daily_content")
+      .from("DailyContent")
       .insert({
         language,
         level,
