@@ -21,9 +21,9 @@ export async function POST(req: Request) {
 
     const today = new Date().toISOString().split("T")[0];
 
-    // 1) CHECK: už existuje dnešní záznam?
+    // 1) CHECK: existuje dnešní content?
     const { data: existing, error: selectError } = await supabase
-      .from("vocabulary")
+      .from("DailyContent")
       .select("*")
       .eq("language", language)
       .eq("level", level)
@@ -45,9 +45,9 @@ export async function POST(req: Request) {
       });
     }
 
-    // 2) Načti poslední slova (anti-duplicate memory)
+    // 2) poslední slova (anti-repeat)
     const { data: used } = await supabase
-      .from("vocabulary")
+      .from("DailyContent")
       .select("wordForeign")
       .eq("language", language)
       .eq("level", level)
@@ -61,40 +61,40 @@ export async function POST(req: Request) {
       model: "gemini-3.5-flash",
     });
 
-    // 4) SYSTEM PROMPT (STRICT JSON)
+    // 4) PROMPT (jen word + translation zatím)
     const prompt = `
-You are a strict JSON generator for a language learning app.
+You are a language learning generator.
 
-Return ONLY valid JSON. No markdown. No explanation. No extra text.
+Return ONLY valid JSON.
 
 Task:
-Generate ONE vocabulary word.
+Generate ONE vocabulary item.
 
 Language: ${language}
-CEFR level: ${level}
+Level: ${level}
 
 Rules:
-- Must be a SINGLE word only
-- Allowed types: noun, verb, adjective
-- Must match CEFR level
-- No proper nouns
-- Must NOT repeat any word in the list below
+- single word only
+- noun, verb, or adjective
+- CEFR appropriate
+- no proper nouns
+- must not repeat previous words
 
 Previously used words:
 ${usedWords.length ? usedWords.join(", ") : "none"}
 
-Return format exactly:
+Return format:
 {
   "wordForeign": "string",
-  "wordType": "noun | verb | adjective"
+  "wordNative": "string (Czech translation)"
 }
 `;
 
-    // 5) CALL GEMINI
+    // 5) GEMINI CALL
     const result = await model.generateContent(prompt);
     const text = result.response.text();
 
-    // 6) SAFE JSON PARSING
+    // 6) SAFE JSON PARSE
     const jsonStart = text.indexOf("{");
     const jsonEnd = text.lastIndexOf("}");
 
@@ -105,41 +105,27 @@ Return format exactly:
       );
     }
 
-    const cleaned = text.slice(jsonStart, jsonEnd + 1);
+    const parsed = JSON.parse(text.slice(jsonStart, jsonEnd + 1));
 
-    let parsed;
-
-    try {
-      parsed = JSON.parse(cleaned);
-    } catch (err) {
+    if (!parsed.wordForeign || !parsed.wordNative) {
       return Response.json(
         {
-          error: "Invalid JSON from model",
-          raw: text,
-        },
-        { status: 500 }
-      );
-    }
-
-    if (!parsed.wordForeign) {
-      return Response.json(
-        {
-          error: "Missing wordForeign",
+          error: "Invalid AI output",
           raw: parsed,
         },
         { status: 500 }
       );
     }
 
-    // 7) INSERT DO SUPABASE
+    // 7) INSERT DO DailyContent
     const { data: inserted, error: insertError } = await supabase
-      .from("vocabulary")
+      .from("DailyContent")
       .insert({
         language,
         level,
-        wordForeign: parsed.wordForeign,
-        wordType: parsed.wordType,
         contentDate: today,
+        wordForeign: parsed.wordForeign,
+        wordNative: parsed.wordNative,
       })
       .select()
       .single();
