@@ -17,16 +17,16 @@ model dailycontent {
   wordForeign String
   wordNative String
 
-  wordExampleForeign String
-  wordExampleNative String
+  wordExampleForeign String?
+  wordExampleNative String?
 
-  grammarExplanation String
-  grammarExample String
-  grammarExampleTranslation String
+  grammarExplanation String?
+  grammarExample String?
+  grammarExampleTranslation String?
 
-  translationPrompt String
-  translationAnswer String
+  translationPrompt String?
+  translationAnswer String?
 
-  readingForeign String
-  readingNative String
+  readingForeign String?
+  readingNative String?
 }
