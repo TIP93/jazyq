@@ -10,6 +10,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "@prisma/client": "^5.22.0",
+    "@supabase/supabase-js": "^2.106.2",
     "flag-icons": "^7.5.0",
     "lucide-react": "^1.16.0",
     "mysql2": "^3.22.3",
