@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     const today = new Date().toISOString().split("T")[0];
 
     const test = await supabase
-  .from("DailyContent")
+  .from("dailycontent")
   .select("*")
   .limit(1);
 
@@ -30,7 +30,7 @@ console.log("TEST:", test);
 
     // 1) CHECK: existuje dnešní content?
     const { data: existing, error: selectError } = await supabase
-      .from("DailyContent")
+      .from("dailycontent")
       .select("*")
       .eq("language", language)
       .eq("level", level)
@@ -54,7 +54,7 @@ console.log("TEST:", test);
 
     // 2) poslední slova (anti-repeat)
     const { data: used } = await supabase
-      .from("DailyContent")
+      .from("dailycontent")
       .select("wordForeign")
       .eq("language", language)
       .eq("level", level)
@@ -126,7 +126,7 @@ Return format:
 
     // 7) INSERT DO DailyContent
     const { data: inserted, error: insertError } = await supabase
-      .from("DailyContent")
+      .from("dailycontent")
       .insert({
         language,
         level,
