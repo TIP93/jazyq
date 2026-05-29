@@ -3,14 +3,13 @@ import { createClient } from "@supabase/supabase-js";
 
 export async function POST(req: Request) {
   try {
-    const { language, level } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const force = body?.force === true;
 
-    if (!language || !level) {
-      return Response.json(
-        { error: "Missing language or level" },
-        { status: 400 }
-      );
-    }
+    const today = new Date().toISOString().split("T")[0];
+
+    const languages = ["en", "cs", "it", "es", "de", "fr", "pt", "ru", "jp", "cn"];
+    const levels = ["A0", "A1", "A2", "B1", "B2", "C1", "C2"];
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -19,142 +18,143 @@ export async function POST(req: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    const today = new Date().toISOString().split("T")[0];
-
-    const test = await supabase
-  .from("dailycontent")
-  .select("*")
-  .limit(1);
-
-console.log("TEST:", test);
-
-console.log("KEY START:", process.env.SUPABASE_SERVICE_ROLE_KEY?.slice(0, 10));
-
-    // 1) CHECK: existuje dnešní content?
-    const { data: existing, error: selectError } = await supabase
+    // 1) CHECK if already generated today
+    const { data: existing, error: checkError } = await supabase
       .from("dailycontent")
-      .select("*")
-      .eq("language", language)
-      .eq("level", level)
+      .select("id")
       .eq("contentDate", today)
-      .maybeSingle();
+      .limit(1);
 
-    if (selectError) {
+    if (checkError) {
       return Response.json(
-        { error: "DB select failed", details: selectError },
+        { error: "DB check failed", details: checkError },
         { status: 500 }
       );
     }
 
-    if (existing) {
+    if (existing && existing.length > 0 && !force) {
       return Response.json({
         success: true,
         cached: true,
-        data: existing,
+        message: "Already generated for today",
       });
     }
 
-    // 2) poslední slova (anti-repeat)
-    const { data: used } = await supabase
-      .from("dailycontent")
-      .select("wordForeign")
-      .eq("language", language)
-      .eq("level", level)
-      .order("contentDate", { ascending: false })
-      .limit(200);
-
-    const usedWords = used?.map((w) => w.wordForeign) ?? [];
-
-    // 3) MODEL
+    // 2) MODEL
     const model = genAI.getGenerativeModel({
       model: "gemini-3.5-flash",
     });
 
-    // 4) PROMPT (jen word + translation zatím)
+    // 3) SINGLE BATCH PROMPT (70 items)
     const prompt = `
-You are a language learning generator.
+You are a structured language learning generator.
 
-Return ONLY valid JSON.
+Generate vocabulary for ALL combinations of:
 
-Task:
-Generate ONE vocabulary item.
+Languages:
+${languages.join(", ")}
 
-Language: ${language}
-Level: ${level}
+Levels:
+${levels.join(", ")}
+
+Total items: 70
 
 Rules:
-- single word only
-- noun, verb, or adjective
-- CEFR appropriate
+- each item must contain:
+  - language
+  - level
+  - wordForeign
+  - wordNative (Czech translation)
+- word must be noun, verb, or adjective
+- CEFR appropriate difficulty
 - no proper nouns
-- must not repeat previous words
+- no duplicates across dataset
+- keep outputs short and clean
 
-Previously used words:
-${usedWords.length ? usedWords.join(", ") : "none"}
+Return ONLY valid JSON array (no markdown, no explanation):
 
-Return format:
-{
-  "wordForeign": "string",
-  "wordNative": "string (Czech translation)"
-}
+[
+  {
+    "language": "en",
+    "level": "A1",
+    "wordForeign": "run",
+    "wordNative": "běžet"
+  }
+]
 `;
 
-    // 5) GEMINI CALL
+    // 4) GEMINI CALL
     const result = await model.generateContent(prompt);
     const text = result.response.text();
 
-    // 6) SAFE JSON PARSE
-    const jsonStart = text.indexOf("{");
-    const jsonEnd = text.lastIndexOf("}");
+    // 5) SAFE JSON PARSE
+    const jsonStart = text.indexOf("[");
+    const jsonEnd = text.lastIndexOf("]");
 
     if (jsonStart === -1 || jsonEnd === -1) {
       return Response.json(
-        { error: "No JSON found", raw: text },
-        { status: 500 }
-      );
-    }
-
-    const parsed = JSON.parse(text.slice(jsonStart, jsonEnd + 1));
-
-    if (!parsed.wordForeign || !parsed.wordNative) {
-      return Response.json(
         {
-          error: "Invalid AI output",
-          raw: parsed,
+          error: "No JSON array found",
+          raw: text,
         },
         { status: 500 }
       );
     }
 
-    // 7) INSERT DO dailycontent
+    let parsed;
+
+    try {
+      parsed = JSON.parse(text.slice(jsonStart, jsonEnd + 1));
+    } catch (err) {
+      return Response.json(
+        {
+          error: "Invalid JSON from model",
+          raw: text,
+        },
+        { status: 500 }
+      );
+    }
+
+    if (!Array.isArray(parsed)) {
+      return Response.json(
+        {
+          error: "Expected array from model",
+        },
+        { status: 500 }
+      );
+    }
+
+    // 6) INSERT BULK
+    const rows = parsed.map((item) => ({
+      language: item.language,
+      level: item.level,
+      wordForeign: item.wordForeign,
+      wordNative: item.wordNative,
+      contentDate: today,
+    }));
+
     const { data: inserted, error: insertError } = await supabase
       .from("dailycontent")
-      .insert({
-        language,
-        level,
-        contentDate: today,
-        wordForeign: parsed.wordForeign,
-        wordNative: parsed.wordNative,
-      })
-      .select()
-      .single();
+      .insert(rows)
+      .select();
 
     if (insertError) {
       return Response.json(
         {
-          error: "DB insert failed",
+          error: "DB bulk insert failed",
           details: insertError,
         },
         { status: 500 }
       );
     }
 
-    // 8) RESPONSE
+    // 7) RESPONSE
     return Response.json({
       success: true,
       cached: false,
-      data: inserted,
+      inserted: inserted?.length ?? 0,
     });
+
   } catch (err: any) {
     return Response.json(
       {
