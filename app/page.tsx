@@ -67,6 +67,31 @@ useEffect(() => {
   console.log("ALL LEVELS:", allLevels);
 }, [allLevels]);
 
+useEffect(() => {
+  async function test() {
+    console.log("🔥 FETCH START");
+
+    const res = await fetch("/api/gemini-daily", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        language: "en",
+        level: "A1",
+      }),
+    });
+
+    console.log("🔥 STATUS:", res.status);
+
+    const data = await res.json();
+
+    console.log("🔥 AI RESULT:", data);
+  }
+
+  test();
+}, []);
+
 console.log("CURRENT LEVEL:", level, content);
 
   return (
