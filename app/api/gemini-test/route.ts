@@ -1,10 +1,17 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+export async function GET() {
+  console.log("HIT ROUTE");
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+  const { GoogleGenerativeAI } = await import("@google/generative-ai");
 
-const model = genAI.getGenerativeModel({
-  model: "gemini-3.5-flash",
-});
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
-const result = await model.generateContent("Hello");
-console.log(result.response.text());
+  const model = genAI.getGenerativeModel({
+    model: "gemini-3.5-flash",
+  });
+
+  const result = await model.generateContent("Hello");
+
+  return Response.json({
+    text: result.response.text(),
+  });
+}
