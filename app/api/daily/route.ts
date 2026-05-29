@@ -7,7 +7,7 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const lang = searchParams.get("lang") || "en";
 
-  const rows = await prisma.dailyContent.findMany({
+  const rows = await prisma.dailycontent.findMany({
     where: { language: lang },
   });
 
