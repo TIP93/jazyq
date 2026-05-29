@@ -52,7 +52,7 @@ const [generating, setGenerating] = useState(false);
   try {
     setGenerating(true);
 
-    const res = await fetch("/api/daily-gemini", {
+    const res = await fetch("/api/gemini-daily", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
