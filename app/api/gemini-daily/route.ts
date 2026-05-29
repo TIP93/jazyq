@@ -21,6 +21,13 @@ export async function POST(req: Request) {
 
     const today = new Date().toISOString().split("T")[0];
 
+    const test = await supabase
+  .from("DailyContent")
+  .select("*")
+  .limit(1);
+
+console.log("TEST:", test);
+
     // 1) CHECK: existuje dnešní content?
     const { data: existing, error: selectError } = await supabase
       .from("DailyContent")
@@ -116,13 +123,6 @@ Return format:
         { status: 500 }
       );
     }
-
-    const test = await supabase
-  .from("DailyContent")
-  .select("*")
-  .limit(1);
-
-console.log("TEST:", test);
 
     // 7) INSERT DO DailyContent
     const { data: inserted, error: insertError } = await supabase
