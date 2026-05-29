@@ -119,7 +119,7 @@ Return format:
 
     // 7) INSERT DO DailyContent
     const { data: inserted, error: insertError } = await supabase
-      .from("DailyContent")
+      .from("daily_content")
       .insert({
         language,
         level,
