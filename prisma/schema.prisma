@@ -7,7 +7,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model DailyContent {
+model dailycontent {
   id Int @id @default(autoincrement())
 
   language String

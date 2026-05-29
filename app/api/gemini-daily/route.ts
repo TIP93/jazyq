@@ -124,7 +124,7 @@ Return format:
       );
     }
 
-    // 7) INSERT DO DailyContent
+    // 7) INSERT DO dailycontent
     const { data: inserted, error: insertError } = await supabase
       .from("dailycontent")
       .insert({
