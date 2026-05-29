@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import {
   Globe,
@@ -10,89 +10,59 @@ import {
   Languages,
   Lightbulb,
   Eye,
-  Lock,
-  Crown, Headphones, PlayCircle, User, Calendar
+  Crown,
+  Headphones,
+  PlayCircle,
+  User,
+  Calendar,
 } from "lucide-react";
 
 type Language = "en" | "cs" | "it" | "es" | "de";
 
 const levels = ["A0", "A1", "A2", "B1", "B2", "C1", "C2"];
 
-const languages = [
-  { code: "en", flag: "gb" },
-  { code: "cs", flag: "cz" },
-  { code: "it", flag: "it" },
-  { code: "es", flag: "es" },
-  { code: "de", flag: "de" },
-  { code: "fr", flag: "fr" },
-  { code: "pt", flag: "pt" },
-  { code: "ru", flag: "ru" },
-  { code: "jp", flag: "jp" },
-  { code: "cn", flag: "cn" },
-];
-
 export default function Home() {
   const [language, setLanguage] = useState<Language>("en");
+  const [levelIndex, setLevelIndex] = useState(3);
+
+  const [allLevels, setAllLevels] = useState<any>(null);
+
   const [showAnswer, setShowAnswer] = useState(false);
-  const [showGrammarExample, setShowGrammarExample] = useState(false);
-const [readingFlipped, setReadingFlipped] = useState(false);
-const [showExampleTranslation, setShowExampleTranslation] = useState(false);
+  const [showExampleTranslation, setShowExampleTranslation] = useState(false);
+  const [readingFlipped, setReadingFlipped] = useState(false);
 
-const [allLevels, setAllLevels] = useState<any>(null);
+  const level = levels[levelIndex];
 
-const [levelIndex, setLevelIndex] = useState(3);
-const level = levels[levelIndex];
-const content = allLevels?.levels?.[level];
-const isReady = !!allLevels?.levels;
+  // LOAD DATA (NO AI HERE)
+  useEffect(() => {
+    async function load() {
+      const res = await fetch(`/api/daily?lang=${language}`);
+      const data = await res.json();
+      setAllLevels(data);
+    }
 
-  const [apiData, setApiData] = useState<any>(null);
+    load();
+  }, [language]);
 
+  // NORMALIZED CONTENT (supports both API formats)
+  const content = useMemo(() => {
+    if (!allLevels) return null;
 
- useEffect(() => {
-  console.log("USEEFFECT TRIGGERED");
+    // format 1: grouped by levels
+    if (allLevels?.levels) {
+      return allLevels.levels?.[level] ?? null;
+    }
 
-  async function load() {
-    const res = await fetch(`/api/daily?lang=${language}`);
-    const data = await res.json();
+    // format 2: flat array fallback
+    if (Array.isArray(allLevels)) {
+      return allLevels.find(
+        (item: any) =>
+          item.language === language && item.level === level
+      );
+    }
 
-    console.log("API DATA:", data);
-
-    setAllLevels(data);
-  }
-
-  load();
-}, [language]);
-
-useEffect(() => {
-  console.log("ALL LEVELS:", allLevels);
-}, [allLevels]);
-
-useEffect(() => {
-  async function test() {
-    console.log("🔥 FETCH START");
-
-    const res = await fetch("/api/gemini-daily", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        language: "en",
-        level: "A1",
-      }),
-    });
-
-    console.log("🔥 STATUS:", res.status);
-
-    const data = await res.json();
-
-    console.log("🔥 AI RESULT:", data);
-  }
-
-  test();
-}, []);
-
-console.log("CURRENT LEVEL:", level, content);
+    return null;
+  }, [allLevels, level, language]);
 
   return (
     <div className="min-h-screen bg-[#F6F7FB] flex text-black font-[Poppins]">
@@ -100,68 +70,49 @@ console.log("CURRENT LEVEL:", level, content);
       {/* SIDEBAR */}
       <div className="w-72 bg-white border-r border-gray-200 p-6 flex flex-col justify-between">
 
-        {/* TOP */}
         <div className="space-y-10">
 
-          {/* LOGO */}
           <div>
             <h1 className="text-3xl font-light tracking-[0.25em]">
               JAZYQ
             </h1>
-
             <p className="text-sm text-gray-500 mt-2">
               tvoje denní pětiminutovka
             </p>
           </div>
 
-{/* LANGUAGE */}
-<div className="space-y-4">
+          {/* LANGUAGE */}
+          <div className="space-y-4">
+            <p className="text-xs uppercase text-gray-400 flex items-center gap-2">
+              <Globe size={16} />
+              Jazyk
+            </p>
 
-  <p className="text-xs uppercase text-gray-400 flex items-center gap-2">
-    <Globe size={16} />
-    Jazyk
-  </p>
-
-  <div className="flex flex-wrap gap-2">
-
-    {[
-      { code: "en", flag: "gb" },
-      { code: "cs", flag: "cz" },
-      { code: "it", flag: "it" },
-      { code: "es", flag: "es" },
-      { code: "de", flag: "de" },
-      { code: "fr", flag: "fr" },
-      { code: "pt", flag: "pt" },
-      { code: "ru", flag: "ru" },
-      { code: "jp", flag: "jp" },
-      { code: "cn", flag: "cn" },
-    ].map((l) => (
-      <button
-        key={l.code}
-        onClick={() => setLanguage(l.code as Language)}
-        className="w-10 h-10 flex items-center justify-center"
-      >
-        <span
-          className={`
-            fi fi-${l.flag} text-2xl rounded-md shadow-sm
-            transition-all duration-150
-            ${
-              language === l.code
-                ? "ring-2 ring-black ring-offset-2 scale-110"
-                : ""
-            }
-          `}
-        />
-      </button>
-    ))}
-
-  </div>
-
-</div>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { code: "en", flag: "gb" },
+                { code: "cs", flag: "cz" },
+                { code: "it", flag: "it" },
+                { code: "es", flag: "es" },
+                { code: "de", flag: "de" },
+              ].map((l) => (
+                <button
+                  key={l.code}
+                  onClick={() => setLanguage(l.code as Language)}
+                  className="w-10 h-10 flex items-center justify-center"
+                >
+                  <span
+                    className={`fi fi-${l.flag} text-2xl rounded-md ${
+                      language === l.code ? "ring-2 ring-black" : ""
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
 
           {/* LEVEL */}
           <div className="space-y-4">
-
             <p className="text-xs uppercase text-gray-400 flex items-center gap-2">
               <BookOpen size={16} />
               Úroveň
@@ -184,293 +135,135 @@ console.log("CURRENT LEVEL:", level, content);
                 <span key={l}>{l}</span>
               ))}
             </div>
+          </div>
+        </div>
 
+        {/* BOTTOM */}
+        <div className="space-y-3">
+          <div className="border p-4 rounded-2xl flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Calendar size={20} />
+              <div>
+                <p className="text-xs text-gray-500">Historie</p>
+                <p className="text-sm">Předchozí dny</p>
+              </div>
+            </div>
+            <Crown size={16} />
+          </div>
+
+          <div className="border p-4 rounded-2xl flex items-center gap-3">
+            <User size={20} />
+            <div>
+              <p className="text-xs text-gray-500">Účet</p>
+              <p className="text-sm">Přihlásit se</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* MAIN */}
+      <div className="flex-1 p-8 flex justify-center">
+        <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-10 gap-4">
+
+          {/* WORD */}
+          <div className="md:col-span-4 bg-white p-6 rounded-3xl border">
+            <div className="flex items-center gap-2 text-gray-400">
+              <Sparkles size={20} />
+              Slovíčko dne
+            </div>
+
+            <p className="text-3xl mt-5">
+              {content?.wordForeign ?? "Loading..."}
+            </p>
+
+            <p className="text-gray-400">
+              {content?.wordNative ?? ""}
+            </p>
+          </div>
+
+          {/* EXAMPLE */}
+          <div className="md:col-span-6 bg-white p-6 rounded-3xl border">
+            <div className="flex justify-between">
+              <Languages size={20} />
+              <button onClick={() => setShowExampleTranslation(!showExampleTranslation)}>
+                <Eye />
+              </button>
+            </div>
+
+            <p className="mt-4 text-lg">
+              {content?.wordExampleForeign ?? ""}
+            </p>
+
+            <p
+              className={`text-gray-500 mt-2 ${
+                showExampleTranslation ? "block" : "hidden"
+              }`}
+            >
+              {content?.wordExampleNative ?? ""}
+            </p>
+          </div>
+
+          {/* GRAMMAR */}
+          <div className="md:col-span-5 bg-white p-6 rounded-3xl border">
+            <Lightbulb size={20} />
+            <p className="mt-4 text-sm">
+              {content?.grammarExplanation ?? ""}
+            </p>
+            <p className="mt-2 font-medium">
+              {content?.grammarExample ?? ""}
+            </p>
+          </div>
+
+          {/* TRANSLATION */}
+          <div className="md:col-span-5 bg-white p-6 rounded-3xl border">
+            <BookOpen size={20} />
+
+            <p className="mt-4">
+              {content?.translationPrompt ?? ""}
+            </p>
+
+            <button onClick={() => setShowAnswer(!showAnswer)}>
+              Show
+            </button>
+
+            <p className={`text-gray-500 mt-2 ${showAnswer ? "block" : "hidden"}`}>
+              {content?.translationAnswer ?? ""}
+            </p>
+          </div>
+
+          {/* READING */}
+          <div className="md:col-span-7 bg-white p-6 rounded-3xl border">
+            <FileText size={20} />
+
+            {!readingFlipped ? (
+              <p className="mt-4">{content?.readingForeign ?? ""}</p>
+            ) : (
+              <p className="mt-4 text-gray-500">{content?.readingNative ?? ""}</p>
+            )}
+
+            <button onClick={() => setReadingFlipped(!readingFlipped)}>
+              Flip
+            </button>
+          </div>
+
+          {/* LISTENING */}
+          <div className="md:col-span-3 bg-white p-6 rounded-3xl border opacity-60">
+            <Headphones size={20} />
+            <div className="mt-4 flex items-center gap-2">
+              <PlayCircle />
+              <div className="w-full h-2 bg-gray-200 rounded">
+                <div className="w-1/3 h-full bg-gray-400" />
+              </div>
+            </div>
+
+            <div className="mt-2 text-xs text-gray-400 flex justify-between">
+              <span>0:12</span>
+              <span>1:04</span>
+            </div>
           </div>
 
         </div>
-
- {/* BOTTOM */}
-<div className="space-y-3">
-
-  {/* HISTORY */}
-  <div className="border border-gray-200 rounded-2xl p-4 flex items-center justify-between hover:bg-gray-50 transition cursor-pointer">
-
-    <div className="flex items-center gap-3">
-
-      <Calendar size={20} className="text-gray-500" />
-
-      <div>
-        <p className="text-xs text-gray-500">
-          Historie
-        </p>
-        <p className="text-sm">
-          Předchozí dny
-        </p>
       </div>
-
-    </div>
-
-    {/* right orange premium-style icon */}
-    <div className="flex items-center justify-center w-9 h-9 rounded-full border border-orange-200 bg-orange-50 text-orange-500">
-      <Crown size={16} className="text-orange-400" />
-    </div>
-
-  </div>
-
-  {/* ACCOUNT (BOTTOM) */}
-  {/* ACCOUNT */}
-<div className="border border-gray-200 rounded-2xl p-4 flex items-center gap-3 hover:bg-gray-50 transition cursor-pointer">
-
-  <User size={20} className="text-gray-500" />
-
-  <div>
-    <p className="text-xs text-gray-500">
-      Účet
-    </p>
-
-    <p className="text-sm">
-      Přihlásit se
-    </p>
-  </div>
-
-</div>
-
-</div>
-
-      </div>
-
-      {/* MAIN */}
-      
-
-      {/* MAIN */}
-<div className="flex-1 flex items-center justify-center p-8">
-
-  <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-10 gap-4 auto-rows-[minmax(160px,auto)]">
-
-    {/* WORD */}
-    <div className="md:col-span-4 bg-white rounded-3xl border border-gray-200 p-6">
-
-      <div className="flex items-center gap-3 text-gray-400">
-        <Sparkles size={24} />
-
-        <p className="uppercase text-sm tracking-wide">
-          Slovíčko dne
-        </p>
-      </div>
-
-      <div className="mt-5">
-
-        <p className="text-3xl font-medium tracking-tight">
-           {content?.wordForeign ?? "Loading..."}
-        </p>
-
-        <p className="text-base text-gray-400 mt-1">
-          {content?.wordNative ?? ""}
-        </p>
-
-      </div>
-
-    </div>
-
-
-{/* PRIKLADOVA VETA */}
-
-   <div className="md:col-span-6 bg-white rounded-3xl border border-gray-200 p-6 min-h-[180px] flex flex-col">
-
-  {/* HEADER */}
-  <div className="flex items-center justify-between">
-
-    <div className="flex items-center gap-3 text-gray-400">
-      <Languages size={24} />
-      <p className="uppercase text-sm">Příkladová věta</p>
-    </div>
-
-    <button
-      onClick={() => setShowExampleTranslation(!showExampleTranslation)}
-      className="text-gray-400 hover:text-black transition"
-    >
-      <Eye size={20} />
-    </button>
-
-  </div>
-
-  {/* CONTENT AREA - STACKED, NOT OVERLAYED TEXT */}
-  <div className="mt-5 flex-1">
-
-    {/* English always visible */}
-    <p className="text-lg leading-relaxed text-gray-800">
-       {content?.wordExampleForeign ?? ""}
-    </p>
-
-    {/* Czech appears BELOW, but without shifting layout */}
-    <p
-      className={`text-sm leading-relaxed text-gray-500 mt-3 transition-opacity duration-200 ${
-        showExampleTranslation ? "opacity-100" : "opacity-0 pointer-events-none"
-      }`}
-    >
-      {content?.wordExampleNative ?? ""}
-    </p>
-
-  </div>
-
-</div>
-
-{/* GRAMMAR */}
-<div className="md:col-span-5 bg-white rounded-3xl border border-gray-200 p-6 relative">
-
-  {/* HEADER */}
-  <div className="flex items-center gap-3 text-gray-400">
-    <Lightbulb size={24} />
-
-    <p className="uppercase text-sm">
-      Gramatika
-    </p>
-  </div>
-
-  {/* RULE */}
-  <p className="text-sm text-gray-600 leading-relaxed mt-5">
-    {content?.grammarExplanation ?? ""}
-  </p>
-
-  {/* ENGLISH EXAMPLE (ALWAYS VISIBLE) */}
-  <p className="text-sm text-gray-800 mt-4 font-medium">
-    {content?.grammarExample ?? ""}
-  </p>
-
-</div>
-
-   {/* TRANSLATION */}
-<div className="md:col-span-5 bg-white rounded-3xl border border-gray-200 p-6 min-h-[180px] flex flex-col">
-
-  {/* HEADER */}
-  <div className="flex items-center justify-between">
-
-    <div className="flex items-center gap-3 text-gray-400">
-      <BookOpen size={24} />
-
-      <p className="uppercase text-sm">
-        Překlad
-      </p>
-    </div>
-
-    <button
-      onClick={() => setShowAnswer(!showAnswer)}
-      className="text-gray-400 hover:text-black transition"
-    >
-      <Eye size={20} />
-    </button>
-
-  </div>
-
-  {/* CONTENT */}
-  <div className="mt-5 flex-1">
-
-    {/* Czech sentence (always visible) */}
-    <p className="text-base leading-relaxed text-gray-800">
-      {content?.translationPrompt ?? ""}
-    </p>
-
-    {/* English answer (appears below, no layout shift) */}
-    <p
-      className={`text-sm leading-relaxed text-gray-500 mt-3 transition-opacity duration-200 ${
-        showAnswer ? "opacity-100" : "opacity-0 pointer-events-none"
-      }`}
-    >
-      {content?.translationAnswer ?? ""}
-    </p>
-
-  </div>
-
-</div>
-
- {/* READING */}
-<div className="md:col-span-7 bg-white rounded-3xl border border-gray-200 p-7 relative min-h-[240px] flex flex-col">
-
-  {/* HEADER */}
-  <div className="flex items-center justify-between">
-    <div className="flex items-center gap-3 text-gray-400">
-      <FileText size={24} />
-      <p className="uppercase text-sm">Čtení</p>
-    </div>
-
-    <button
-      onClick={() => setReadingFlipped(!readingFlipped)}
-      className="text-gray-400 hover:text-black transition"
-    >
-      <Eye size={18} />
-    </button>
-  </div>
-
-  {/* CONTENT */}
-  <div className="mt-5 flex-1 flex flex-col justify-between">
-
-    {/* TEXT BLOCK (NO ABSOLUTE) */}
-    <div className="transition-opacity duration-200">
-      <p className={`text-base leading-8 text-gray-700 ${readingFlipped ? "hidden" : "block"}`}>
-        {content?.readingForeign ?? ""}
-      </p>
-
-      <p className={`text-base leading-8 text-gray-500 ${readingFlipped ? "block" : "hidden"}`}>
-         {content?.readingNative ?? ""}
-      </p>
-    </div>
-
-  </div>
-
-</div>
-
-
- {/* LISTENING (LOCKED PREVIEW) */}
-<div className="md:col-span-3 relative bg-white border border-gray-200 rounded-3xl p-6 opacity-70">
-
-  {/* HEADER */}
-  <div className="flex items-center gap-3 text-gray-400">
-    <Headphones size={24} />
-
-    <p className="uppercase text-sm tracking-wide">
-      Poslech
-    </p>
-  </div>
-
-  {/* FAKE PLAYER */}
-  <div className="mt-5 bg-gray-50 border border-gray-200 rounded-2xl p-4 flex items-center gap-4">
-
-    <PlayCircle size={24} className="text-gray-400" />
-
-    <div className="flex-1">
-
-      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-        <div className="h-full w-1/3 bg-gray-400 opacity-40"></div>
-      </div>
-
-      <div className="flex justify-between text-xs text-gray-400 mt-2">
-        <span>0:12</span>
-        <span>1:04</span>
-      </div>
-
-    </div>
-
-  </div>
-
-  {/* PREMIUM BADGE (subtle orange restored) */}
-  <div className="absolute bottom-4 left-4">
-    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-orange-200 bg-orange-50 text-orange-500">
-
-      <Crown size={14} className="text-orange-400" />
-
-      <span className="text-[10px] uppercase tracking-wider font-medium">
-        Premium
-      </span>
-
-    </div>
-  </div>
-
-</div>
-
-  </div>
-
-</div>
-
     </div>
   );
 }
