@@ -226,6 +226,9 @@ const [generating, setGenerating] = useState(false);
     </p>
   </div>
 
+
+</div>
+
 <button
   onClick={generateDaily}
   disabled={generating}
@@ -233,8 +236,6 @@ const [generating, setGenerating] = useState(false);
 >
   {generating ? "Generating..." : "Generate today content"}
 </button>
-
-</div>
 
 </div>
 
