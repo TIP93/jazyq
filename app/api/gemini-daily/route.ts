@@ -123,7 +123,9 @@ Rules:
   - grammarPoint
   - grammarExplanation
   - grammarExample
-  - grammarExampleTranslation
+  - grammarPoint
+  - translationPrompt
+  - translationAnswer
 
 Word rules:
 - word must be a noun, verb, or adjective
@@ -153,6 +155,8 @@ Czech translation rules:
 - must be natural, fluent Czech
 - must preserve meaning of sentence
 - do not translate word-by-word if unnatural
+
+- grammarExample must be in target language (not Czech)
 
 IMPORTANT:
 Do NOT generate any word that appears in the previously used words list.
@@ -208,7 +212,7 @@ Bad examples:
 - Grammar practice
 
 grammarExplanation:
-- explain exactly one grammar rule
+- explain exactly one grammar rule in Czech
 - maximum 25 words
 - practical and learner-friendly
 - avoid linguistic jargon
@@ -222,8 +226,24 @@ grammarExample:
 - do not intentionally include difficult vocabulary
 - 5–12 words
 
-grammarExampleTranslation:
-- natural Czech translation of grammarExample
+Translation section:
+
+Each item must include:
+
+translationPrompt:
+- a Czech sentence designed as a translation exercise
+- must naturally use or imply the grammarPoint
+- must be appropriate for the CEFR level
+- must be independent from wordForeign vocabulary
+- must focus ONLY on grammarPoint
+- should not rely on daily vocabulary set
+- should be a standalone grammar exercise sentence
+- must be natural Czech sentence
+
+translationAnswer:
+- correct translation of translationPrompt into target language
+- must use natural grammar of the target language
+- must NOT be word-for-word translation if unnatural
 
 Grammar difficulty by level:
 
@@ -280,6 +300,14 @@ Ensure strict JSON compliance:
 - no extra keys
 - no explanation
 
+IMPORTANT:
+
+wordExampleForeign is lexical training (vocabulary usage)
+
+translationPrompt is grammar training (structure manipulation)
+
+These two systems must be generated independently.
+
 Return ONLY valid JSON array:
 
 [
@@ -293,7 +321,8 @@ Return ONLY valid JSON array:
     "grammarPoint": "Can for ability",
     "grammarExplanation": "Use can to talk about abilities.",
     "grammarExample": "She can swim very well.",
-    "grammarExampleTranslation": "Umí velmi dobře plavat."
+    "translationPrompt": "Moje máma umí velmi dobře vařit."
+    "translationAnswer": "My mum can cook very well."
   }
 ]
 `;
