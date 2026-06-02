@@ -87,13 +87,20 @@ A0, A1, A2, B1, B2, C1, C2.
 
 Return exactly 7 objects.
 
+Each object represents a complete learning unit consisting of:
+- vocabulary word
+- example sentence using that word
+
 Rules:
 - each item must contain:
   - language
   - level
   - wordForeign
-  - wordNative (Czech translation)
+  - wordNative (Czech translation of the word)
+  - wordExampleForeign (example sentence in target language)
+  - wordExampleNative (Czech translation of the sentence)
 
+Word rules:
 - word must be a noun, verb, or adjective
 - CEFR appropriate difficulty:
   - A0–A1: basic concrete vocabulary
@@ -101,7 +108,27 @@ Rules:
   - B2–C1: more abstract, nuanced or less frequent vocabulary
 - no proper nouns
 - no duplicates across dataset
-- keep outputs short, clean, and single-word only where possible
+- keep words short and natural (prefer single-word form when possible)
+
+Sentence rules:
+- sentence must naturally include the target word
+- sentence must reflect CEFR level appropriately
+
+Length rules:
+- A0: 5–8 words max, no compound sentences
+- A1–A2: 8–12 words
+- B1–C1: 10–15 words
+
+Grammar rules:
+- verbs may be naturally conjugated
+- adjectives must appear in natural agreement with nouns
+- avoid artificial textbook sentences
+- avoid explanations inside sentences
+
+Czech translation rules:
+- must be natural, fluent Czech
+- must preserve meaning of sentence
+- do not translate word-by-word if unnatural
 
 IMPORTANT:
 Do NOT generate any word that appears in the previously used words list.
@@ -129,13 +156,11 @@ Avoid overused beginner vocabulary unless necessary for A0–A1 (e.g. cat, dog, 
 
 Prefer slightly less common but still high-frequency vocabulary when possible.
 
-Also avoid synonyms of previously used words when feasible (e.g. if "big" was used, avoid "large", "huge" in nearby batches).
+Also avoid synonyms of previously used words when feasible.
 
-The Czech translation must be a direct, natural equivalent of the foreign word, not an explanation or phrase.
+Try to balance word types (nouns, verbs, adjectives), but prioritize natural CEFR appropriateness.
 
-Try to balance word types (nouns, verbs, adjectives), but prioritize natural CEFR appropriateness over strict balance.
-
-Each dataset should feel like a curated learning set: diverse, balanced, and pedagogically meaningful, not a random list of unrelated words or a single-theme lesson.
+Each dataset should feel like a curated learning set: diverse, balanced, and pedagogically meaningful.
 
 Ensure strict JSON compliance:
 - return ONLY valid JSON array
@@ -152,7 +177,9 @@ Return ONLY valid JSON array:
     "language": "en",
     "level": "A1",
     "wordForeign": "run",
-    "wordNative": "běžet"
+    "wordNative": "běžet",
+    "wordExampleForeign": "I run every morning in the park.",
+    "wordExampleNative": "Každé ráno běhám v parku."
   }
 ]
 `;
@@ -240,13 +267,19 @@ if (uniqueWords.size !== words.length) {
 }
 
     // 6) INSERT BULK
-    const rows = parsed.map((item) => ({
-      language: item.language,
-      level: item.level,
-      wordForeign: item.wordForeign,
-      wordNative: item.wordNative,
-      contentDate: today,
-    }));
+    // 6) INSERT BULK
+const rows = parsed.map((item) => ({
+  language: item.language,
+  level: item.level,
+
+  wordForeign: item.wordForeign,
+  wordNative: item.wordNative,
+
+  wordExampleForeign: item.wordExampleForeign ?? "",
+  wordExampleNative: item.wordExampleNative ?? "",
+
+  contentDate: today,
+}));
 
     const { data: inserted, error: insertError } = await supabase
       .from("dailycontent")
