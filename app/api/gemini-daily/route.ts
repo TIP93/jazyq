@@ -70,6 +70,27 @@ const usedWords =
     (row) => `${row.level}: ${row.wordForeign}`
   ) ?? [];
 
+  const { data: usedGrammarRows, error: usedGrammarError } = await supabase
+  .from("dailycontent")
+  .select("level, grammarPoint")
+  .order("contentDate", { ascending: false })
+  .limit(360); // cca 60 dní × 6 úrovní
+
+if (usedGrammarError) {
+  return Response.json(
+    {
+      error: "Failed loading previous grammar",
+      details: usedGrammarError,
+    },
+    { status: 500 }
+  );
+}
+
+const usedGrammar =
+  usedGrammarRows?.map(
+    (row) => `${row.level}: ${row.grammarPoint}`
+  ) ?? [];
+
     // 3) SINGLE BATCH PROMPT (70 items)
    const prompt = `
 You are a structured language learning generator.
@@ -99,6 +120,10 @@ Rules:
   - wordNative (Czech translation of the word)
   - wordExampleForeign (example sentence in target language)
   - wordExampleNative (Czech translation of the sentence)
+  - grammarPoint
+  - grammarExplanation
+  - grammarExample
+  - grammarExampleTranslation
 
 Word rules:
 - word must be a noun, verb, or adjective
@@ -157,6 +182,92 @@ Prefer slightly less common but still high-frequency vocabulary when possible.
 
 Also avoid synonyms of previously used words when feasible.
 
+Grammar section:
+
+Each item must also contain a grammar focus.
+
+grammarPoint:
+- short identifier of the grammar topic
+- maximum 5 words
+- must describe a specific grammar micro-topic
+- avoid broad topics
+
+Good examples:
+- Present Perfect with already
+- Present Perfect with yet
+- Articles with rivers
+- Can for permission
+- Gerund after enjoy
+- First Conditional
+- Relative clauses with who
+
+Bad examples:
+- Present Perfect
+- Articles
+- Prepositions
+- Grammar practice
+
+grammarExplanation:
+- explain exactly one grammar rule
+- maximum 25 words
+- practical and learner-friendly
+- avoid linguistic jargon
+
+Good example:
+Use "the" before names of rivers, seas and oceans.
+
+grammarExample:
+- must clearly demonstrate the grammar point
+- should be easier than the level's vocabulary word
+- do not intentionally include difficult vocabulary
+- 5–12 words
+
+grammarExampleTranslation:
+- natural Czech translation of grammarExample
+
+Grammar difficulty by level:
+
+A1:
+- there is / there are
+- possessive adjectives
+- can for ability
+- basic prepositions
+- plural nouns
+
+A2:
+- past simple
+- comparative adjectives
+- going to
+- countable vs uncountable nouns
+
+B1:
+- present perfect
+- first conditional
+- passive basics
+- gerunds and infinitives
+
+B2:
+- reported speech
+- relative clauses
+- modal verbs of deduction
+- second conditional
+
+C1:
+- inversion
+- mixed conditionals
+- advanced discourse markers
+- emphasis structures
+
+IMPORTANT:
+
+Do NOT generate any grammar point that appears in the previously used grammar list.
+
+Previously used grammar points:
+
+${usedGrammar.join("\n")}
+
+Also avoid closely related variations of recently used grammar points when possible.
+
 Try to balance word types (nouns, verbs, adjectives), but prioritize natural CEFR appropriateness.
 
 Each dataset should feel like a curated learning set: diverse, balanced, and pedagogically meaningful.
@@ -178,7 +289,11 @@ Return ONLY valid JSON array:
     "wordForeign": "run",
     "wordNative": "běžet",
     "wordExampleForeign": "I run every morning in the park.",
-    "wordExampleNative": "Každé ráno běhám v parku."
+    "wordExampleNative": "Každé ráno běhám v parku.",
+    "grammarPoint": "Can for ability",
+    "grammarExplanation": "Use can to talk about abilities.",
+    "grammarExample": "She can swim very well.",
+    "grammarExampleTranslation": "Umí velmi dobře plavat."
   }
 ]
 `;
@@ -266,13 +381,16 @@ if (uniqueWords.size !== words.length) {
 }
 
     // 6) INSERT BULK
-    // 6) INSERT BULK
 const rows = parsed.map((item) => ({
   language: item.language,
   level: item.level,
 
   wordForeign: item.wordForeign,
   wordNative: item.wordNative,
+   grammarPoint: item.grammarPoint,
+  grammarExplanation: item.grammarExplanation,
+  grammarExample: item.grammarExample,
+  grammarExampleTranslation: item.grammarExampleTranslation,
 
   wordExampleForeign: item.wordExampleForeign ?? "",
   wordExampleNative: item.wordExampleNative ?? "",
