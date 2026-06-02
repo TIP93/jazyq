@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-const LEVELS = ["A0","A1","A2","B1","B2","C1","C2"] as const;
+const LEVELS = ["A1","A2","B1","B2","C1","C2"] as const;
 
 export async function GET(req: Request) {
   try {
