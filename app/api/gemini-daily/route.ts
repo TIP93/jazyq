@@ -94,11 +94,14 @@ Rules:
   - wordForeign
   - wordNative (Czech translation)
 
-- word must be noun, verb, or adjective
-- CEFR appropriate difficulty
+- word must be a noun, verb, or adjective
+- CEFR appropriate difficulty:
+  - A0–A1: basic concrete vocabulary
+  - A2–B1: daily life vocabulary + simple actions and descriptions
+  - B2–C1: more abstract, nuanced or less frequent vocabulary
 - no proper nouns
 - no duplicates across dataset
-- keep outputs short and clean
+- keep outputs short, clean, and single-word only where possible
 
 IMPORTANT:
 Do NOT generate any word that appears in the previously used words list.
@@ -106,7 +109,43 @@ Do NOT generate any word that appears in the previously used words list.
 Previously used words:
 ${usedWords.join("\n")}
 
-Return ONLY valid JSON array (no markdown, no explanation):
+Avoid semantic repetition across days.
+
+Each generated dataset must distribute words across different semantic categories.
+
+Allowed categories include (but are not limited to):
+- people & roles (teacher, doctor)
+- actions & verbs (run, eat)
+- objects (table, book)
+- nature (tree, river)
+- animals (cat, dog, bird)
+- abstract concepts (time, idea, love)
+- places (school, city, home)
+
+STRICT RULE:
+Do NOT generate more than ONE word from the same semantic category per batch.
+
+Avoid overused beginner vocabulary unless necessary for A0–A1 (e.g. cat, dog, book, run, eat).
+
+Prefer slightly less common but still high-frequency vocabulary when possible.
+
+Also avoid synonyms of previously used words when feasible (e.g. if "big" was used, avoid "large", "huge" in nearby batches).
+
+The Czech translation must be a direct, natural equivalent of the foreign word, not an explanation or phrase.
+
+Try to balance word types (nouns, verbs, adjectives), but prioritize natural CEFR appropriateness over strict balance.
+
+Each dataset should feel like a curated learning set: diverse, balanced, and pedagogically meaningful, not a random list of unrelated words or a single-theme lesson.
+
+Ensure strict JSON compliance:
+- return ONLY valid JSON array
+- no markdown
+- no comments
+- no trailing commas
+- no extra keys
+- no explanation
+
+Return ONLY valid JSON array:
 
 [
   {
