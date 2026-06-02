@@ -24,8 +24,8 @@ model dailycontent {
   grammarExample String?
   grammarExampleTranslation String?
 
-  translationPrompt String?
-  translationAnswer String?
+  grammarTranslationCz String?
+  grammarTranslationOrig String?
 
   readingForeign String?
   readingNative String?
