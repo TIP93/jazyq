@@ -431,6 +431,8 @@ grammarPoint: item.grammarPoint ?? "",
 
   wordExampleForeign: item.wordExampleForeign ?? "",
   wordExampleNative: item.wordExampleNative ?? "",
+   translationPrompt: item.translationPrompt ?? "",
+  translationAnswer: item.translationAnswer ?? "",
   
 
   contentDate: today,
