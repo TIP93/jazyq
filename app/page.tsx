@@ -40,8 +40,8 @@ const [showExampleTranslation, setShowExampleTranslation] = useState(false);
 
 const [allLevels, setAllLevels] = useState<any>(null);
 
-const [levelIndex, setLevelIndex] = useState(3);
-const level = levels[levelIndex];
+const [levelIndex, setLevelIndex] = useState(2);
+const level = levels[levelIndex] ?? "A1";
 const content = allLevels?.levels?.[level] ?? null;
 const isReady = !!allLevels?.levels;
 const [generating, setGenerating] = useState(false);
@@ -163,7 +163,7 @@ const [generating, setGenerating] = useState(false);
             <input
               type="range"
               min={0}
-              max={6}
+              max={levels.length - 1}
               value={levelIndex}
               onChange={(e) => {
                 setLevelIndex(Number(e.target.value));
