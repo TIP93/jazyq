@@ -8,7 +8,8 @@ export async function POST(req: Request) {
 
     const today = new Date().toISOString().split("T")[0];
 
-    const languages = ["en", "cs", "it", "es", "de", "fr", "pt", "ru", "jp", "cn"];
+   const languages = ["en"];
+   // const languages = ["en", "cs", "it", "es", "de", "fr", "pt", "ru", "jp", "cn"];
     const levels = ["A0", "A1", "A2", "B1", "B2", "C1", "C2"];
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
@@ -45,8 +46,32 @@ export async function POST(req: Request) {
       model: "gemini-3.5-flash",
     });
 
+    // 2) POSLEDNÍ SLOVA (ANTI-REPEAT)
+
+const { data: usedWordsRows, error: usedWordsError } = await supabase
+  .from("dailycontent")
+  .select("language, level, wordForeign")
+  .in("language", languages)
+  .order("contentDate", { ascending: false })
+  .limit(420);
+
+if (usedWordsError) {
+  return Response.json(
+    {
+      error: "Failed loading previous words",
+      details: usedWordsError,
+    },
+    { status: 500 }
+  );
+}
+
+const usedWords =
+  usedWordsRows?.map(
+    (row) => `${row.level}: ${row.wordForeign}`
+  ) ?? [];
+
     // 3) SINGLE BATCH PROMPT (70 items)
-    const prompt = `
+   const prompt = `
 You are a structured language learning generator.
 
 Generate vocabulary for ALL combinations of:
@@ -57,7 +82,10 @@ ${languages.join(", ")}
 Levels:
 ${levels.join(", ")}
 
-Total items: 70
+Generate EXACTLY one item for each level:
+A0, A1, A2, B1, B2, C1, C2.
+
+Return exactly 7 objects.
 
 Rules:
 - each item must contain:
@@ -65,11 +93,18 @@ Rules:
   - level
   - wordForeign
   - wordNative (Czech translation)
+
 - word must be noun, verb, or adjective
 - CEFR appropriate difficulty
 - no proper nouns
 - no duplicates across dataset
 - keep outputs short and clean
+
+IMPORTANT:
+Do NOT generate any word that appears in the previously used words list.
+
+Previously used words:
+${usedWords.join("\n")}
 
 Return ONLY valid JSON array (no markdown, no explanation):
 
@@ -123,6 +158,47 @@ Return ONLY valid JSON array (no markdown, no explanation):
         { status: 500 }
       );
     }
+
+    if (parsed.length !== 7) {
+  return Response.json(
+    {
+      error: "Expected exactly 7 items",
+      count: parsed.length,
+    },
+    { status: 500 }
+  );
+}
+
+const generatedLevels = parsed.map((i) => i.level);
+
+const missingLevels = levels.filter(
+  (level) => !generatedLevels.includes(level)
+);
+
+if (missingLevels.length > 0) {
+  return Response.json(
+    {
+      error: "Missing levels",
+      missingLevels,
+    },
+    { status: 500 }
+  );
+}
+
+const words = parsed.map((i) =>
+  i.wordForeign.toLowerCase().trim()
+);
+
+const uniqueWords = new Set(words);
+
+if (uniqueWords.size !== words.length) {
+  return Response.json(
+    {
+      error: "Duplicate words generated",
+    },
+    { status: 500 }
+  );
+}
 
     // 6) INSERT BULK
     const rows = parsed.map((item) => ({
