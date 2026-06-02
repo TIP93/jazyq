@@ -318,9 +318,17 @@ Return ONLY valid JSON array:
 
     let parsed;
 
-    try {
-      parsed = JSON.parse(text.slice(jsonStart, jsonEnd + 1));
-    } catch (err) {
+try {
+  const cleaned = text
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .trim();
+
+  parsed = JSON.parse(cleaned.slice(
+    cleaned.indexOf("["),
+    cleaned.lastIndexOf("]") + 1
+  ));
+} catch (err) {
       return Response.json(
         {
           error: "Invalid JSON from model",
@@ -339,10 +347,10 @@ Return ONLY valid JSON array:
       );
     }
 
-    if (parsed.length !== 7) {
+    if (parsed.length !== 6) {
   return Response.json(
     {
-      error: "Expected exactly 7 items",
+      error: "Expected exactly 6 items",
       count: parsed.length,
     },
     { status: 500 }
@@ -387,13 +395,14 @@ const rows = parsed.map((item) => ({
 
   wordForeign: item.wordForeign,
   wordNative: item.wordNative,
-   grammarPoint: item.grammarPoint,
-  grammarExplanation: item.grammarExplanation,
-  grammarExample: item.grammarExample,
-  grammarExampleTranslation: item.grammarExampleTranslation,
+  grammarExampleTranslation: item.grammarExampleTranslation ?? "",
+grammarExample: item.grammarExample ?? "",
+grammarExplanation: item.grammarExplanation ?? "",
+grammarPoint: item.grammarPoint ?? "",
 
   wordExampleForeign: item.wordExampleForeign ?? "",
   wordExampleNative: item.wordExampleNative ?? "",
+  
 
   contentDate: today,
 }));
