@@ -369,7 +369,7 @@ const [generating, setGenerating] = useState(false);
 
     {/* Czech sentence (always visible) */}
     <p className="text-base leading-relaxed text-gray-800">
-      {content?.GrammarTranslationCz ?? ""}
+      {content?.grammarTranslationCz ?? ""}
     </p>
 
     {/* English answer (appears below, no layout shift) */}
@@ -378,7 +378,7 @@ const [generating, setGenerating] = useState(false);
         showAnswer ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
-      {content?.GrammarTranslationOrig ?? ""}
+      {content?.grammarTranslationOrig ?? ""}
     </p>
 
   </div>
