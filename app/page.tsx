@@ -16,7 +16,7 @@ import {
 
 type Language = "en" | "cs" | "it" | "es" | "de";
 
-const levels = ["A0", "A1", "A2", "B1", "B2", "C1", "C2"];
+const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
 const languages = [
   { code: "en", flag: "gb" },

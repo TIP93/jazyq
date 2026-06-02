@@ -10,7 +10,7 @@ export async function POST(req: Request) {
 
    const languages = ["en"];
    // const languages = ["en", "cs", "it", "es", "de", "fr", "pt", "ru", "jp", "cn"];
-    const levels = ["A0", "A1", "A2", "B1", "B2", "C1", "C2"];
+    const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -83,7 +83,7 @@ Levels:
 ${levels.join(", ")}
 
 Generate EXACTLY one item for each level:
-A0, A1, A2, B1, B2, C1, C2.
+A1, A2, B1, B2, C1, C2.
 
 Return exactly 7 objects.
 
@@ -103,7 +103,7 @@ Rules:
 Word rules:
 - word must be a noun, verb, or adjective
 - CEFR appropriate difficulty:
-  - A0–A1: basic concrete vocabulary
+  - A1: basic concrete vocabulary
   - A2–B1: daily life vocabulary + simple actions and descriptions
   - B2–C1: more abstract, nuanced or less frequent vocabulary
 - no proper nouns
@@ -115,7 +115,6 @@ Sentence rules:
 - sentence must reflect CEFR level appropriately
 
 Length rules:
-- A0: 5–8 words max, no compound sentences
 - A1–A2: 8–12 words
 - B1–C1: 10–15 words
 
@@ -152,7 +151,7 @@ Allowed categories include (but are not limited to):
 STRICT RULE:
 Do NOT generate more than ONE word from the same semantic category per batch.
 
-Avoid overused beginner vocabulary unless necessary for A0–A1 (e.g. cat, dog, book, run, eat).
+Avoid overused beginner vocabulary unless necessary for A1 (e.g. cat, dog, book, run, eat).
 
 Prefer slightly less common but still high-frequency vocabulary when possible.
 
