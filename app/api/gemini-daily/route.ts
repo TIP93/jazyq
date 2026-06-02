@@ -124,8 +124,8 @@ Rules:
   - grammarExplanation
   - grammarExample
   - grammarPoint
-  - translationPrompt
-  - translationAnswer
+  - grammarTranslationCz
+  - grammarTranslationOrig
 
 Word rules:
 - word must be a noun, verb, or adjective
@@ -230,20 +230,26 @@ Translation section:
 
 Each item must include:
 
-translationPrompt:
-- a Czech sentence designed as a translation exercise
-- must naturally use or imply the grammarPoint
+grammarTranslationCz:
 - must be appropriate for the CEFR level
-- must be independent from wordForeign vocabulary
 - must focus ONLY on grammarPoint
 - should not rely on daily vocabulary set
 - should be a standalone grammar exercise sentence
 - must be natural Czech sentence
+- natural Czech translation of grammarTranslationOrig
+- must preserve meaning exactly
+- must NOT introduce new context or meaning
 
-translationAnswer:
-- correct translation of translationPrompt into target language
+grammarTranslationOrig:
+- correct translation of grammarTranslationCz into target language
 - must use natural grammar of the target language
 - must NOT be word-for-word translation if unnatural
+- must follow the SAME grammarPoint structure as grammarExample
+- must NOT introduce a different grammatical structure
+
+grammarExample and grammarTranslationOrig must use the SAME grammarPoint.
+
+Only lexical items may change between them.
 
 Grammar difficulty by level:
 
@@ -300,11 +306,43 @@ Ensure strict JSON compliance:
 - no extra keys
 - no explanation
 
+CRITICAL GRAMMAR GENERATION PIPELINE:
+
+Step 1:
+Generate grammarExample (English)
+- defines grammarPoint structure
+
+Step 2:
+Generate grammarTranslationOrig (English)
+- must preserve same grammar structure as grammarExample
+- may change vocabulary and scenario
+- must NOT change grammarPoint
+
+Step 3:
+Generate grammarTranslationCz (Czech)
+- direct natural translation of grammarTranslationOrig
+- must preserve meaning exactly
+
+HARD CONSTRAINT:
+
+grammarTranslationCz must NOT be generated independently.
+
+It must be derived ONLY from grammarTranslationOrig.
+
+grammarTranslationOrig is the intermediate canonical sentence.
+
+STRICT RULE:
+grammarTranslationCz MUST be a Czech version of grammarExample sentence meaning.
+
+translationAnswer MUST be the natural target language equivalent of grammarTranslationCz.
+
+If grammarExample changes, both translation fields MUST follow it exactly.
+
 IMPORTANT:
 
 wordExampleForeign is lexical training (vocabulary usage)
 
-translationPrompt is grammar training (structure manipulation)
+grammarTranslationCz is grammar training (structure manipulation)
 
 These two systems must be generated independently.
 
@@ -321,8 +359,8 @@ Return ONLY valid JSON array:
     "grammarPoint": "Can for ability",
     "grammarExplanation": "Use can to talk about abilities.",
     "grammarExample": "She can swim very well.",
-    "translationPrompt": "Moje máma umí velmi dobře vařit."
-    "translationAnswer": "My mum can cook very well."
+    "grammarTranslationCz": "Moje máma umí velmi dobře vařit."
+    "grammarTranslationOrig": "My mum can cook very well."
   }
 ]
 `;
@@ -431,8 +469,8 @@ grammarPoint: item.grammarPoint ?? "",
 
   wordExampleForeign: item.wordExampleForeign ?? "",
   wordExampleNative: item.wordExampleNative ?? "",
-   translationPrompt: item.translationPrompt ?? "",
-  translationAnswer: item.translationAnswer ?? "",
+   grammarTranslationCz: item.translationPrompt ?? "",
+  grammarTranslationOrig: item.translationAnswer ?? "",
   
 
   contentDate: today,
