@@ -324,7 +324,7 @@ grammarContext: item.grammarContext ?? "",
   grammarTranslationOrig: item.grammarTranslationOrig ?? "",
   
 
-  contentDate: new Date(),
+  contentDate: new Date().toISOString().split("T")[0]
 }));
 
 console.log("ROWS SAMPLE:", rows[0]);
