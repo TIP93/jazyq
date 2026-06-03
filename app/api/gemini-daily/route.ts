@@ -305,7 +305,6 @@ const rows = parsed.map((item) => ({
 
   wordForeign: item.wordForeign,
   wordNative: item.wordNative,
-  grammarExampleTranslation: item.grammarExampleTranslation ?? "",
 grammarExample: item.grammarExample ?? "",
 grammarExplanation: item.grammarExplanation ?? "",
 grammarFamily: item.grammarFamily ?? "",
