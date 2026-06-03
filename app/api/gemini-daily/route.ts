@@ -344,7 +344,7 @@ grammarContext: item.grammarContext ?? "",
   grammarTranslationOrig: item.grammarTranslationOrig ?? "",
   
 
-  contentDate: new Date().toISOString().split("T")[0]
+  contentDate: today,
 }));
 
     const { data: inserted, error: insertError } = await supabase
