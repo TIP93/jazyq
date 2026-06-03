@@ -41,6 +41,8 @@ export async function POST(req: Request) {
       });
     }
 
+    console.log("STEP 1: before gemini");
+
     // 2) MODEL
     const model = genAI.getGenerativeModel({
       model: "gemini-3.5-flash",
@@ -211,6 +213,7 @@ No markdown. No explanation. No extra keys.
     // 4) GEMINI CALL
     const result = await model.generateContent(prompt);
     const text = result.response.text();
+console.log("STEP 2: gemini done");
 
     // 5) SAFE JSON PARSE
     const jsonStart = text.indexOf("[");
@@ -225,6 +228,9 @@ No markdown. No explanation. No extra keys.
         { status: 500 }
       );
     }
+
+    console.log("RAW TEXT:", text);
+    console.log("STEP 3: before parse");
 
     let parsed;
 
@@ -247,6 +253,8 @@ try {
         { status: 500 }
       );
     }
+
+    console.log("RAW TEXT:", text);
 
     if (!Array.isArray(parsed)) {
       return Response.json(
@@ -310,7 +318,6 @@ grammarExplanation: item.grammarExplanation ?? "",
 grammarFamily: item.grammarFamily ?? "",
 grammarPattern: item.grammarPattern ?? "",
 grammarContext: item.grammarContext ?? "",
-
   wordExampleForeign: item.wordExampleForeign ?? "",
   wordExampleNative: item.wordExampleNative ?? "",
    grammarTranslationCz: item.grammarTranslationCz ?? "",
@@ -319,6 +326,10 @@ grammarContext: item.grammarContext ?? "",
 
   contentDate: new Date(),
 }));
+
+console.log("ROWS SAMPLE:", rows[0]);
+console.log("ROWS COUNT:", rows.length);
+
 
     const { data: inserted, error: insertError } = await supabase
       .from("dailycontent")
