@@ -72,9 +72,15 @@ const usedWords =
 
   const { data: usedGrammarRows, error: usedGrammarError } = await supabase
   .from("dailycontent")
-  .select("level, grammarPoint")
+  .select(`
+    level,
+    grammarFamily,
+    grammarPattern,
+    grammarContext,
+    contentDate
+  `)
   .order("contentDate", { ascending: false })
-  .limit(360); // cca 60 dní × 6 úrovní
+  .limit(360);
 
 if (usedGrammarError) {
   return Response.json(
@@ -86,267 +92,102 @@ if (usedGrammarError) {
   );
 }
 
-const usedGrammar =
+const recentFamilies =
   usedGrammarRows?.map(
-    (row) => `${row.level}: ${row.grammarPoint}`
+    row => `${row.level}: ${row.grammarFamily}`
+  ) ?? [];
+
+const recentPatterns =
+  usedGrammarRows?.map(
+    row => `${row.level}: ${row.grammarPattern}`
+  ) ?? [];
+
+const recentContexts =
+  usedGrammarRows?.map(
+    row => `${row.level}: ${row.grammarContext}`
   ) ?? [];
 
     // 3) SINGLE BATCH PROMPT (70 items)
    const prompt = `
 You are a structured language learning generator.
 
-Generate vocabulary for ALL combinations of:
+Generate exactly 6 learning units, one per CEFR level:
+A1, A2, B1, B2, C1, C2.
 
 Languages:
 ${languages.join(", ")}
 
-Levels:
-${levels.join(", ")}
-
-Generate EXACTLY one item for each level:
-A1, A2, B1, B2, C1, C2.
-
-Return exactly 6 objects.
-
-Each object represents a complete learning unit consisting of:
-- vocabulary word
-- example sentence using that word
-
-Rules:
-- each item must contain:
-  - language
-  - level
-  - wordForeign
-  - wordNative (Czech translation of the word)
-  - wordExampleForeign (example sentence in target language)
-  - wordExampleNative (Czech translation of the sentence)
-  - grammarPoint
-  - grammarExplanation
-  - grammarExample
-  - grammarPoint
-  - grammarTranslationCz
-  - grammarTranslationOrig
-
-Word rules:
-- word must be a noun, verb, or adjective
-- CEFR appropriate difficulty:
-  - A1: basic concrete vocabulary
-  - A2–B1: daily life vocabulary + simple actions and descriptions
-  - B2–C1: more abstract, nuanced or less frequent vocabulary
-- no proper nouns
-- no duplicates across dataset
-- keep words short and natural (prefer single-word form when possible)
-
-Sentence rules:
-- sentence must naturally include the target word
-- sentence must reflect CEFR level appropriately
-
-Length rules:
-- A1–A2: 8–12 words
-- B1–C1: 10–15 words
-
-Grammar rules:
-- verbs may be naturally conjugated
-- adjectives must appear in natural agreement with nouns
-- avoid artificial textbook sentences
-- avoid explanations inside sentences
-
-Czech translation rules:
-- must be natural, fluent Czech
-- must preserve meaning of sentence
-- do not translate word-by-word if unnatural
-
-- grammarExample must be in target language (not Czech)
-
-IMPORTANT:
-Do NOT generate any word that appears in the previously used words list.
-
-Previously used words:
+Previously used words (must not repeat):
 ${usedWords.join("\n")}
 
-Avoid semantic repetition across days.
+Recently used grammar families:
+${recentFamilies.join("\n")}
 
-Each generated dataset must distribute words across different semantic categories.
+Recently used grammar patterns:
+${recentPatterns.join("\n")}
 
-Allowed categories include (but are not limited to):
-- people & roles (teacher, doctor)
-- actions & verbs (run, eat)
-- objects (table, book)
-- nature (tree, river)
-- animals (cat, dog, bird)
-- abstract concepts (time, idea, love)
-- places (school, city, home)
+Recently used grammar contexts:
+${recentContexts.join("\n")}
 
-STRICT RULE:
-Do NOT generate more than ONE word from the same semantic category per batch.
+Each item must contain:
 
-Avoid overused beginner vocabulary unless necessary for A1 (e.g. cat, dog, book, run, eat).
+language, level,
+wordForeign, wordNative,
+wordExampleForeign, wordExampleNative,
+grammarFamily, grammarPattern, grammarContext,
+grammarExplanation,
+grammarExample,
+grammarTranslationOrig,
+grammarTranslationCz
 
-Prefer slightly less common but still high-frequency vocabulary when possible.
+Vocabulary rules:
+noun, verb, or adjective only
+CEFR appropriate:
+A1: basic concrete words
+A2–B1: daily life vocabulary
+B2–C1: more abstract/less frequent
+no proper nouns
+no duplicates across dataset
+avoid overused beginner words unless necessary for A1
+max one semantic category per batch
+Sentence rules:
+wordExampleForeign must naturally include wordForeign
+must match CEFR level difficulty
+A1–A2: 8–12 words
+B1–C1: 10–15 words
+Grammar system:
+grammarFamily = broad category
+grammarPattern = specific structure (e.g. Present Perfect with already)
+grammarContext = situation (travel, work, etc.)
 
-Also avoid synonyms of previously used words when feasible.
+Do not repeat grammarFamily (3–5 days) or grammarPattern (10–14 days).
+Prefer least recently used grammar options.
 
-Grammar section:
+grammarExample must clearly demonstrate grammarPattern (5–12 words).
 
-Each item must also contain a grammar focus.
-
-grammarPoint:
-- short identifier of the grammar topic
-- maximum 5 words
-- must describe a specific grammar micro-topic
-- avoid broad topics
-
-Good examples:
-- Present Perfect with already
-- Present Perfect with yet
-- Articles with rivers
-- Can for permission
-- Gerund after enjoy
-- First Conditional
-- Relative clauses with who
-
-Bad examples:
-- Present Perfect
-- Articles
-- Prepositions
-- Grammar practice
-
-grammarExplanation:
-- explain exactly one grammar rule in Czech
-- maximum 25 words
-- practical and learner-friendly
-- avoid linguistic jargon
-
-Good example:
-Use "the" before names of rivers, seas and oceans.
-
-grammarExample:
-- must clearly demonstrate the grammar point
-- should be easier than the level's vocabulary word
-- do not intentionally include difficult vocabulary
-- 5–12 words
-
-Translation section:
-
-Each item must include:
-
-grammarTranslationCz:
-- must be appropriate for the CEFR level
-- must focus ONLY on grammarPoint
-- should not rely on daily vocabulary set
-- should be a standalone grammar exercise sentence
-- must be natural Czech sentence
-- natural Czech translation of grammarTranslationOrig
-- must preserve meaning exactly
-- must NOT introduce new context or meaning
+Translation rules:
 
 grammarTranslationOrig:
-- correct translation of grammarTranslationCz into target language
-- must use natural grammar of the target language
-- must NOT be word-for-word translation if unnatural
-- must follow the SAME grammarPoint structure as grammarExample
-- must NOT introduce a different grammatical structure
 
-grammarExample and grammarTranslationOrig must use the SAME grammarPoint.
+English sentence preserving grammarPattern
+may change vocabulary/context but NOT structure type
 
-Only lexical items may change between them.
+grammarTranslationCz:
 
-Grammar difficulty by level:
-
-A1:
-- there is / there are
-- possessive adjectives
-- can for ability
-- basic prepositions
-- plural nouns
-
-A2:
-- past simple
-- comparative adjectives
-- going to
-- countable vs uncountable nouns
-
-B1:
-- present perfect
-- first conditional
-- passive basics
-- gerunds and infinitives
-
-B2:
-- reported speech
-- relative clauses
-- modal verbs of deduction
-- second conditional
-
-C1:
-- inversion
-- mixed conditionals
-- advanced discourse markers
-- emphasis structures
-
-IMPORTANT:
-
-Do NOT generate any grammar point that appears in the previously used grammar list.
-
-Previously used grammar points:
-
-${usedGrammar.join("\n")}
-
-Also avoid closely related variations of recently used grammar points when possible.
-
-Try to balance word types (nouns, verbs, adjectives), but prioritize natural CEFR appropriateness.
-
-Each dataset should feel like a curated learning set: diverse, balanced, and pedagogically meaningful.
-
-Ensure strict JSON compliance:
-- return ONLY valid JSON array
-- no markdown
-- no comments
-- no trailing commas
-- no extra keys
-- no explanation
-
-CRITICAL GRAMMAR GENERATION PIPELINE:
-
-Step 1:
-Generate grammarExample (English)
-- defines grammarPoint structure
-
-Step 2:
-Generate grammarTranslationOrig (English)
-- must preserve same grammar structure as grammarExample
-- may change vocabulary and scenario
-- must NOT change grammarPoint
-
-Step 3:
-Generate grammarTranslationCz (Czech)
-- direct natural translation of grammarTranslationOrig
-- must preserve meaning exactly
-
-HARD CONSTRAINT:
+direct natural Czech translation of grammarTranslationOrig
+must preserve meaning exactly
 
 grammarTranslationCz must NOT be generated independently.
 
-It must be derived ONLY from grammarTranslationOrig.
+Hard constraint:
 
-grammarTranslationOrig is the intermediate canonical sentence.
+wordExampleForeign and grammarExample are independent systems:
 
-STRICT RULE:
-grammarTranslationCz MUST be a Czech version of grammarExample sentence meaning.
+vocabulary sentence ≠ grammar sentence
+Output rules:
 
-translationAnswer MUST be the natural target language equivalent of grammarTranslationCz.
-
-If grammarExample changes, both translation fields MUST follow it exactly.
-
-IMPORTANT:
-
-wordExampleForeign is lexical training (vocabulary usage)
-
-grammarTranslationCz is grammar training (structure manipulation)
-
-These two systems must be generated independently.
-
-Return ONLY valid JSON array:
+Return ONLY valid JSON array.
+No markdown. No explanation. No extra keys.
 
 [
   {
@@ -356,10 +197,12 @@ Return ONLY valid JSON array:
     "wordNative": "běžet",
     "wordExampleForeign": "I run every morning in the park.",
     "wordExampleNative": "Každé ráno běhám v parku.",
-    "grammarPoint": "Can for ability",
+    "grammarFamily": "Modal Verbs",
+    "grammarPattern": "Can for ability",
+    "grammarContext": "skills and abilities",
     "grammarExplanation": "Use can to talk about abilities.",
     "grammarExample": "She can swim very well.",
-    "grammarTranslationCz": "Moje máma umí velmi dobře vařit."
+    "grammarTranslationCz": "Moje máma umí velmi dobře vařit.",
     "grammarTranslationOrig": "My mum can cook very well."
   }
 ]
@@ -465,7 +308,9 @@ const rows = parsed.map((item) => ({
   grammarExampleTranslation: item.grammarExampleTranslation ?? "",
 grammarExample: item.grammarExample ?? "",
 grammarExplanation: item.grammarExplanation ?? "",
-grammarPoint: item.grammarPoint ?? "",
+grammarFamily: item.grammarFamily ?? "",
+grammarPattern: item.grammarPattern ?? "",
+grammarContext: item.grammarContext ?? "",
 
   wordExampleForeign: item.wordExampleForeign ?? "",
   wordExampleNative: item.wordExampleNative ?? "",
