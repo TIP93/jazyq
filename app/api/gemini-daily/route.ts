@@ -41,8 +41,6 @@ export async function POST(req: Request) {
       });
     }
 
-    console.log("STEP 1: before gemini");
-
     // 2) MODEL
     const model = genAI.getGenerativeModel({
       model: "gemini-3.5-flash",
@@ -210,10 +208,36 @@ No markdown. No explanation. No extra keys.
 ]
 `;
 
-    // 4) GEMINI CALL
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
-console.log("STEP 2: gemini done");
+    let result;
+let text;
+
+try {
+  console.log("🚀 STEP 2: calling Gemini");
+
+  result = await model.generateContent(prompt);
+
+  console.log("✅ STEP 3: Gemini response received");
+
+  // někdy může failnout i .text()
+  text = result.response?.text?.();
+
+  console.log("📦 STEP 4: text extracted");
+
+  if (!text) {
+    throw new Error("Empty Gemini response text");
+  }
+
+} catch (err) {
+  console.log("🔥 GEMINI ERROR:", err);
+
+  return Response.json(
+    {
+      error: "Gemini call failed",
+      details: err instanceof Error ? err.message : err,
+    },
+    { status: 500 }
+  );
+}
 
     // 5) SAFE JSON PARSE
     const jsonStart = text.indexOf("[");
@@ -228,9 +252,6 @@ console.log("STEP 2: gemini done");
         { status: 500 }
       );
     }
-
-    console.log("RAW TEXT:", text);
-    console.log("STEP 3: before parse");
 
     let parsed;
 
@@ -253,8 +274,6 @@ try {
         { status: 500 }
       );
     }
-
-    console.log("RAW TEXT:", text);
 
     if (!Array.isArray(parsed)) {
       return Response.json(
@@ -318,6 +337,7 @@ grammarExplanation: item.grammarExplanation ?? "",
 grammarFamily: item.grammarFamily ?? "",
 grammarPattern: item.grammarPattern ?? "",
 grammarContext: item.grammarContext ?? "",
+
   wordExampleForeign: item.wordExampleForeign ?? "",
   wordExampleNative: item.wordExampleNative ?? "",
    grammarTranslationCz: item.grammarTranslationCz ?? "",
@@ -326,10 +346,6 @@ grammarContext: item.grammarContext ?? "",
 
   contentDate: new Date().toISOString().split("T")[0]
 }));
-
-console.log("ROWS SAMPLE:", rows[0]);
-console.log("ROWS COUNT:", rows.length);
-
 
     const { data: inserted, error: insertError } = await supabase
       .from("dailycontent")
