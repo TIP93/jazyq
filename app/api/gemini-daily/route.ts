@@ -107,8 +107,112 @@ const recentContexts =
     row => `${row.level}: ${row.grammarContext}`
   ) ?? [];
 
+   console.log("LANG:", languages.slice(0, 10));
+   console.log("words:", usedWords.slice(0, 10));
+    console.log("FAMILIES SAMPLE:", recentFamilies.slice(0, 10));
+console.log("PATTERNS SAMPLE:", recentPatterns.slice(0, 10));
+console.log("CONTEXTS SAMPLE:", recentContexts.slice(0, 10));
+
     // 3) SINGLE BATCH PROMPT (70 items)
-   const prompt = "Generate 6 simple vocabulary words A1-C1 with examples in JSON.";
+   const prompt = `
+You are a structured language learning generator.
+
+Generate exactly 6 learning units, one per CEFR level:
+A1, A2, B1, B2, C1, C2.
+
+Languages:
+${languages.join(", ")}
+
+Previously used words (must not repeat):
+${usedWords.join("\n")}
+
+Recently used grammar families:
+${recentFamilies.join("\n")}
+
+Recently used grammar patterns:
+${recentPatterns.join("\n")}
+
+Recently used grammar contexts:
+${recentContexts.join("\n")}
+
+Each item must contain:
+
+language, level,
+wordForeign, wordNative,
+wordExampleForeign, wordExampleNative,
+grammarFamily, grammarPattern, grammarContext,
+grammarExplanation,
+grammarExample,
+grammarTranslationOrig,
+grammarTranslationCz
+
+Vocabulary rules:
+noun, verb, or adjective only
+CEFR appropriate:
+A1: basic concrete words
+A2–B1: daily life vocabulary
+B2–C1: more abstract/less frequent
+no proper nouns
+no duplicates across dataset
+avoid overused beginner words unless necessary for A1
+max one semantic category per batch
+Sentence rules:
+wordExampleForeign must naturally include wordForeign
+must match CEFR level difficulty
+A1–A2: 8–12 words
+B1–C1: 10–15 words
+Grammar system:
+grammarFamily = broad category
+grammarPattern = specific structure (e.g. Present Perfect with already)
+grammarContext = situation (travel, work, etc.)
+
+Do not repeat grammarFamily (3–5 days) or grammarPattern (10–14 days).
+Prefer least recently used grammar options.
+
+grammarExample must clearly demonstrate grammarPattern (5–12 words).
+
+Translation rules:
+
+grammarTranslationOrig:
+
+English sentence preserving grammarPattern
+may change vocabulary/context but NOT structure type
+
+grammarTranslationCz:
+
+direct natural Czech translation of grammarTranslationOrig
+must preserve meaning exactly
+
+grammarTranslationCz must NOT be generated independently.
+
+Hard constraint:
+
+wordExampleForeign and grammarExample are independent systems:
+
+vocabulary sentence ≠ grammar sentence
+Output rules:
+
+Return ONLY valid JSON array.
+No markdown. No explanation. No extra keys.
+
+[
+  {
+    "language": "en",
+    "level": "A1",
+    "wordForeign": "run",
+    "wordNative": "běžet",
+    "wordExampleForeign": "I run every morning in the park.",
+    "wordExampleNative": "Každé ráno běhám v parku.",
+    "grammarFamily": "Modal Verbs",
+    "grammarPattern": "Can for ability",
+    "grammarContext": "skills and abilities",
+    "grammarExplanation": "Use can to talk about abilities.",
+    "grammarExample": "She can swim very well.",
+    "grammarTranslationCz": "Moje máma umí velmi dobře vařit.",
+    "grammarTranslationOrig": "My mum can cook very well."
+  }
+]
+`;
 
     let result;
 let text;
