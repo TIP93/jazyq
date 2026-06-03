@@ -93,26 +93,25 @@ if (usedGrammarError) {
 }
 
 const recentFamilies =
-  usedGrammarRows?.map(
-    row => `${row.level}: ${row.grammarFamily}`
-  ) ?? [];
-
+  usedGrammarRows
+    ?.map(r => r.grammarFamily)
+    .filter((v): v is string => Boolean(v))
+    .map(v => v.trim())
+    .slice(0, 20)
+  ?? [];
 const recentPatterns =
-  usedGrammarRows?.map(
-    row => `${row.level}: ${row.grammarPattern}`
-  ) ?? [];
-
+  usedGrammarRows
+    ?.map(r => r.grammarPattern)
+    .filter(Boolean)
+    .slice(0, 20)
+  ?? [];
 const recentContexts =
-  usedGrammarRows?.map(
-    row => `${row.level}: ${row.grammarContext}`
-  ) ?? [];
-
-   console.log("LANG:", languages.slice(0, 10));
-   console.log("words:", usedWords.slice(0, 10));
-    console.log("FAMILIES SAMPLE:", recentFamilies.slice(0, 10));
-console.log("PATTERNS SAMPLE:", recentPatterns.slice(0, 10));
-console.log("CONTEXTS SAMPLE:", recentContexts.slice(0, 10));
-
+  usedGrammarRows
+    ?.map(r => r.grammarContext)
+    .filter(Boolean)
+    .slice(0, 20)
+  ?? [];
+ 
     // 3) SINGLE BATCH PROMPT (70 items)
    const prompt = `
 You are a structured language learning generator.
@@ -170,6 +169,11 @@ Do not repeat grammarFamily (3–5 days) or grammarPattern (10–14 days).
 Prefer least recently used grammar options.
 
 grammarExample must clearly demonstrate grammarPattern (5–12 words).
+
+grammarExplanation:
+short grammar reminder in Czech
+max 20 words
+simple, practical usage hint
 
 Translation rules:
 
