@@ -317,7 +317,7 @@ grammarContext: item.grammarContext ?? "",
   grammarTranslationOrig: item.grammarTranslationOrig ?? "",
   
 
-  contentDate: today,
+  contentDate: new Date(),
 }));
 
     const { data: inserted, error: insertError } = await supabase
