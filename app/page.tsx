@@ -18,8 +18,6 @@ type Language = "en" | "cs" | "it" | "es" | "de" | "fr" | "pt" | "ru" | "jp" | "
 
 const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
-const [greeting, setGreeting] = useState("");
-
 const greetings: Record<Language, string[]> = {
   en: ["Hello", "Good day", "Hi there", "Welcome", "Hey", "Nice to see you"],
   cs: ["Ahoj", "Dobrý den", "Vítej", "Zdravím", "Hezký den", "Nazdar"],
@@ -49,7 +47,7 @@ const languages = [
 export default function Home() {
   const [language, setLanguage] = useState<Language>("en");
   const [showAnswer, setShowAnswer] = useState(false);
-  const [showGrammarExample, setShowGrammarExample] = useState(false);
+  const [greeting, setGreeting] = useState("");
 const [readingFlipped, setReadingFlipped] = useState(false);
 const [showExampleTranslation, setShowExampleTranslation] = useState(false);
 
