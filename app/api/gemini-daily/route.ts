@@ -194,6 +194,35 @@ Hard constraint:
 wordExampleForeign and grammarExample are independent systems:
 
 vocabulary sentence ≠ grammar sentence
+
+Reading section:
+
+Each item must also contain:
+
+readingForeign
+readingNative
+
+Reading rules:
+
+- readingForeign must be written in the target language
+- readingForeign must naturally include wordForeign
+- readingForeign must clearly contain and demonstrate grammarPattern
+- grammarPattern should appear naturally multiple times when appropriate
+- readingForeign must be 45–55 words
+- readingForeign must match the CEFR level difficulty
+- readingForeign must be a coherent mini-text, not isolated sentences
+- readingForeign must be independent from grammarExample and wordExampleForeign
+- do not copy sentences from other fields
+
+readingNative:
+
+- natural Czech translation of readingForeign
+- must preserve meaning accurately
+- may adapt wording for natural Czech
+- must not omit information from readingForeign
+
+The grammarPattern used in grammarExample and readingForeign must be the same.
+
 Output rules:
 
 Return ONLY valid JSON array.
@@ -210,10 +239,13 @@ No markdown. No explanation. No extra keys.
     "grammarFamily": "Modal Verbs",
     "grammarPattern": "Can for ability",
     "grammarContext": "skills and abilities",
-    "grammarExplanation": "Use can to talk about abilities.",
+    "grammarExplanation": "Používej sloveso can pro věci, které umíš dělat.",
     "grammarExample": "She can swim very well.",
     "grammarTranslationCz": "Moje máma umí velmi dobře vařit.",
     "grammarTranslationOrig": "My mum can cook very well."
+    "readingForeign": "Tom likes sports and spends time outside every day. He can run very fast and can play football with his friends. His sister can swim well, but she cannot run as quickly as Tom. They enjoy being active and can learn new sports together.",
+    "readingNative": "Tom má rád sport a každý den tráví čas venku. Umí běhat velmi rychle a umí hrát fotbal se svými kamarády. Jeho sestra umí dobře plavat, ale neumí běhat tak rychle jako Tom. Rádi jsou aktivní a dokážou se společně učit nové sporty."
+
   }
 ]
 `;
@@ -350,10 +382,11 @@ grammarContext: item.grammarContext ?? "",
 
   wordExampleForeign: item.wordExampleForeign ?? "",
   wordExampleNative: item.wordExampleNative ?? "",
-   grammarTranslationCz: item.grammarTranslationCz ?? "",
+  grammarTranslationCz: item.grammarTranslationCz ?? "",
   grammarTranslationOrig: item.grammarTranslationOrig ?? "",
   
-
+  readingForeign: item.readingForeign ?? "",
+  readingNative: item.readingNative ?? "",
   contentDate: today,
 }));
 
