@@ -59,8 +59,6 @@ const content = allLevels?.levels?.[level] ?? null;
 const isReady = !!allLevels?.levels;
 const [generating, setGenerating] = useState(false);
 
-  const [apiData, setApiData] = useState<any>(null);
-
   async function generateDaily() {
   try {
     setGenerating(true);
@@ -95,18 +93,13 @@ const [generating, setGenerating] = useState(false);
     const res = await fetch(`/api/daily?lang=${language}`);
     const data = await res.json();
     setAllLevels(data);
+
     const list = greetings[language] ?? greetings.en;
-const random = list[Math.floor(Math.random() * list.length)];
-setGreeting(random);
+    const random = list[Math.floor(Math.random() * list.length)];
+    setGreeting(random);
   }
 
   load();
-}, [language]);
-
-useEffect(() => {
-  const list = greetings[language] ?? greetings.en;
-  const random = list[Math.floor(Math.random() * list.length)];
-  setGreeting(random);
 }, [language]);
 
   return (
@@ -267,7 +260,7 @@ useEffect(() => {
       
 
       {/* MAIN */}
-<div className="flex-1 flex items-center justify-center p-8">
+<div className="flex-1 flex flex-col items-center justify-start p-8 gap-4">
 
   {/* TOP STATUS BAR */}
 <div className="w-full max-w-5xl mx-auto flex items-center justify-between mb-4 px-1 text-sm text-gray-600">
