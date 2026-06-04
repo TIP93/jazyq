@@ -267,7 +267,8 @@ const [generating, setGenerating] = useState(false);
 <div className="flex-1 flex flex-col items-center justify-start py-4 px-6 gap-3 max-h-screen overflow-y-auto">
 
  {/* TOP STATUS BAR */}
-<div className="w-full max-w-5xl mx-auto flex items-center justify-between mb-1 px-1 text-sm text-gray-600">  
+<div className="w-full max-w-5xl mx-auto flex items-center justify-between mb-4 px-1 text-sm text-gray-600">
+  
   {/* LEFT: flag + level + greeting + separator + date */}
   <div className="flex items-center gap-4">
 
@@ -324,9 +325,10 @@ const [generating, setGenerating] = useState(false);
 
 </div>
 
-<div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-10 gap-3 auto-rows-[minmax(130px,auto)]">
+  <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-10 gap-4 auto-rows-[minmax(160px,auto)]">
+
     {/* WORD */}
-    <div className="md:col-span-4 bg-white rounded-3xl border border-gray-200 p-4">
+    <div className="md:col-span-4 bg-white rounded-3xl border border-gray-200 p-6">
 
       <div className="flex items-center gap-3 text-gray-400">
         <Sparkles size={24} />
@@ -338,11 +340,11 @@ const [generating, setGenerating] = useState(false);
 
       <div className="mt-5">
 
-        <p className="text-xl font-medium tracking-tight">
+        <p className="text-3xl font-medium tracking-tight">
            {content?.wordForeign ?? "Loading..."}
         </p>
 
-        <p className="text-xs text-gray-400 mt-1">
+        <p className="text-base text-gray-400 mt-1">
           {content?.wordNative ?? ""}
         </p>
 
@@ -352,7 +354,7 @@ const [generating, setGenerating] = useState(false);
 
 
 {/* PRIKLADOVA VETA */}
-<div className="md:col-span-6 bg-white rounded-3xl border border-gray-200 p-4 min-h-[130px] flex flex-col">
+<div className="md:col-span-6 bg-white rounded-3xl border border-gray-200 p-6 min-h-[180px] flex flex-col">
   <div className="flex items-center justify-between">
     <div className="flex items-center gap-3 text-gray-400">
       <Languages size={24} />
@@ -368,11 +370,11 @@ const [generating, setGenerating] = useState(false);
   </div>
 
   <div className="mt-5 flex-1">
-    <p className="text-sm leading-relaxed text-gray-800">
+    <p className="text-lg leading-relaxed text-gray-800">
        {content?.wordExampleForeign ?? ""}
     </p>
     <p
-      className={`text-xs leading-relaxed text-gray-500 mt-3 transition-opacity duration-200 ${
+      className={`text-sm leading-relaxed text-gray-500 mt-3 transition-opacity duration-200 ${
         showExampleTranslation ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
