@@ -420,50 +420,44 @@ const [generating, setGenerating] = useState(false);
 {/* READING */}
 <div className="md:col-span-7 bg-white rounded-3xl border border-gray-200 p-7 relative min-h-[240px] flex flex-col">
 
-  {/* HEADER */}
-  <div className="flex items-center justify-between">
-    <div className="flex items-center gap-3 text-gray-400">
-      <FileText size={24} />
-      <p className="uppercase text-sm">Čtení</p>
-    </div>
+  {/* HEADER */}
+  <div className="flex items-center justify-between">
+    <div className="flex items-center gap-3 text-gray-400">
+      <FileText size={24} />
+      <p className="uppercase text-sm">Čtení</p>
+    </div>
 
-    <button
-      onClick={() => setReadingFlipped(!readingFlipped)}
-      className="text-gray-400 hover:text-black transition"
-    >
-      {/* Ikona oka reaguje pouze na lokální flip, nezávisle na globálním oku */}
-      {readingFlipped ? <EyeOff size={18} /> : <Eye size={18} />}
-    </button>
-  </div>
+    <button
+      onClick={() => setReadingFlipped(!readingFlipped)}
+      className="text-gray-400 hover:text-black transition"
+    >
+      {/* Ikona oka reaguje na globální i lokální stav */}
+      {(readingFlipped || showTranslations) ? <EyeOff size={18} /> : <Eye size={18} />}
+    </button>
+  </div>
 
-  {/* CONTENT */}
-  <div className="mt-5 flex-1 flex flex-col justify-between">
+  {/* CONTENT */}
+  {/* Flex-1 zajišťuje, že obsah zabere zbytek karty, mt-5 je standardní odsazení */}
+  <div className="mt-5 flex-1 flex flex-col">
 
-    {/* TEXT BLOCK */}
-    <div className="transition-opacity duration-200">
-      
-      {/* CIZÍ TEXT (Foreign) - viditelný, pokud NENÍ zapnutý lokální flip */}
-      <p className={`text-base leading-8 text-gray-700 ${
-        readingFlipped ? "hidden" : "block"
-      }`}>
-        {content?.readingForeign ?? ""}
-      </p>
+    {/* TEXT BLOCK (zarovnaný flush pod header) */}
+    <div className="transition-opacity duration-200 flex-1">
+      {/* Nativní (český) text - viditelný, POKUD JE zapnutý globální nebo lokální flip */}
+      <p className={`text-base leading-8 text-gray-500 ${
+        (readingFlipped || showTranslations) ? "block" : "hidden"
+      }`}>
+        {content?.readingNative ?? ""}
+      </p>
 
-      {/* RODNÝ TEXT (Native) - viditelný, POKUD JE zapnutý lokální flip */}
-      <p className={`text-base leading-8 text-gray-500 mt-2 ${
-        readingFlipped ? "block" : "hidden"
-      }`}>
-        {content?.readingNative ?? ""}
-      </p>
-    </div>
+      {/* Cizí (anglický) text - viditelný, POKUD NENÍ zapnutý globální ani lokální flip */}
+      <p className={`text-base leading-8 text-gray-700 ${
+        (readingFlipped || showTranslations) ? "hidden" : "block"
+      }`}>
+        {content?.readingForeign ?? ""}
+      </p>
+    </div>
 
-    {/* (Volitelné) Malý indikátor nativního textu pod cizím textem */}
-    {!readingFlipped && (
-      <p className="text-xs text-gray-400 mt-2 italic">
-        (nativní text skrytý)
-      </p>
-    )}
-  </div>
+  </div>
 
 </div>
 
