@@ -451,24 +451,24 @@ const [generating, setGenerating] = useState(false);
       onClick={() => setReadingFlipped(!readingFlipped)}
       className="text-gray-400 hover:text-black transition"
     >
-      {/* Reaguje čistě na svůj synchronizovaný stav */}
       {readingFlipped ? <EyeOff size={18} /> : <Eye size={18} />}
     </button>
   </div>
 
   {/* CONTENT AREA */}
-  <div className="mt-5 flex-1 relative">
+  {/* pb-4 dává jistotu, že i kdyby byl český text o chlup delší, neuteče k okraji karty */}
+  <div className="mt-5 flex-1 relative pb-4">
 
-    {/* NATIVNÍ (ČESKÝ) TEXT */}
-    <p className={`text-base leading-8 text-gray-500 absolute inset-0 transition-opacity duration-300 ${
-      readingFlipped ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+    {/* NATIVNÍ (ČESKÝ) TEXT - Absolutní, překrývá anglický */}
+    <p className={`text-base leading-8 text-gray-500 absolute inset-x-0 top-0 transition-opacity duration-300 ${
+      readingFlipped ? "opacity-100 pointer-events-auto z-10" : "opacity-0 pointer-events-none z-0"
     }`}>
       {content?.readingNative ?? ""}
     </p>
 
-    {/* CIZÍ (ANGLICKÝ) TEXT */}
-    <p className={`text-base leading-8 text-gray-700 absolute inset-0 transition-opacity duration-300 ${
-      readingFlipped ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"
+    {/* CIZÍ (ANGLICKÝ) TEXT - Relativní, určuje a drží výšku celé karty */}
+    <p className={`text-base leading-8 text-gray-700 relative transition-opacity duration-300 ${
+      readingFlipped ? "opacity-0 pointer-events-none z-0" : "opacity-100 pointer-events-auto z-10"
     }`}>
       {content?.readingForeign ?? ""}
     </p>
