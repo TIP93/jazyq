@@ -261,11 +261,10 @@ const [generating, setGenerating] = useState(false);
       </div>
 
       {/* MAIN */}
-      
+     <div className="flex-1 flex flex-col items-center justify-center p-8 gap-4 min-h-screen overflow-y-auto">
 
-      {/* MAIN */}
-<div className="flex-1 flex flex-col items-center justify-start p-8 gap-4">
-
+<div className="w-full max-w-5xl flex flex-col gap-4 my-auto">
+  
  {/* TOP STATUS BAR */}
 <div className="w-full max-w-5xl mx-auto flex items-center justify-between mb-4 px-1 text-sm text-gray-600">
   
@@ -370,7 +369,7 @@ const [generating, setGenerating] = useState(false);
   </div>
 
   <div className="mt-5 flex-1">
-    <p className="text-lg leading-relaxed text-gray-800">
+    <p className="text-base leading-relaxed text-gray-800">
        {content?.wordExampleForeign ?? ""}
     </p>
     <p
@@ -522,6 +521,8 @@ const [generating, setGenerating] = useState(false);
 
     </div>
   </div>
+
+</div>
 
 </div>
 
