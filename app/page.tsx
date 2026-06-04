@@ -408,7 +408,6 @@ const [generating, setGenerating] = useState(false);
 
     <div className="flex items-center gap-3 text-gray-400">
       <BookOpen size={24} />
-
       <p className="uppercase text-sm">
         Překlad
       </p>
@@ -423,46 +422,26 @@ const [generating, setGenerating] = useState(false);
 
   </div>
 
-  {/* CONTENT */}
-  <div className="md:col-span-6 bg-white rounded-3xl border border-gray-200 p-6 min-h-[180px] flex flex-col">
-
-  {/* HEADER */}
-  <div className="flex items-center justify-between">
-
-    <div className="flex items-center gap-3 text-gray-400">
-      <Languages size={24} />
-      <p className="uppercase text-sm">Příkladová věta</p>
-    </div>
-
-    <button
-      onClick={() => setShowExampleTranslation(!showExampleTranslation)}
-      className="text-gray-400 hover:text-black transition"
-    >
-      <Eye size={20} />
-    </button>
-
-  </div>
-
-  {/* CONTENT AREA - STACKED, NOT OVERLAYED TEXT */}
+  {/* CONTENT AREA - IDENTICAL PATTERN */}
   <div className="mt-5 flex-1">
 
-    {/* English always visible */}
-    <p className="text-lg leading-relaxed text-gray-800">
-       {content?.wordExampleForeign ?? ""}
+    {/* Czech always visible */}
+    <p className="text-base leading-relaxed text-gray-800">
+      {content?.grammarTranslationCz ?? ""}
     </p>
 
-    {/* Czech appears BELOW, but without shifting layout */}
+    {/* English translation (hidden with same pattern as working block) */}
     <p
       className={`text-sm leading-relaxed text-gray-500 mt-3 transition-opacity duration-200 ${
-        (showTranslations || showExampleTranslation) ? "opacity-100" : "opacity-0 pointer-events-none"
+        (showTranslations || showAnswer)
+          ? "opacity-100"
+          : "opacity-0 pointer-events-none"
       }`}
     >
-      {content?.wordExampleNative ?? ""}
+      {content?.grammarTranslationOrig ?? ""}
     </p>
 
   </div>
-
-</div>
 
 </div>
 
