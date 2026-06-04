@@ -22,7 +22,6 @@ model dailycontent {
   readingNative          String?
   wordExampleForeign     String?
   wordExampleNative      String?
-  grammarPoint           String?
   grammarFamily          String?
   grammarPattern         String?
   grammarContext         String?
