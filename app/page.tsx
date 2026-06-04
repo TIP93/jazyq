@@ -105,8 +105,6 @@ const [generating, setGenerating] = useState(false);
   load();
 }, [language]);
 
-console.log("GRAMMAR CHECK", level, content?.grammarTranslationOrig);
-
   return (
     <div className="min-h-screen bg-[#F6F7FB] flex text-black font-[Poppins]">
 
@@ -432,14 +430,11 @@ console.log("GRAMMAR CHECK", level, content?.grammarTranslationOrig);
     </p>
 
     {/* English answer (appears below, no layout shift) */}
-    <p
-      className={`text-sm leading-relaxed text-gray-500 mt-3 transition-opacity duration-200 ${
-        (showTranslations || showAnswer) ? "opacity-100" : "opacity-0 pointer-events-none"
-      }`}
-    >
-
-      {content?.grammarTranslationOrig ?? content?.grammarTranslationCz ?? ""}
-    </p>
+   <p className={`text-sm leading-relaxed text-gray-500 mt-3 transition-opacity duration-200`}>
+  {(showTranslations || showAnswer)
+    ? (content?.grammarTranslationOrig ?? content?.grammarTranslationCz ?? "")
+    : ""}
+</p>
 
   </div>
 
