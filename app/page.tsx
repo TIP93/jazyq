@@ -334,35 +334,25 @@ const [generating, setGenerating] = useState(false);
 
 
 {/* PRIKLADOVA VETA */}
-
-   <div className="md:col-span-6 bg-white rounded-3xl border border-gray-200 p-6 min-h-[180px] flex flex-col">
-
-  {/* HEADER */}
+<div className="md:col-span-6 bg-white rounded-3xl border border-gray-200 p-6 min-h-[180px] flex flex-col">
   <div className="flex items-center justify-between">
-
     <div className="flex items-center gap-3 text-gray-400">
       <Languages size={24} />
       <p className="uppercase text-sm">Příkladová věta</p>
     </div>
-
     <button
       onClick={() => setShowExampleTranslation(!showExampleTranslation)}
       className="text-gray-400 hover:text-black transition"
     >
-      <Eye size={20} />
+      {/* Ikona se mění podle stavu NEBO globálního oka */}
+      {(showTranslations || showExampleTranslation) ? <EyeOff size={20} /> : <Eye size={20} />}
     </button>
-
   </div>
 
-  {/* CONTENT AREA - STACKED, NOT OVERLAYED TEXT */}
   <div className="mt-5 flex-1">
-
-    {/* English always visible */}
     <p className="text-lg leading-relaxed text-gray-800">
        {content?.wordExampleForeign ?? ""}
     </p>
-
-    {/* Czech appears BELOW, but without shifting layout */}
     <p
       className={`text-sm leading-relaxed text-gray-500 mt-3 transition-opacity duration-200 ${
         (showTranslations || showExampleTranslation) ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -370,9 +360,7 @@ const [generating, setGenerating] = useState(false);
     >
       {content?.wordExampleNative ?? ""}
     </p>
-
   </div>
-
 </div>
 
 {/* GRAMMAR */}
@@ -399,90 +387,83 @@ const [generating, setGenerating] = useState(false);
 
 </div>
 
-   {/* TRANSLATION */}
+  {/* TRANSLATION */}
 <div className="md:col-span-5 bg-white rounded-3xl border border-gray-200 p-6 min-h-[180px] flex flex-col">
-
-  {/* HEADER */}
   <div className="flex items-center justify-between">
-
     <div className="flex items-center gap-3 text-gray-400">
       <BookOpen size={24} />
-      <p className="uppercase text-sm">
-        Překlad
-      </p>
+      <p className="uppercase text-sm">Překlad</p>
     </div>
-
     <button
       onClick={() => setShowAnswer(!showAnswer)}
       className="text-gray-400 hover:text-black transition"
     >
-      <Eye size={20} />
+      {/* Ikona reaguje na lokální i globální stav */}
+      {(showTranslations || showAnswer) ? <EyeOff size={20} /> : <Eye size={20} />}
     </button>
-
   </div>
 
-  {/* CONTENT AREA - IDENTICAL PATTERN */}
   <div className="mt-5 flex-1">
-
-    {/* Czech always visible */}
     <p className="text-base leading-relaxed text-gray-800">
       {content?.grammarTranslationCz ?? ""}
     </p>
-
-    {/* English translation (hidden with same pattern as working block) */}
     <p
       className={`text-sm leading-relaxed text-gray-500 mt-3 transition-opacity duration-200 ${
-        (showTranslations || showAnswer)
-          ? "opacity-100"
-          : "opacity-0 pointer-events-none"
+        (showTranslations || showAnswer) ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
       {content?.grammarTranslationOrig ?? ""}
     </p>
-
   </div>
-
 </div>
 
- {/* READING */}
+{/* READING */}
 <div className="md:col-span-7 bg-white rounded-3xl border border-gray-200 p-7 relative min-h-[240px] flex flex-col">
 
-  {/* HEADER */}
-  <div className="flex items-center justify-between">
-    <div className="flex items-center gap-3 text-gray-400">
-      <FileText size={24} />
-      <p className="uppercase text-sm">Čtení</p>
-    </div>
+  {/* HEADER */}
+  <div className="flex items-center justify-between">
+    <div className="flex items-center gap-3 text-gray-400">
+      <FileText size={24} />
+      <p className="uppercase text-sm">Čtení</p>
+    </div>
 
-    <button
-      onClick={() => setReadingFlipped(!readingFlipped)}
-      className="text-gray-400 hover:text-black transition"
-    >
-      <Eye size={18} />
-    </button>
-  </div>
+    <button
+      onClick={() => setReadingFlipped(!readingFlipped)}
+      className="text-gray-400 hover:text-black transition"
+    >
+      {/* Ikona oka reaguje pouze na lokální flip, nezávisle na globálním oku */}
+      {readingFlipped ? <EyeOff size={18} /> : <Eye size={18} />}
+    </button>
+  </div>
 
-  {/* CONTENT */}
-  <div className="mt-5 flex-1 flex flex-col justify-between">
+  {/* CONTENT */}
+  <div className="mt-5 flex-1 flex flex-col justify-between">
 
-    {/* TEXT BLOCK (NO ABSOLUTE) */}
-    <div className="transition-opacity duration-200">
-      {/* FOREIGN TEXT */}
-<p className={`text-base leading-8 text-gray-700 ${
-  readingFlipped ? "hidden" : "block"
-}`}>
-  {content?.readingForeign ?? ""}
-</p>
+    {/* TEXT BLOCK */}
+    <div className="transition-opacity duration-200">
+      
+      {/* CIZÍ TEXT (Foreign) - viditelný, pokud NENÍ zapnutý lokální flip */}
+      <p className={`text-base leading-8 text-gray-700 ${
+        readingFlipped ? "hidden" : "block"
+      }`}>
+        {content?.readingForeign ?? ""}
+      </p>
 
-{/* NATIVE TEXT */}
-<p className={`text-base leading-8 text-gray-500 mt-2 ${
-  (readingFlipped || showTranslations) ? "block" : "hidden"
-}`}>
-  {content?.readingNative ?? ""}
-</p>
-    </div>
+      {/* RODNÝ TEXT (Native) - viditelný, POKUD JE zapnutý lokální flip */}
+      <p className={`text-base leading-8 text-gray-500 mt-2 ${
+        readingFlipped ? "block" : "hidden"
+      }`}>
+        {content?.readingNative ?? ""}
+      </p>
+    </div>
 
-  </div>
+    {/* (Volitelné) Malý indikátor nativního textu pod cizím textem */}
+    {!readingFlipped && (
+      <p className="text-xs text-gray-400 mt-2 italic">
+        (nativní text skrytý)
+      </p>
+    )}
+  </div>
 
 </div>
 
