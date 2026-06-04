@@ -15,6 +15,8 @@ import {
   Crown, Headphones, PlayCircle, User, Calendar
 } from "lucide-react";
 
+import { supabase } from "@/lib/supabaseClient";
+
 type Language = "en" | "cs" | "it" | "es" | "de" | "fr" | "pt" | "ru" | "jp" | "cn";
 
 const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
@@ -107,6 +109,15 @@ const [showLoginOptions, setShowLoginOptions] = useState(false);
 
   load();
 }, [language]);
+
+async function signInWithGoogle() {
+  await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: "https://jazyq.vercel.app",
+    },
+  });
+}
 
   return (
     <div className="min-h-screen bg-[#F6F7FB] flex text-black font-[Poppins]">
@@ -248,7 +259,7 @@ const [showLoginOptions, setShowLoginOptions] = useState(false);
 >
     <div className="flex flex-col gap-2">
 
-      <button className="w-full bg-white border border-gray-200 rounded-2xl p-3 text-sm hover:bg-gray-50 transition flex items-center gap-3">
+      <button onClick={signInWithGoogle} className="w-full bg-white border border-gray-200 rounded-2xl p-3 text-sm hover:bg-gray-50 transition flex items-center gap-3">
   <span className="font-medium">G</span>
   Pokračovat přes Google
 </button>
