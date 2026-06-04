@@ -18,6 +18,16 @@ type Language = "en" | "cs" | "it" | "es" | "de";
 
 const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
+const [greeting, setGreeting] = useState("");
+
+const greetings: Record<Language, string[]> = {
+  en: ["Hello", "Good day", "Hi there", "Welcome", "Hey", "Nice to see you"],
+  cs: ["Ahoj", "Dobrý den", "Vítej", "Zdravím", "Hezký den", "Nazdar"],
+  it: ["Ciao", "Buongiorno", "Benvenuto", "Salve", "Ehi", "Piacere di vederti"],
+  es: ["Hola", "Buenos días", "Bienvenido", "Ey", "Saludos", "Qué tal"],
+  de: ["Hallo", "Guten Tag", "Willkommen", "Servus", "Moin", "Schön dich zu sehen"],
+};
+
 const languages = [
   { code: "en", flag: "gb" },
   { code: "cs", flag: "cz" },
@@ -82,9 +92,18 @@ const [generating, setGenerating] = useState(false);
     const res = await fetch(`/api/daily?lang=${language}`);
     const data = await res.json();
     setAllLevels(data);
+    const list = greetings[language] ?? greetings.en;
+const random = list[Math.floor(Math.random() * list.length)];
+setGreeting(random);
   }
 
   load();
+}, [language]);
+
+useEffect(() => {
+  const list = greetings[language] ?? greetings.en;
+  const random = list[Math.floor(Math.random() * list.length)];
+  setGreeting(random);
 }, [language]);
 
   return (
@@ -246,6 +265,36 @@ const [generating, setGenerating] = useState(false);
 
       {/* MAIN */}
 <div className="flex-1 flex items-center justify-center p-8">
+
+  {/* TOP STATUS BAR */}
+<div className="w-full max-w-5xl mx-auto flex items-center justify-between mb-4 px-1 text-sm text-gray-600">
+  
+  {/* LEFT: flag + level + greeting */}
+  <div className="flex items-center gap-3">
+
+    <span className={`fi fi-${languages.find(l => l.code === language)?.flag}`} />
+
+    <span className="font-medium text-black">
+      {level}
+    </span>
+
+    <span className="text-gray-500">
+      {greeting}
+    </span>
+
+  </div>
+
+  {/* RIGHT: date */}
+  <div className="text-gray-400">
+    {new Date().toLocaleDateString("cs-CZ", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })}
+  </div>
+
+</div>
 
   <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-10 gap-4 auto-rows-[minmax(160px,auto)]">
 
