@@ -1,36 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model dailycontent {
-  id Int @id @default(autoincrement())
-
-  language String
-  level String
-  contentDate DateTime
-
-  wordForeign String
-  wordNative String
-
-  wordExampleForeign String?
-  wordExampleNative String?
-
-  grammarExplanation String?
-  grammarExample String?
-  grammarExampleTranslation String?
-
-  grammarFamily String?
-  grammarPattern String?
-  grammarContext String?
-
-  grammarTranslationCz String?
+  id                     Int      @id(map: "DailyContent_pkey") @default(autoincrement())
+  language               String
+  level                  String
+  contentDate            DateTime @db.Date
+  wordForeign            String
+  wordNative             String
+  grammarExplanation     String?
+  grammarExample         String?
+  grammarTranslationCz   String?
   grammarTranslationOrig String?
-
-  readingForeign String?
-  readingNative String?
+  readingForeign         String?
+  readingNative          String?
+  wordExampleForeign     String?
+  wordExampleNative      String?
+  grammarPoint           String?
+  grammarFamily          String?
+  grammarPattern         String?
+  grammarContext         String?
 }
