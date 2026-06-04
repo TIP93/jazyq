@@ -60,7 +60,7 @@ const [allLevels, setAllLevels] = useState<any>(null);
  
 const [levelIndex, setLevelIndex] = useState(2);
 const level = levels[levelIndex] ?? "A1";
-const content = allLevels?.levels?.[level] ?? allLevels?.levels?.A1;
+const content = allLevels?.levels?.[level];
 const isReady = !!allLevels?.levels;
 const [generating, setGenerating] = useState(false);
 
@@ -106,6 +106,11 @@ const [generating, setGenerating] = useState(false);
 
   load();
 }, [language]);
+
+useEffect(() => {
+  setShowAnswer(false);
+  setShowExampleTranslation(false);
+}, [level]);
 
   return (
     <div className="min-h-screen bg-[#F6F7FB] flex text-black font-[Poppins]">
