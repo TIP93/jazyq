@@ -264,7 +264,7 @@ const [generating, setGenerating] = useState(false);
       
 
       {/* MAIN */}
-<div className="flex-1 flex flex-col items-center justify-start py-4 px-6 gap-3 max-h-screen overflow-y-auto">
+<div className="flex-1 flex flex-col items-center justify-start p-8 gap-4">
 
  {/* TOP STATUS BAR */}
 <div className="w-full max-w-5xl mx-auto flex items-center justify-between mb-4 px-1 text-sm text-gray-600">
