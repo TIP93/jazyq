@@ -60,7 +60,7 @@ const [allLevels, setAllLevels] = useState<any>(null);
  
 const [levelIndex, setLevelIndex] = useState(2);
 const level = levels[levelIndex] ?? "A1";
-const content = allLevels?.levels?.[level] ?? null;
+const content = allLevels?.levels?.[level] ?? allLevels?.levels?.A1;
 const isReady = !!allLevels?.levels;
 const [generating, setGenerating] = useState(false);
 
