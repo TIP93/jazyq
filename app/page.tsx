@@ -47,14 +47,15 @@ const languages = [
 
 export default function Home() {
   const [language, setLanguage] = useState<Language>("en");
+
   const [showAnswer, setShowAnswer] = useState(false);
-  const [greeting, setGreeting] = useState("");
 const [readingFlipped, setReadingFlipped] = useState(false);
 const [showExampleTranslation, setShowExampleTranslation] = useState(false);
 const [showTranslations, setShowTranslations] = useState(false);
 
 const [allLevels, setAllLevels] = useState<any>(null);
-
+ const [greeting, setGreeting] = useState("");
+ 
 const [levelIndex, setLevelIndex] = useState(2);
 const level = levels[levelIndex] ?? "A1";
 const content = allLevels?.levels?.[level] ?? null;
@@ -464,11 +465,11 @@ const [generating, setGenerating] = useState(false);
 
     {/* TEXT BLOCK (NO ABSOLUTE) */}
     <div className="transition-opacity duration-200">
-      <p className={`text-base leading-8 text-gray-700 ${readingFlipped ? "hidden" : "block"}`}>
+      <p className={`text-base leading-8 text-gray-700 ${showTranslations || readingFlipped ? "block" : "hidden"}`}>
         {content?.readingForeign ?? ""}
       </p>
 
-      <p className={`text-base leading-8 text-gray-500 ${(showTranslations || readingFlipped) ? "block" : "hidden"}`}>
+      <p className={`text-base leading-8 text-gray-500 ${showTranslations || !readingFlipped ? "hidden" : "block"}`}>
          {content?.readingNative ?? ""}
       </p>
     </div>
