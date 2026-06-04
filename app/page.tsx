@@ -10,6 +10,7 @@ import {
   Languages,
   Lightbulb,
   Eye,
+  EyeOff,
   Lock,
   Crown, Headphones, PlayCircle, User, Calendar
 } from "lucide-react";
@@ -183,6 +184,7 @@ const [generating, setGenerating] = useState(false);
               value={levelIndex}
               onChange={(e) => {
                 setLevelIndex(Number(e.target.value));
+                setShowAnswer(false);
               }}
               className="w-full accent-black"
             />
@@ -293,9 +295,9 @@ const [generating, setGenerating] = useState(false);
     onClick={() => setShowTranslations(prev => !prev)}
     className="text-gray-500 hover:text-black transition"
   >
-    <Eye size={18} />
+    {showTranslations ? <EyeOff size={18} /> : <Eye size={18} />}
   </button>
-
+  
   </div>
   
 
@@ -321,7 +323,7 @@ const [generating, setGenerating] = useState(false);
         </p>
 
         <p className="text-base text-gray-400 mt-1">
-          {showTranslations ? content?.wordNative : ""}
+          {content?.wordNative ?? ""}
         </p>
 
       </div>
@@ -361,10 +363,10 @@ const [generating, setGenerating] = useState(false);
     {/* Czech appears BELOW, but without shifting layout */}
     <p
       className={`text-sm leading-relaxed text-gray-500 mt-3 transition-opacity duration-200 ${
-        showExampleTranslation ? "opacity-100" : "opacity-0 pointer-events-none"
+        (showTranslations || showExampleTranslation) ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
-      {showTranslations ? content?.wordExampleNative : ""}
+      {content?.wordExampleNative ?? ""}
     </p>
 
   </div>
@@ -427,11 +429,13 @@ const [generating, setGenerating] = useState(false);
     </p>
 
     {/* English answer (appears below, no layout shift) */}
-    <p className={`text-sm text-gray-800 mt-2 transition-opacity ${
-  showTranslations ? "opacity-100" : "opacity-0"
-}`}>
-  {content?.grammarTranslationOrig}
-</p>
+    <p
+      className={`text-sm leading-relaxed text-gray-500 mt-3 transition-opacity duration-200 ${
+        (showTranslations || showAnswer) ? "opacity-100" : "opacity-0 pointer-events-none"
+      }`}
+    >
+      {content?.grammarTranslationOrig ?? ""}
+    </p>
 
   </div>
 
@@ -464,9 +468,9 @@ const [generating, setGenerating] = useState(false);
         {content?.readingForeign ?? ""}
       </p>
 
-      <p className={`text-base leading-8 ${showTranslations ? "text-gray-500" : "hidden"}`}>
-  {content?.readingNative}
-</p>
+      <p className={`text-base leading-8 text-gray-500 ${(showTranslations || readingFlipped) ? "block" : "hidden"}`}>
+         {content?.readingNative ?? ""}
+      </p>
     </div>
 
   </div>
