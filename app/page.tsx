@@ -465,13 +465,19 @@ const [generating, setGenerating] = useState(false);
 
     {/* TEXT BLOCK (NO ABSOLUTE) */}
     <div className="transition-opacity duration-200">
-      <p className={`text-base leading-8 text-gray-700 ${showTranslations || readingFlipped ? "block" : "hidden"}`}>
-        {content?.readingForeign ?? ""}
-      </p>
+      {/* FOREIGN TEXT */}
+<p className={`text-base leading-8 text-gray-700 ${
+  readingFlipped ? "hidden" : "block"
+}`}>
+  {content?.readingForeign ?? ""}
+</p>
 
-      <p className={`text-base leading-8 text-gray-500 ${showTranslations || !readingFlipped ? "hidden" : "block"}`}>
-         {content?.readingNative ?? ""}
-      </p>
+{/* NATIVE TEXT */}
+<p className={`text-base leading-8 text-gray-500 mt-2 ${
+  (readingFlipped || showTranslations) ? "block" : "hidden"
+}`}>
+  {content?.readingNative ?? ""}
+</p>
     </div>
 
   </div>
