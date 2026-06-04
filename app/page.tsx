@@ -63,6 +63,7 @@ const level = levels[levelIndex] ?? "A1";
 const content = allLevels?.levels?.[level];
 const isReady = !!allLevels?.levels;
 const [generating, setGenerating] = useState(false);
+const [showLoginOptions, setShowLoginOptions] = useState(false);
 
   async function generateDaily() {
   try {
@@ -230,21 +231,57 @@ const [generating, setGenerating] = useState(false);
   </div>
 
   {/* ACCOUNT (BOTTOM) */}
-  {/* ACCOUNT */}
-<div className="border border-gray-200 rounded-2xl p-4 flex items-center gap-3 hover:bg-gray-50 transition cursor-pointer">
+{/* ACCOUNT */}
+<div className="space-y-2">
 
-  <User size={20} className="text-gray-500" />
+  {/* LOGIN OPTIONS */}
+  <div
+  className={`
+    overflow-hidden transition-all duration-300 ease-out
+    transform origin-bottom
+    ${
+      showLoginOptions
+        ? "max-h-40 opacity-100 translate-y-0"
+        : "max-h-0 opacity-0 translate-y-2"
+    }
+  `}
+>
+    <div className="flex flex-col gap-2">
 
-  <div>
-    <p className="text-xs text-gray-500">
-      Účet
-    </p>
+      <button className="w-full bg-white border border-gray-200 rounded-2xl p-3 text-sm hover:bg-gray-50 transition flex items-center gap-3">
+  <span className="font-medium">G</span>
+  Pokračovat přes Google
+</button>
 
-    <p className="text-sm">
-      Přihlásit se
-    </p>
+<button className="w-full bg-white border border-gray-200 rounded-2xl p-3 text-sm hover:bg-gray-50 transition flex items-center gap-3">
+  <span className="font-medium">S</span>
+  Pokračovat přes Seznam.cz
+</button>
+
+    </div>
   </div>
 
+  {/* ACCOUNT BUTTON */}
+  <div
+    onClick={() => setShowLoginOptions(!showLoginOptions)}
+    className="
+      border border-gray-200 rounded-2xl p-4
+      flex items-center gap-3
+      hover:bg-gray-50 transition cursor-pointer
+    "
+  >
+    <User size={20} className="text-gray-500" />
+
+    <div>
+      <p className="text-xs text-gray-500">
+        Účet
+      </p>
+
+      <p className="text-sm">
+        Přihlásit se
+      </p>
+    </div>
+  </div>
 
 </div>
 
