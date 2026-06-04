@@ -63,7 +63,6 @@ const level = levels[levelIndex] ?? "A1";
 const content = allLevels?.levels?.[level];
 const isReady = !!allLevels?.levels;
 const [generating, setGenerating] = useState(false);
-const isLoading = !allLevels?.levels;
 
   async function generateDaily() {
   try {
@@ -107,11 +106,6 @@ const isLoading = !allLevels?.levels;
 
   load();
 }, [language]);
-
-useEffect(() => {
-  setShowAnswer(false);
-  setShowExampleTranslation(false);
-}, [level]);
 
   return (
     <div className="min-h-screen bg-[#F6F7FB] flex text-black font-[Poppins]">
@@ -311,7 +305,7 @@ useEffect(() => {
   
 
 </div>
-{!isLoading && (
+
   <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-10 gap-4 auto-rows-[minmax(160px,auto)]">
 
     {/* WORD */}
@@ -538,7 +532,7 @@ useEffect(() => {
 
 </div>
 
-  </div>)}
+  </div>
 
 </div>
 
