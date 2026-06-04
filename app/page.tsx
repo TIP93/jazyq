@@ -14,7 +14,7 @@ import {
   Crown, Headphones, PlayCircle, User, Calendar
 } from "lucide-react";
 
-type Language = "en" | "cs" | "it" | "es" | "de";
+type Language = "en" | "cs" | "it" | "es" | "de" | "fr" | "pt" | "ru" | "jp" | "cn";
 
 const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
@@ -26,6 +26,11 @@ const greetings: Record<Language, string[]> = {
   it: ["Ciao", "Buongiorno", "Benvenuto", "Salve", "Ehi", "Piacere di vederti"],
   es: ["Hola", "Buenos días", "Bienvenido", "Ey", "Saludos", "Qué tal"],
   de: ["Hallo", "Guten Tag", "Willkommen", "Servus", "Moin", "Schön dich zu sehen"],
+  fr: ["Bonjour", "Salut", "Bienvenue", "Coucou", "Bonne journée", "Enchanté"],
+  pt: ["Olá", "Bom dia", "Bem-vindo", "E aí", "Saudações", "Prazer em te ver"],
+  ru: ["Привет", "Добрый день", "Добро пожаловать", "Здравствуйте", "Хай", "Рад тебя видеть"],
+  jp: ["こんにちは", "やあ", "ようこそ", "おはよう", "こんばんは", "はじめまして"],
+  cn: ["你好", "早上好", "欢迎", "嗨", "见到你很高兴", "您好"],
 };
 
 const languages = [
