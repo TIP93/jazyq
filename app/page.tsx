@@ -431,31 +431,27 @@ const [generating, setGenerating] = useState(false);
       onClick={() => setReadingFlipped(!readingFlipped)}
       className="text-gray-400 hover:text-black transition"
     >
-      {/* Ikona oka reaguje na globální i lokální stav */}
       {(readingFlipped || showTranslations) ? <EyeOff size={18} /> : <Eye size={18} />}
     </button>
   </div>
 
-  {/* CONTENT */}
-  {/* Flex-1 zajišťuje, že obsah zabere zbytek karty, mt-5 je standardní odsazení */}
-  <div className="mt-5 flex-1 flex flex-col">
+  {/* CONTENT AREA */}
+  {/* Kontejner má `relative`, aby v něm absolutně pozicované texty držely správné místo */}
+  <div className="mt-5 flex-1 relative">
 
-    {/* TEXT BLOCK (zarovnaný flush pod header) */}
-    <div className="transition-opacity duration-200 flex-1">
-      {/* Nativní (český) text - viditelný, POKUD JE zapnutý globální nebo lokální flip */}
-      <p className={`text-base leading-8 text-gray-500 ${
-        (readingFlipped || showTranslations) ? "block" : "hidden"
-      }`}>
-        {content?.readingNative ?? ""}
-      </p>
+    {/* NATIVNÍ (ČESKÝ) TEXT */}
+    <p className={`text-base leading-8 text-gray-500 absolute inset-0 transition-opacity duration-300 ${
+      (readingFlipped || showTranslations) ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+    }`}>
+      {content?.readingNative ?? ""}
+    </p>
 
-      {/* Cizí (anglický) text - viditelný, POKUD NENÍ zapnutý globální ani lokální flip */}
-      <p className={`text-base leading-8 text-gray-700 ${
-        (readingFlipped || showTranslations) ? "hidden" : "block"
-      }`}>
-        {content?.readingForeign ?? ""}
-      </p>
-    </div>
+    {/* CIZÍ (ANGLICKÝ) TEXT */}
+    <p className={`text-base leading-8 text-gray-700 absolute inset-0 transition-opacity duration-300 ${
+      (readingFlipped || showTranslations) ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"
+    }`}>
+      {content?.readingForeign ?? ""}
+    </p>
 
   </div>
 
