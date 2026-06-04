@@ -53,7 +53,7 @@ const [readingFlipped, setReadingFlipped] = useState(false);
 const [showExampleTranslation, setShowExampleTranslation] = useState(false);
 const [showTranslations, setShowTranslations] = useState(false);
 
-const isTranslationVisible = showTranslations || showAnswer;
+const isGrammarVisible = showTranslations || showAnswer;
 
 const [allLevels, setAllLevels] = useState<any>(null);
  const [greeting, setGreeting] = useState("");
@@ -432,9 +432,13 @@ const [generating, setGenerating] = useState(false);
     </p>
 
     {/* English answer (appears below, no layout shift) */}
-   <p className={`text-sm leading-relaxed text-gray-500 mt-3 transition-opacity duration-200 ${
-  isTranslationVisible ? "opacity-100" : "opacity-0"
-}`}>
+   <p
+  className="text-sm leading-relaxed text-gray-500 mt-3 transition-opacity duration-200"
+  style={{
+    opacity: (showTranslations || showAnswer) ? 1 : 0,
+    pointerEvents: (showTranslations || showAnswer) ? "auto" : "none"
+  }}
+>
   {content?.grammarTranslationOrig ?? content?.grammarTranslationCz ?? ""}
 </p>
 
