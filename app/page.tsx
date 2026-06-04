@@ -294,11 +294,19 @@ const [generating, setGenerating] = useState(false);
     })}
 
     <button
-    onClick={() => setShowTranslations(prev => !prev)}
-    className="text-gray-500 hover:text-black transition"
-  >
-    {showTranslations ? <EyeOff size={18} /> : <Eye size={18} />}
-  </button>
+  onClick={() => {
+    const nextState = !showTranslations;
+    setShowTranslations(nextState);
+    
+    // Hromadná synchronizace všech lokálních stavů podle globálního oka
+    setShowAnswer(nextState);
+    setShowExampleTranslation(nextState);
+    setReadingFlipped(nextState);
+  }}
+  className="text-gray-500 hover:text-black transition"
+>
+  {showTranslations ? <EyeOff size={18} /> : <Eye size={18} />}
+</button>
   
   </div>
   
@@ -344,8 +352,8 @@ const [generating, setGenerating] = useState(false);
       onClick={() => setShowExampleTranslation(!showExampleTranslation)}
       className="text-gray-400 hover:text-black transition"
     >
-      {/* Ikona se mění podle stavu NEBO globálního oka */}
-      {(showTranslations || showExampleTranslation) ? <EyeOff size={20} /> : <Eye size={20} />}
+      {/* Reaguje čistě na svůj synchronizovaný stav */}
+      {showExampleTranslation ? <EyeOff size={20} /> : <Eye size={20} />}
     </button>
   </div>
 
@@ -355,7 +363,7 @@ const [generating, setGenerating] = useState(false);
     </p>
     <p
       className={`text-sm leading-relaxed text-gray-500 mt-3 transition-opacity duration-200 ${
-        (showTranslations || showExampleTranslation) ? "opacity-100" : "opacity-0 pointer-events-none"
+        showExampleTranslation ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
       {content?.wordExampleNative ?? ""}
@@ -398,8 +406,8 @@ const [generating, setGenerating] = useState(false);
       onClick={() => setShowAnswer(!showAnswer)}
       className="text-gray-400 hover:text-black transition"
     >
-      {/* Ikona reaguje na lokální i globální stav */}
-      {(showTranslations || showAnswer) ? <EyeOff size={20} /> : <Eye size={20} />}
+      {/* Reaguje čistě na svůj synchronizovaný stav */}
+      {showAnswer ? <EyeOff size={20} /> : <Eye size={20} />}
     </button>
   </div>
 
@@ -409,7 +417,7 @@ const [generating, setGenerating] = useState(false);
     </p>
     <p
       className={`text-sm leading-relaxed text-gray-500 mt-3 transition-opacity duration-200 ${
-        (showTranslations || showAnswer) ? "opacity-100" : "opacity-0 pointer-events-none"
+        showAnswer ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
       {content?.grammarTranslationOrig ?? ""}
@@ -431,24 +439,24 @@ const [generating, setGenerating] = useState(false);
       onClick={() => setReadingFlipped(!readingFlipped)}
       className="text-gray-400 hover:text-black transition"
     >
-      {(readingFlipped || showTranslations) ? <EyeOff size={18} /> : <Eye size={18} />}
+      {/* Reaguje čistě na svůj synchronizovaný stav */}
+      {readingFlipped ? <EyeOff size={18} /> : <Eye size={18} />}
     </button>
   </div>
 
   {/* CONTENT AREA */}
-  {/* Kontejner má `relative`, aby v něm absolutně pozicované texty držely správné místo */}
   <div className="mt-5 flex-1 relative">
 
     {/* NATIVNÍ (ČESKÝ) TEXT */}
     <p className={`text-base leading-8 text-gray-500 absolute inset-0 transition-opacity duration-300 ${
-      (readingFlipped || showTranslations) ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      readingFlipped ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
     }`}>
       {content?.readingNative ?? ""}
     </p>
 
     {/* CIZÍ (ANGLICKÝ) TEXT */}
     <p className={`text-base leading-8 text-gray-700 absolute inset-0 transition-opacity duration-300 ${
-      (readingFlipped || showTranslations) ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"
+      readingFlipped ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"
     }`}>
       {content?.readingForeign ?? ""}
     </p>
