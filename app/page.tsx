@@ -105,6 +105,8 @@ const [generating, setGenerating] = useState(false);
   load();
 }, [language]);
 
+console.log("GRAMMAR CHECK", level, content?.grammarTranslationOrig);
+
   return (
     <div className="min-h-screen bg-[#F6F7FB] flex text-black font-[Poppins]">
 
@@ -435,7 +437,8 @@ const [generating, setGenerating] = useState(false);
         (showTranslations || showAnswer) ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
-      {content?.grammarTranslationOrig ?? ""}
+
+      {content?.grammarTranslationOrig ?? content?.grammarTranslationCz ?? ""}
     </p>
 
   </div>
