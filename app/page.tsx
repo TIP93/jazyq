@@ -187,7 +187,6 @@ const [generating, setGenerating] = useState(false);
               value={levelIndex}
               onChange={(e) => {
                 setLevelIndex(Number(e.target.value));
-                setShowAnswer(false);
               }}
               className="w-full accent-black"
             />
