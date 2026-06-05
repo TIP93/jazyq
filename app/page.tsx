@@ -162,7 +162,7 @@ useEffect(() => {
     <div className="min-h-screen bg-[#F6F7FB] flex text-black font-[Poppins]">
 
       {/* SIDEBAR */}
-      <div className="w-72 bg-white border-r border-gray-200 p-6 flex flex-col justify-between">
+      <div className="w-72 bg-white border-r border-gray-200 p-6 flex flex-col justify-between no-print">
 
         {/* TOP */}
         <div className="space-y-10">
@@ -388,7 +388,7 @@ useEffect(() => {
     </div>
 
     {/* ACTION BUTTONS */}
-    <div className="grid grid-cols-2 gap-2">
+    <div className="grid grid-cols-2 gap-2 no-print">
 
       <button
         onClick={() => console.log("settings")}
@@ -536,65 +536,13 @@ useEffect(() => {
 
   </div>
 
-<div className="flex items-center gap-2">
 
-  {/* PDF BUTTON */}
-  <button
-    onClick={async () => {
-      const html = `
-        <html>
-          <body style="font-family: sans-serif; padding: 40px;">
-            <h1>JAZYQ – denní lekce</h1>
-            <p>${content?.wordForeign}</p>
-            <p>${content?.wordExampleForeign}</p>
-          </body>
-        </html>
-      `;
-
-      const res = await fetch("/api/pdf", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ html }),
-      });
-
-      const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "lekce.pdf";
-      a.click();
-
-      window.URL.revokeObjectURL(url);
-    }}
-    className="p-2.5 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
-  >
-    <FileText size={18} />
-  </button>
-
-  {/* EXISTING EYE BUTTON */}
-  <button
-    onClick={() => {
-      const nextState = !showTranslations;
-      setShowTranslations(nextState);
-      setShowAnswer(nextState);
-      setShowExampleTranslation(nextState);
-      setReadingFlipped(nextState);
-    }}
-    className={`
-      p-2.5 rounded-xl border transition-all duration-200
-      ${showTranslations
-        ? "bg-black border-black text-white"
-        : "bg-white border-gray-200 text-gray-500"}
-    `}
-  >
-    {showTranslations ? <EyeOff size={18} /> : <Eye size={18} />}
-  </button>
-
-</div>
-
+<button
+  onClick={() => window.print()}
+  className="p-2.5 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+>
+  <FileText size={18} />
+</button>
 
   {/* RIGHT: Elegantní globální oko v rámečku */}
   <button
@@ -623,6 +571,8 @@ useEffect(() => {
 </div>
 
   <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-10 gap-4 auto-rows-[minmax(160px,auto)]">
+
+<div className="print-area">
 
     {/* WORD */}
     <div className="md:col-span-4 bg-white rounded-3xl border border-gray-200 p-6">
@@ -822,7 +772,7 @@ useEffect(() => {
 
 </div>
 
-</div>
+</div> </div>
 
   </div>
 

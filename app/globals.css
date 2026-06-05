@@ -23,3 +23,25 @@ body {
   color: var(--foreground);
   font-family: Poppins, system-ui, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
 }
+
+@media print {
+  body {
+    background: white !important;
+  }
+
+  /* schovej UI */
+  .no-print {
+    display: none !important;
+  }
+
+  /* nech jen obsah */
+  .print-area {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* zjednodušení karet */
+  .border {
+    border: 1px solid #ddd !important;
+  }
+}
