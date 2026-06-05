@@ -72,14 +72,14 @@ const [view, setView] = useState<"learn" | "streak">("learn");
 const iconCircle =
   "w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center";
 
-  const mockStreakDays = [
-  { day: "Mon", status: "done" },
-  { day: "Tue", status: "done" },
-  { day: "Wed", status: "done" },
-  { day: "Thu", status: "missed" },
-  { day: "Fri", status: "today" },
-  { day: "Sat", status: "future" },
-  { day: "Sun", status: "future" },
+ const mockStreakDays = [
+  { day: "Po", status: "done" },
+  { day: "Út", status: "done" },
+  { day: "St", status: "missed" },
+  { day: "Čt", status: "today" },
+  { day: "Pá", status: "today" },
+  { day: "So", status: "future" },
+  { day: "Ne", status: "future" },
 ];
 
   async function generateDaily() {
