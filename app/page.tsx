@@ -69,6 +69,9 @@ const [showLoginOptions, setShowLoginOptions] = useState(false);
 const [user, setUser] = useState<any>(null);
 const [view, setView] = useState<"learn" | "streak">("learn");
 
+const iconCircle =
+  "w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center";
+
   async function generateDaily() {
   try {
     setGenerating(true);
@@ -239,61 +242,69 @@ console.log(user);
 
  {/* BOTTOM */}
 <div className="space-y-3">
+{/* HISTORY */}
+<div className="border border-gray-200 rounded-2xl p-4 flex items-center justify-between hover:bg-gray-50 transition cursor-pointer">
 
-  {/* HISTORY */}
-  <div className="border border-gray-200 rounded-2xl p-4 flex items-center justify-between hover:bg-gray-50 transition cursor-pointer">
+  {/* LEFT */}
+  <div className="flex items-center gap-3">
 
-    <div className="flex items-center gap-3">
-
-      <Calendar size={20} className="text-gray-500" />
-
-      <div>
-        <p className="text-xs text-gray-500">
-          Historie
-        </p>
-        <p className="text-sm">
-          Předchozí dny
-        </p>
-      </div>
-
+    <div className="w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center">
+      <Calendar size={18} className="text-gray-500" />
     </div>
 
-    {/* right orange premium-style icon */}
-    <div className="flex items-center justify-center w-9 h-9 rounded-full border border-orange-200 bg-orange-50 text-orange-500">
-      <Crown size={16} className="text-orange-400" />
+    <div>
+      <p className="text-xs text-gray-500">
+        Historie
+      </p>
+      <p className="text-sm text-black">
+        Předchozí dny
+      </p>
     </div>
 
   </div>
+
+  {/* RIGHT - PREMIUM BADGE */}
+  <div className="w-10 h-10 rounded-full border border-purple-200 bg-purple-50 flex items-center justify-center">
+    <Crown size={16} className="text-purple-500" />
+  </div>
+
+</div>
 
   {/* ACCOUNT (BOTTOM) */}
 {/* ACCOUNT */}
 <div className="space-y-2">
 
+{/* STREAK */}
+
 {user && (
-  <div
-    onClick={() => setView("streak")}
-    className="border border-gray-200 rounded-2xl p-4 bg-white flex items-center justify-between hover:bg-gray-50 transition cursor-pointer"
-  >
-    <div className="flex items-center gap-3">
+ 
+<div
+  onClick={() => setView("streak")}
+  className="border border-gray-200 rounded-2xl p-4 bg-white flex items-center justify-between hover:bg-gray-50 transition cursor-pointer"
+>
 
-      <div className="w-9 h-9 rounded-full bg-orange-50 border border-orange-200 flex items-center justify-center">
-        <span className="text-lg">🔥</span>
-      </div>
+  {/* LEFT SIDE */}
+  <div className="flex items-center gap-3">
 
-      <div>
-        <p className="text-xs text-gray-500">Streak</p>
-        <p className="text-sm font-medium text-black">
-          7 dní v řadě
-        </p>
-      </div>
-
+    {/* ICON */}
+    <div className="w-10 h-10 rounded-full border border-purple-200 bg-purple-50 flex items-center justify-center">
+      <span className="text-lg">🔥</span>
     </div>
 
-    <div className="text-xs text-orange-500 bg-orange-50 border border-orange-200 px-2 py-1 rounded-full">
-      +1 dnes
+    {/* TEXT */}
+    <div>
+      <p className="text-xs text-gray-500">
+        Streak
+      </p>
+
+      <p className="text-sm font-medium text-black">
+        7 dní v řadě
+      </p>
     </div>
 
   </div>
+
+</div>
 )}
 
   {/* USER CARD */}
@@ -309,7 +320,7 @@ console.log(user);
           className="w-10 h-10 rounded-full"
         />
       ) : (
-        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+        <div className={iconCircle}>
           <User size={18} className="text-gray-500" />
         </div>
       )}
@@ -680,9 +691,9 @@ console.log(user);
 
   {/* PREMIUM BADGE (subtle orange restored) */}
   <div className="absolute bottom-4 left-4">
-    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-orange-200 bg-orange-50 text-orange-500">
+    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-purple-200 bg-purple-50 text-purple-500">
 
-      <Crown size={14} className="text-orange-400" />
+      <Crown size={14} className="text-purple-400" />
 
       <span className="text-[10px] uppercase tracking-wider font-medium">
         Premium
