@@ -315,39 +315,45 @@ console.log(user);
     {/* TEXT RIGHT */}
     <div className="flex flex-col min-w-0">
 
-      {/* NAME */}
-      <p className="text-sm font-medium text-black truncate">
-        {user.user_metadata?.full_name ||
-         user.user_metadata?.name ||
-         user.email}
-      </p>
+  {/* NAME */}
+  <p className="text-sm font-medium text-black truncate">
+    {user.user_metadata?.full_name ||
+     user.user_metadata?.name ||
+     user.email}
+  </p>
 
-      {/* ACTIONS (TEXT ONLY) */}
-      <button
-        onClick={() => console.log("settings")}
-        className="text-xs text-gray-500 hover:text-black transition flex items-center gap-1 mt-1"
-      >
-        <Lock size={12} />
-        Nastavení
-      </button>
+  {/* ACTION ROW */}
+  <div className="flex items-center gap-3 mt-1">
 
-      <button
-        onClick={async () => {
-          await supabase.auth.signOut();
-          window.location.reload();
-        }}
-        className="text-xs text-gray-500 hover:text-red-500 transition flex items-center gap-1 mt-1"
-      >
-        <EyeOff size={12} />
-        Odhlásit
-      </button>
+    <button
+      onClick={() => console.log("settings")}
+      className="text-xs text-gray-500 hover:text-black transition flex items-center gap-1"
+    >
+      <Lock size={12} />
+      Nastavení
+    </button>
 
-    </div>
+    <span className="text-gray-300">·</span>
+
+    <button
+      onClick={async () => {
+        await supabase.auth.signOut();
+        window.location.reload();
+      }}
+      className="text-xs text-gray-500 hover:text-red-500 transition flex items-center gap-1"
+    >
+      <EyeOff size={12} />
+      Odhlásit
+    </button>
+
+  </div>
+
+</div>
 
   </div>
 )}
 
-  {!user ? (
+  {user ? (
   <div className="flex gap-2">
 
   </div>
