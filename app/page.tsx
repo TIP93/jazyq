@@ -144,7 +144,9 @@ useEffect(() => {
   loadUser();
 }, []);
 
-console.log(user);
+useEffect(() => {
+  setView("learn");
+}, [language, levelIndex]);
 
   return (
     <div className="min-h-screen bg-[#F6F7FB] flex text-black font-[Poppins]">
@@ -287,7 +289,7 @@ console.log(user);
   <div className="flex items-center gap-3">
 
     {/* ICON */}
-    <div className="w-10 h-10 rounded-full border border-purple-200 bg-purple-50 flex items-center justify-center">
+    <div className="w-10 h-10 rounded-full border border-orange-200 bg-purple-50 flex items-center justify-center">
       <span className="text-lg">🔥</span>
     </div>
 
