@@ -12,7 +12,7 @@ import {
   Eye,
   EyeOff,
   Lock,
-  Crown, Headphones, PlayCircle, User, Calendar
+  Crown, Headphones, PlayCircle, User, Calendar, Settings, LogOut
 } from "lucide-react";
 
 import { supabase } from "@/lib/supabaseClient";
@@ -67,6 +67,7 @@ const isReady = !!allLevels?.levels;
 const [generating, setGenerating] = useState(false);
 const [showLoginOptions, setShowLoginOptions] = useState(false);
 const [user, setUser] = useState<any>(null);
+const [view, setView] = useState<"learn" | "streak">("learn");
 
   async function generateDaily() {
   try {
@@ -329,7 +330,7 @@ console.log(user);
     onClick={() => console.log("settings")}
     className="flex items-center gap-1 text-gray-500 hover:text-black transition whitespace-nowrap cursor-pointer hover:opacity-80 active:scale-[0.98]"
   >
-    <Lock size={12} />
+    <Settings size={12} />
     Nastavení
   </button>
 
@@ -340,7 +341,7 @@ console.log(user);
     }}
     className="flex items-center gap-1 text-gray-500 hover:text-black transition whitespace-nowrap cursor-pointer hover:opacity-80 active:scale-[0.98]"
   >
-    <EyeOff size={12} />
+     <LogOut size={12} />
     Odhlásit
   </button>
 
@@ -422,9 +423,14 @@ console.log(user);
       </div>
 
       {/* MAIN */}
+
+
      <div className="flex-1 flex flex-col items-center justify-center p-8 gap-4 min-h-screen overflow-y-auto">
 
+ {view === "learn" && (
+
 <div className="w-full max-w-5xl flex flex-col gap-4 my-auto">
+  
   
  {/* TOP STATUS BAR */}
 <div className="w-full max-w-5xl mx-auto flex items-center justify-between mb-4 px-1 text-sm text-gray-600">
@@ -689,8 +695,74 @@ console.log(user);
 
   </div>
 
+   )}
+
+        {view === "streak" && (
+          <StreakPage user={user} />
+        )}
+
 </div>
 
     </div>
   );
+
+  function StreakPage({ user }: { user: any }) {
+  const streak = 7; // mock zatím
+
+  return (
+    <div className="w-full max-w-2xl mx-auto bg-white border border-gray-200 rounded-3xl p-10 text-center space-y-6">
+
+      {/* FIRE ICON */}
+      <div className="text-5xl">🔥</div>
+
+      {/* STREAK NUMBER */}
+      <h1 className="text-4xl font-semibold tracking-tight">
+        {streak} dní v řadě
+      </h1>
+
+      {/* MOTIVATION */}
+      <p className="text-gray-500 text-sm leading-relaxed">
+        Skvělá práce. Každý den, kdy se vrátíš, posiluješ svoji jazykovou paměť.
+        Konzistence je silnější než intenzita.
+      </p>
+
+      {/* TODAY STATUS */}
+      <div className="flex items-center justify-center gap-2 text-sm">
+        <span className="w-2 h-2 rounded-full bg-green-500"></span>
+        Dnes hotovo
+      </div>
+
+      {/* MINI STATS */}
+      <div className="grid grid-cols-3 gap-3 pt-4">
+
+        <div className="border rounded-2xl p-3">
+          <p className="text-xs text-gray-400">Nejdelší streak</p>
+          <p className="font-medium">12 dní</p>
+        </div>
+
+        <div className="border rounded-2xl p-3">
+          <p className="text-xs text-gray-400">Celkem dní</p>
+          <p className="font-medium">43</p>
+        </div>
+
+        <div className="border rounded-2xl p-3">
+          <p className="text-xs text-gray-400">Úroveň</p>
+          <p className="font-medium">B1</p>
+        </div>
+
+      </div>
+
+      {/* CONTINUE CTA */}
+      <button
+        onClick={() => setView("learn")}
+        className="mt-4 px-5 py-3 bg-black text-white rounded-2xl text-sm hover:opacity-90 transition"
+      >
+        Pokračovat ve studiu
+      </button>
+
+    </div>
+  );
 }
+
+}
+
