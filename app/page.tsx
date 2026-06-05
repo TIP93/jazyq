@@ -269,7 +269,35 @@ console.log(user);
 <div className="space-y-2">
 
 {user && (
-  <div className="border border-gray-200 rounded-2xl p-4 bg-white">
+  <div className="border border-gray-200 rounded-2xl p-4 bg-white flex items-center justify-between">
+
+    <div className="flex items-center gap-3">
+
+      <div className="w-9 h-9 rounded-full bg-orange-50 border border-orange-200 flex items-center justify-center">
+        <span className="text-lg">🔥</span>
+      </div>
+
+      <div>
+        <p className="text-xs text-gray-500">Streak</p>
+        <p className="text-sm font-medium text-black">
+          7 dní v řadě
+        </p>
+      </div>
+
+    </div>
+
+    <div className="text-xs text-orange-500 bg-orange-50 border border-orange-200 px-2 py-1 rounded-full">
+      +1 dnes
+    </div>
+
+  </div>
+)}
+
+  {/* USER CARD */}
+  {user && (
+
+    
+    <div className="border border-gray-200 rounded-2xl p-4 bg-white">
 
     {/* TOP ROW: avatar + name */}
     <div className="flex items-center gap-3">
@@ -321,72 +349,10 @@ console.log(user);
     </div>
 
   </div>
-)}
-
-  {/* USER CARD */}
-  {user && (
-
-    
-    <div className="border border-gray-200 rounded-2xl p-4 flex items-center gap-3 bg-white">
-      
-      {user.user_metadata?.avatar_url ? (
-        <img
-          src={user.user_metadata.avatar_url}
-          alt="Avatar"
-          className="w-10 h-10 rounded-full"
-        />
-      ) : (
-        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-          <User size={18} className="text-gray-500" />
-        </div>
-      )}
-
-      <div className="min-w-0">
-        <p className="text-xs text-gray-500">Uživatel</p>
-        <p className="text-sm font-medium truncate">
-          {user.user_metadata?.full_name ||
-           user.user_metadata?.name ||
-           user.email}
-        </p>
-      </div>
-
-    </div>
   )}
 
-  {/* ACTIONS */}
-{user ? (
+  {!user ? (
   <div className="flex gap-2">
-
-    {/* SETTINGS */}
-    <button
-      className="
-        flex-1 border border-gray-200 rounded-2xl p-3
-        flex items-center justify-center gap-2
-        text-sm hover:bg-gray-50 transition
-      "
-      onClick={() => {
-        console.log("open settings");
-      }}
-    >
-      <Lock size={16} className="text-gray-500" />
-      Nastavení
-    </button>
-
-    {/* LOGOUT */}
-    <button
-      className="
-        flex-1 border border-gray-200 rounded-2xl p-3
-        flex items-center justify-center gap-2
-        text-sm text-red-500 hover:bg-red-50 transition
-      "
-      onClick={async () => {
-        await supabase.auth.signOut();
-        window.location.reload();
-      }}
-    >
-      <EyeOff size={16} />
-      Odhlásit
-    </button>
 
   </div>
 ) : (
