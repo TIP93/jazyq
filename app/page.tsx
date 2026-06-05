@@ -268,8 +268,8 @@ console.log(user);
 {/* ACCOUNT */}
 <div className="space-y-2">
 
-  {user ? (
-    /* LOGGED IN STATE */
+  {/* USER CARD */}
+  {user && (
     <div className="border border-gray-200 rounded-2xl p-4 flex items-center gap-3 bg-white">
       
       {user.user_metadata?.avatar_url ? (
@@ -285,13 +285,52 @@ console.log(user);
       )}
 
       <div className="min-w-0">
-        <p className="text-xs text-gray-500">Přihlášený uživatel</p>
+        <p className="text-xs text-gray-500">Uživatel</p>
         <p className="text-sm font-medium truncate">
           {user.user_metadata?.full_name ||
            user.user_metadata?.name ||
            user.email}
         </p>
       </div>
+
+    </div>
+  )}
+
+  {/* ACTIONS */}
+  {user ? (
+    <div className="space-y-2">
+
+      {/* SETTINGS */}
+      <button
+        className="
+          w-full border border-gray-200 rounded-2xl p-3
+          flex items-center gap-3
+          text-sm hover:bg-gray-50 transition
+        "
+        onClick={() => {
+          // zatím placeholder
+          console.log("open settings");
+        }}
+      >
+        <Lock size={18} className="text-gray-500" />
+        Nastavení
+      </button>
+
+      {/* LOGOUT */}
+      <button
+        className="
+          w-full border border-gray-200 rounded-2xl p-3
+          flex items-center gap-3
+          text-sm text-red-500 hover:bg-red-50 transition
+        "
+        onClick={async () => {
+          await supabase.auth.signOut();
+          window.location.reload();
+        }}
+      >
+        <EyeOff size={18} />
+        Odhlásit se
+      </button>
 
     </div>
   ) : (
@@ -326,7 +365,7 @@ console.log(user);
         </div>
       </div>
 
-      {/* ACCOUNT BUTTON */}
+      {/* LOGIN BUTTON */}
       <div
         onClick={() => setShowLoginOptions(!showLoginOptions)}
         className="
@@ -338,13 +377,8 @@ console.log(user);
         <User size={20} className="text-gray-500" />
 
         <div>
-          <p className="text-xs text-gray-500">
-            Účet
-          </p>
-
-          <p className="text-sm">
-            Přihlásit se
-          </p>
+          <p className="text-xs text-gray-500">Účet</p>
+          <p className="text-sm">Přihlásit se</p>
         </div>
       </div>
     </>
