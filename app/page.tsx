@@ -269,7 +269,7 @@ console.log(user);
 <div className="space-y-2">
 
 {user && (
-  <div className="border border-gray-200 rounded-2xl p-4 bg-white flex items-center justify-between">
+  <div className="border border-gray-200 rounded-2xl p-4 bg-white flex items-center justify-between hover:bg-gray-50 transition cursor-pointer">
 
     <div className="flex items-center gap-3">
 
@@ -323,30 +323,28 @@ console.log(user);
   </p>
 
   {/* ACTION ROW */}
-  <div className="flex items-center gap-3 mt-1 text-xs min-w-0 overflow-hidden">
+  <div className="flex items-center justify-between mt-1 text-xs w-full overflow-hidden">
 
-    <button
-      onClick={() => console.log("settings")}
-      className="flex items-center gap-1 text-gray-500 hover:text-black transition whitespace-nowrap"
-    >
-      <Lock size={12} />
-      Nastavení
-    </button>
+  <button
+    onClick={() => console.log("settings")}
+    className="flex items-center gap-1 text-gray-500 hover:text-black transition whitespace-nowrap cursor-pointer hover:opacity-80 active:scale-[0.98]"
+  >
+    <Lock size={12} />
+    Nastavení
+  </button>
 
-    <span className="text-gray-300">·</span>
+  <button
+    onClick={async () => {
+      await supabase.auth.signOut();
+      window.location.reload();
+    }}
+    className="flex items-center gap-1 text-gray-500 hover:text-black transition whitespace-nowrap cursor-pointer hover:opacity-80 active:scale-[0.98]"
+  >
+    <EyeOff size={12} />
+    Odhlásit
+  </button>
 
-    <button
-      onClick={async () => {
-        await supabase.auth.signOut();
-        window.location.reload();
-      }}
-      className="flex items-center gap-1 text-gray-500 hover:text-red-500 transition whitespace-nowrap"
-    >
-      <EyeOff size={12} />
-      Odhlásit
-    </button>
-
-  </div>
+</div>
 
 </div>
 
