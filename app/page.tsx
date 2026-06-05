@@ -72,6 +72,16 @@ const [view, setView] = useState<"learn" | "streak">("learn");
 const iconCircle =
   "w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center";
 
+  const mockStreakDays = [
+  { day: "Mon", status: "done" },
+  { day: "Tue", status: "done" },
+  { day: "Wed", status: "done" },
+  { day: "Thu", status: "missed" },
+  { day: "Fri", status: "today" },
+  { day: "Sat", status: "future" },
+  { day: "Sun", status: "future" },
+];
+
   async function generateDaily() {
   try {
     setGenerating(true);
@@ -289,7 +299,7 @@ useEffect(() => {
   <div className="flex items-center gap-3">
 
     {/* ICON */}
-    <div className="w-10 h-10 rounded-full border border-orange-200 bg-purple-50 flex items-center justify-center">
+    <div className="w-10 h-10 rounded-full border border-orange-200 bg-orange-50 flex items-center justify-center">
       <span className="text-lg">🔥</span>
     </div>
 
@@ -727,55 +737,114 @@ useEffect(() => {
   return (
     <div className="w-full max-w-2xl mx-auto bg-white border border-gray-200 rounded-3xl p-10 text-center space-y-6">
 
-      {/* FIRE ICON */}
-      <div className="text-5xl">🔥</div>
+  {/* FIRE ICON */}
+  <div className="text-5xl">🔥</div>
 
-      {/* STREAK NUMBER */}
-      <h1 className="text-4xl font-semibold tracking-tight">
-        {streak} dní v řadě
-      </h1>
+  {/* STREAK NUMBER */}
+  <h1 className="text-4xl font-semibold tracking-tight">
+    {streak} dní v řadě
+  </h1>
 
-      {/* MOTIVATION */}
-      <p className="text-gray-500 text-sm leading-relaxed">
-        Skvělá práce. Každý den, kdy se vrátíš, posiluješ svoji jazykovou paměť.
-        Konzistence je silnější než intenzita.
-      </p>
+  {/* MOTIVATION */}
+  <p className="text-gray-500 text-sm leading-relaxed">
+    Skvělá práce. Každý den, kdy se vrátíš, posiluješ svoji jazykovou paměť.
+    Konzistence je silnější než intenzita.
+  </p>
 
-      {/* TODAY STATUS */}
-      <div className="flex items-center justify-center gap-2 text-sm">
-        <span className="w-2 h-2 rounded-full bg-green-500"></span>
-        Dnes hotovo
-      </div>
+  {/* TODAY STATUS */}
+  <div className="flex items-center justify-center gap-2 text-sm">
+    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+    Dnes hotovo
+  </div>
 
-      {/* MINI STATS */}
-      <div className="grid grid-cols-3 gap-3 pt-4">
+  {/* PROGRESS GRID */}
+  <div className="grid grid-cols-7 gap-2 pt-2">
 
-        <div className="border rounded-2xl p-3">
-          <p className="text-xs text-gray-400">Nejdelší streak</p>
-          <p className="font-medium">12 dní</p>
+    {mockStreakDays.map((d, i) => {
+      const base =
+        "h-14 rounded-2xl flex items-center justify-center text-xs font-medium transition transform hover:scale-[1.05] hover:shadow-md";
+
+      // DONE
+      if (d.status === "done") {
+        return (
+          <div
+            key={i}
+            className={`${base} bg-green-50 border border-green-200 text-green-600 shadow-sm shadow-green-100/40`}
+          >
+            <span className="opacity-90">✓</span>
+          </div>
+        );
+      }
+
+      // MISSED
+      if (d.status === "missed") {
+        return (
+          <div
+            key={i}
+            className={`${base} bg-gray-50 border border-gray-200 text-gray-400`}
+          >
+            <span>✕</span>
+          </div>
+        );
+      }
+
+      // TODAY
+      if (d.status === "today") {
+        return (
+          <div
+            key={i}
+            className={`${base} bg-black text-white border border-black relative overflow-hidden animate-pulse`}
+          >
+            {/* subtle glow pulse layer */}
+            <div className="absolute inset-0 bg-white/10 animate-ping opacity-20" />
+
+            <span className="relative z-10">●</span>
+          </div>
+        );
+      }
+
+      // FUTURE
+      return (
+        <div
+          key={i}
+          className={`${base} border border-dashed border-gray-300 text-gray-300 bg-transparent`}
+        >
+          <span>•</span>
         </div>
+      );
+    })}
 
-        <div className="border rounded-2xl p-3">
-          <p className="text-xs text-gray-400">Celkem dní</p>
-          <p className="font-medium">43</p>
-        </div>
+  </div>
 
-        <div className="border rounded-2xl p-3">
-          <p className="text-xs text-gray-400">Úroveň</p>
-          <p className="font-medium">B1</p>
-        </div>
+  {/* MINI STATS */}
+  <div className="grid grid-cols-3 gap-3 pt-4">
 
-      </div>
-
-      {/* CONTINUE CTA */}
-      <button
-        onClick={() => setView("learn")}
-        className="mt-4 px-5 py-3 bg-black text-white rounded-2xl text-sm hover:opacity-90 transition"
-      >
-        Pokračovat ve studiu
-      </button>
-
+    <div className="border rounded-2xl p-3">
+      <p className="text-xs text-gray-400">Nejdelší streak</p>
+      <p className="font-medium">12 dní</p>
     </div>
+
+    <div className="border rounded-2xl p-3">
+      <p className="text-xs text-gray-400">Celkem dní</p>
+      <p className="font-medium">43</p>
+    </div>
+
+    <div className="border rounded-2xl p-3">
+      <p className="text-xs text-gray-400">Úroveň</p>
+      <p className="font-medium">B1</p>
+    </div>
+
+  </div>
+
+  {/* CONTINUE CTA */}
+  <button
+    onClick={() => setView("learn")}
+    className="mt-4 px-5 py-3 bg-black text-white rounded-2xl text-sm hover:opacity-90 transition"
+  >
+    Pokračovat ve studiu
+  </button>
+
+</div>
   );
 }
 
