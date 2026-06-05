@@ -269,25 +269,55 @@ console.log(user);
 <div className="space-y-2">
 
 {user && (
-  <div className="border border-gray-200 rounded-2xl p-4 bg-white flex items-center justify-between">
+  <div className="border border-gray-200 rounded-2xl p-4 bg-white">
 
+    {/* TOP ROW: avatar + name */}
     <div className="flex items-center gap-3">
 
-      <div className="w-9 h-9 rounded-full bg-orange-50 border border-orange-200 flex items-center justify-center">
-        <span className="text-lg">🔥</span>
-      </div>
+      {user.user_metadata?.avatar_url ? (
+        <img
+          src={user.user_metadata.avatar_url}
+          alt="Avatar"
+          className="w-10 h-10 rounded-full"
+        />
+      ) : (
+        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+          <User size={18} className="text-gray-500" />
+        </div>
+      )}
 
-      <div>
-        <p className="text-xs text-gray-500">Streak</p>
-        <p className="text-sm font-medium text-black">
-          7 dní v řadě
+      <div className="min-w-0">
+        <p className="text-sm font-medium truncate text-black">
+          {user.user_metadata?.full_name ||
+           user.user_metadata?.name ||
+           user.email}
         </p>
       </div>
 
     </div>
 
-    <div className="text-xs text-orange-500 bg-orange-50 border border-orange-200 px-2 py-1 rounded-full">
-      +1 dnes
+    {/* ACTIONS ROW */}
+    <div className="flex gap-2 mt-3">
+
+      <button
+        className="flex-1 text-xs border border-gray-200 rounded-xl py-2 hover:bg-gray-50 transition flex items-center justify-center gap-1"
+        onClick={() => console.log("settings")}
+      >
+        <Lock size={14} className="text-gray-500" />
+        Nastavení
+      </button>
+
+      <button
+        className="flex-1 text-xs border border-gray-200 rounded-xl py-2 text-red-500 hover:bg-red-50 transition flex items-center justify-center gap-1"
+        onClick={async () => {
+          await supabase.auth.signOut();
+          window.location.reload();
+        }}
+      >
+        <EyeOff size={14} />
+        Odhlásit
+      </button>
+
     </div>
 
   </div>
