@@ -254,6 +254,37 @@ useEffect(() => {
 
  {/* BOTTOM */}
 <div className="space-y-3">
+
+  {/* PREMIUM */}
+
+  <div
+  onClick={() => console.log("premium")}
+  className="
+    border border-gray-200 rounded-2xl p-4
+    flex items-center gap-3
+    hover:bg-gray-50 transition cursor-pointer
+  "
+>
+  <div className="w-10 h-10 rounded-full border border-purple-200 bg-purple-50 flex items-center justify-center">
+    <Crown size={18} className="text-purple-500" />
+  </div>
+
+  <div>
+    <p className="text-xs text-gray-500">
+      Premium
+    </p>
+
+    <p className="text-sm font-medium text-black">
+      30 Kč za měsíc
+    </p>
+
+    <p className="text-xs text-purple-500 mt-0.5">
+      Poslechy, historie a další
+    </p>
+  </div>
+</div>
+
+
 {/* HISTORY */}
 <div className="relative border border-gray-200 rounded-2xl p-4 hover:bg-gray-50 transition cursor-pointer">
   {/* LEFT */}
@@ -277,9 +308,7 @@ useEffect(() => {
   {/* RIGHT - PREMIUM BADGE */}
   <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full bg-purple-50 border border-purple-200">
   <Crown size={10} className="text-purple-500" />
-  <span className="text-[10px] font-medium text-purple-600 uppercase tracking-wide">
-    Premium
-  </span>
+  <span className="text-[10px] font-medium text-purple-600 uppercase tracking-wide"></span>
 </div>
 
 </div>
