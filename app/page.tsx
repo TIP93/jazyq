@@ -255,30 +255,32 @@ useEffect(() => {
  {/* BOTTOM */}
 <div className="space-y-3">
 {/* HISTORY */}
-<div className="border border-gray-200 rounded-2xl p-4 flex items-center justify-between hover:bg-gray-50 transition cursor-pointer">
-
+<div className="relative border border-gray-200 rounded-2xl p-4 hover:bg-gray-50 transition cursor-pointer">
   {/* LEFT */}
   <div className="flex items-center gap-3">
 
-    <div className="w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center">
-      <Calendar size={18} className="text-gray-500" />
-    </div>
-
-    <div>
-      <p className="text-xs text-gray-500">
-        Historie
-      </p>
-      <p className="text-sm text-black">
-        Předchozí dny
-      </p>
-    </div>
-
+  <div className="w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center">
+    <Calendar size={18} className="text-gray-500" />
   </div>
+
+  <div>
+    <p className="text-xs text-gray-500">
+      Historie
+    </p>
+    <p className="text-sm text-black">
+      Předchozí dny
+    </p>
+  </div>
+
+</div>
 
   {/* RIGHT - PREMIUM BADGE */}
-  <div className="w-10 h-10 rounded-full border border-purple-200 bg-purple-50 flex items-center justify-center">
-    <Crown size={16} className="text-purple-500" />
-  </div>
+  <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full bg-purple-50 border border-purple-200">
+  <Crown size={10} className="text-purple-500" />
+  <span className="text-[10px] font-medium text-purple-600 uppercase tracking-wide">
+    Premium
+  </span>
+</div>
 
 </div>
 
