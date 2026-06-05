@@ -8,7 +8,7 @@ export async function POST(req: Request) {
 
     const today = new Date().toISOString().split("T")[0];
 
-   const languages = ["en"];
+   const languages = ["en", "it"];
    // const languages = ["en", "cs", "it", "es", "de", "fr", "pt", "ru", "jp", "cn"];
     const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
