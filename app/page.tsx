@@ -66,6 +66,7 @@ const content = allLevels?.levels?.[level];
 const isReady = !!allLevels?.levels;
 const [generating, setGenerating] = useState(false);
 const [showLoginOptions, setShowLoginOptions] = useState(false);
+const [user, setUser] = useState<any>(null);
 
   async function generateDaily() {
   try {
@@ -110,6 +111,18 @@ const [showLoginOptions, setShowLoginOptions] = useState(false);
   load();
 }, [language]);
 
+useEffect(() => {
+  async function loadUser() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    setUser(user);
+  }
+
+  loadUser();
+}, []);
+
 async function signInWithGoogle() {
   await supabase.auth.signInWithOAuth({
     provider: "google",
@@ -118,6 +131,8 @@ async function signInWithGoogle() {
     },
   });
 }
+
+console.log(user);
 
   return (
     <div className="min-h-screen bg-[#F6F7FB] flex text-black font-[Poppins]">
