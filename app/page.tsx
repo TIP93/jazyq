@@ -111,18 +111,6 @@ const [user, setUser] = useState<any>(null);
   load();
 }, [language]);
 
-useEffect(() => {
-  async function loadUser() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    setUser(user);
-  }
-
-  loadUser();
-}, []);
-
 async function signInWithGoogle() {
   await supabase.auth.signInWithOAuth({
     provider: "google",
@@ -131,6 +119,26 @@ async function signInWithGoogle() {
     },
   });
 }
+
+useEffect(() => {
+  async function loadUser() {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    console.log("SESSION", session);
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    console.log("USER", user);
+
+    setUser(user);
+  }
+
+  loadUser();
+}, []);
 
 console.log(user);
 
