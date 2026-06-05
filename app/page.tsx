@@ -295,13 +295,10 @@ console.log(user);
 
   {/* USER CARD */}
   {user && (
+  <div className="border border-gray-200 rounded-2xl p-4 bg-white flex gap-3">
 
-    
-    <div className="border border-gray-200 rounded-2xl p-4 bg-white">
-
-    {/* TOP ROW: avatar + name */}
-    <div className="flex items-center gap-3">
-
+    {/* AVATAR LEFT */}
+    <div className="flex-shrink-0">
       {user.user_metadata?.avatar_url ? (
         <img
           src={user.user_metadata.avatar_url}
@@ -313,43 +310,42 @@ console.log(user);
           <User size={18} className="text-gray-500" />
         </div>
       )}
-
-      <div className="min-w-0">
-        <p className="text-sm font-medium truncate text-black">
-          {user.user_metadata?.full_name ||
-           user.user_metadata?.name ||
-           user.email}
-        </p>
-      </div>
-
     </div>
 
-    {/* ACTIONS ROW */}
-    <div className="flex gap-2 mt-3">
+    {/* TEXT RIGHT */}
+    <div className="flex flex-col min-w-0">
 
+      {/* NAME */}
+      <p className="text-sm font-medium text-black truncate">
+        {user.user_metadata?.full_name ||
+         user.user_metadata?.name ||
+         user.email}
+      </p>
+
+      {/* ACTIONS (TEXT ONLY) */}
       <button
-        className="flex-1 text-xs border border-gray-200 rounded-xl py-2 hover:bg-gray-50 transition flex items-center justify-center gap-1"
         onClick={() => console.log("settings")}
+        className="text-xs text-gray-500 hover:text-black transition flex items-center gap-1 mt-1"
       >
-        <Lock size={14} className="text-gray-500" />
+        <Lock size={12} />
         Nastavení
       </button>
 
       <button
-        className="flex-1 text-xs border border-gray-200 rounded-xl py-2 text-red-500 hover:bg-red-50 transition flex items-center justify-center gap-1"
         onClick={async () => {
           await supabase.auth.signOut();
           window.location.reload();
         }}
+        className="text-xs text-gray-500 hover:text-red-500 transition flex items-center gap-1 mt-1"
       >
-        <EyeOff size={14} />
+        <EyeOff size={12} />
         Odhlásit
       </button>
 
     </div>
 
   </div>
-  )}
+)}
 
   {!user ? (
   <div className="flex gap-2">
