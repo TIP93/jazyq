@@ -352,60 +352,76 @@ useEffect(() => {
 
   {/* USER CARD */}
   {user && (
-  <div className="border border-gray-200 rounded-2xl p-4 bg-white flex gap-3">
+  <>
+    {/* USER CARD */}
+    <div className="border border-gray-200 rounded-2xl p-4 bg-white flex gap-3">
 
-    {/* AVATAR LEFT */}
-    <div className="flex-shrink-0">
-      {user.user_metadata?.avatar_url ? (
-        <img
-          src={user.user_metadata.avatar_url}
-          alt="Avatar"
-          className="w-10 h-10 rounded-full"
-        />
-      ) : (
-        <div className={iconCircle}>
-          <User size={18} className="text-gray-500" />
-        </div>
-      )}
+      {/* AVATAR */}
+      <div className="flex-shrink-0">
+        {user.user_metadata?.avatar_url ? (
+          <img
+            src={user.user_metadata.avatar_url}
+            alt="Avatar"
+            className="w-10 h-10 rounded-full"
+          />
+        ) : (
+          <div className={iconCircle}>
+            <User size={18} className="text-gray-500" />
+          </div>
+        )}
+      </div>
+
+      {/* USER INFO */}
+      <div className="min-w-0 flex-1">
+
+        <p className="text-[10px] uppercase tracking-wider text-gray-400">
+          Free uživatel
+        </p>
+
+        <p className="text-sm font-medium text-black truncate mt-1">
+          {user.user_metadata?.full_name ||
+            user.user_metadata?.name ||
+            user.email}
+        </p>
+
+      </div>
+
     </div>
 
-    {/* TEXT RIGHT */}
-    <div className="flex flex-col min-w-0 w-full overflow-hidden">
+    {/* ACTION BUTTONS */}
+    <div className="grid grid-cols-2 gap-2">
 
-  {/* NAME */}
-  <p className="text-sm font-medium text-black truncate">
-    {user.user_metadata?.full_name ||
-     user.user_metadata?.name ||
-     user.email}
-  </p>
+      <button
+        onClick={() => console.log("settings")}
+        className="
+          border border-gray-200 rounded-2xl p-3
+          flex items-center justify-center gap-2
+          text-sm text-gray-600
+          hover:bg-gray-50 transition
+        "
+      >
+        <Settings size={14} />
+        Nastavení
+      </button>
 
-  {/* ACTION ROW */}
-  <div className="flex items-center justify-between mt-1 text-xs w-full overflow-hidden">
+      <button
+        onClick={async () => {
+          await supabase.auth.signOut();
+          window.location.reload();
+        }}
+        className="
+          border border-gray-200 rounded-2xl p-3
+          flex items-center justify-center gap-2
+          text-sm text-gray-600
+          hover:bg-gray-50 transition
+        "
+      >
+        <LogOut size={14} />
+        Odhlásit
+      </button>
 
-  <button
-    onClick={() => console.log("settings")}
-    className="flex items-center gap-1 text-gray-500 hover:text-black transition whitespace-nowrap cursor-pointer hover:opacity-80 active:scale-[0.98]"
-  >
-    <Settings size={12} />
-    Nastavení
-  </button>
-
-  <button
-    onClick={async () => {
-      await supabase.auth.signOut();
-      window.location.reload();
-    }}
-    className="flex items-center gap-1 text-gray-500 hover:text-black transition whitespace-nowrap cursor-pointer hover:opacity-80 active:scale-[0.98]"
-  >
-     <LogOut size={12} />
-    Odhlásit
-  </button>
-
-</div>
-
-</div>
-
-  </div>
+    </div>
+  </>
 )}
 
   {user ? (
