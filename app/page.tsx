@@ -270,8 +270,10 @@ console.log(user);
 <div className="space-y-2">
 
 {user && (
-  <div className="border border-gray-200 rounded-2xl p-4 bg-white flex items-center justify-between hover:bg-gray-50 transition cursor-pointer">
-
+  <div
+    onClick={() => setView("streak")}
+    className="border border-gray-200 rounded-2xl p-4 bg-white flex items-center justify-between hover:bg-gray-50 transition cursor-pointer"
+  >
     <div className="flex items-center gap-3">
 
       <div className="w-9 h-9 rounded-full bg-orange-50 border border-orange-200 flex items-center justify-center">
