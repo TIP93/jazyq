@@ -268,8 +268,43 @@ console.log(user);
 {/* ACCOUNT */}
 <div className="space-y-2">
 
+{/* ACCOUNT */}
+<div className="space-y-2">
+
   {/* USER CARD */}
   {user && (
+    <div className="border border-gray-200 rounded-2xl p-4 flex items-center gap-3 bg-white">
+      
+      {user.user_metadata?.avatar_url ? (
+        <img
+          src={user.user_metadata.avatar_url}
+          alt="Avatar"
+          className="w-10 h-10 rounded-full"
+        />
+      ) : (
+        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+          <User size={18} className="text-gray-500" />
+        </div>
+      )}
+
+      <div className="min-w-0">
+        <p className="text-xs text-gray-500">Uživatel</p>
+        <p className="text-sm font-medium truncate">
+          {user.user_metadata?.full_name ||
+            user.user_metadata?.name ||
+            user.email}
+        </p>
+      </div>
+
+    </div>
+  )}
+
+</div>
+
+  {/* USER CARD */}
+  {user && (
+
+    
     <div className="border border-gray-200 rounded-2xl p-4 flex items-center gap-3 bg-white">
       
       {user.user_metadata?.avatar_url ? (
