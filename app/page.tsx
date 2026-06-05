@@ -313,7 +313,7 @@ console.log(user);
     </div>
 
     {/* TEXT RIGHT */}
-    <div className="flex flex-col min-w-0">
+    <div className="flex flex-col min-w-0 w-full overflow-hidden">
 
   {/* NAME */}
   <p className="text-sm font-medium text-black truncate">
@@ -323,11 +323,11 @@ console.log(user);
   </p>
 
   {/* ACTION ROW */}
-  <div className="flex items-center gap-3 mt-1">
+  <div className="flex items-center gap-3 mt-1 text-xs min-w-0 overflow-hidden">
 
     <button
       onClick={() => console.log("settings")}
-      className="text-xs text-gray-500 hover:text-black transition flex items-center gap-1"
+      className="flex items-center gap-1 text-gray-500 hover:text-black transition whitespace-nowrap"
     >
       <Lock size={12} />
       Nastavení
@@ -340,7 +340,7 @@ console.log(user);
         await supabase.auth.signOut();
         window.location.reload();
       }}
-      className="text-xs text-gray-500 hover:text-red-500 transition flex items-center gap-1"
+      className="flex items-center gap-1 text-gray-500 hover:text-red-500 transition whitespace-nowrap"
     >
       <EyeOff size={12} />
       Odhlásit
