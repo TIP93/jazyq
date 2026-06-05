@@ -569,10 +569,10 @@ useEffect(() => {
   </button>
 
 </div>
-
+<div className="print-area">
   <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-10 gap-4 auto-rows-[minmax(160px,auto)]">
 
-<div className="print-area">
+
 
     {/* WORD */}
     <div className="md:col-span-4 bg-white rounded-3xl border border-gray-200 p-6">
