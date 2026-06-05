@@ -12,7 +12,7 @@ import {
   Eye,
   EyeOff,
   Lock,
-  Crown, Headphones, PlayCircle, User, Calendar, Settings, LogOut
+  Crown, Headphones, PlayCircle, User, Calendar, Settings, LogOut, CheckIcon, XIcon
 } from "lucide-react";
 
 import { supabase } from "@/lib/supabaseClient";
@@ -753,25 +753,28 @@ useEffect(() => {
 
   {/* TODAY STATUS */}
   <div className="flex items-center justify-center gap-2 text-sm">
-    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+    <span className="w-2 h-2 rounded-full bg-green-500"></span>
     Dnes hotovo
   </div>
 
-  {/* PROGRESS GRID */}
+  {/* WEEK GRID */}
   <div className="grid grid-cols-7 gap-2 pt-2">
 
     {mockStreakDays.map((d, i) => {
       const base =
-        "h-14 rounded-2xl flex items-center justify-center text-xs font-medium transition transform hover:scale-[1.05] hover:shadow-md";
+        "h-16 rounded-2xl flex flex-col items-center justify-center text-xs font-medium transition border";
 
       // DONE
       if (d.status === "done") {
         return (
           <div
             key={i}
-            className={`${base} bg-green-50 border border-green-200 text-green-600 shadow-sm shadow-green-100/40`}
+            className={`${base} bg-green-50 border-green-200 text-green-600`}
           >
-            <span className="opacity-90">✓</span>
+            <span className="text-[10px] text-gray-400 mb-1">
+              {d.day}
+            </span>
+            <CheckIcon />
           </div>
         );
       }
@@ -781,24 +784,27 @@ useEffect(() => {
         return (
           <div
             key={i}
-            className={`${base} bg-gray-50 border border-gray-200 text-gray-400`}
+            className={`${base} bg-gray-50 border-gray-200 text-gray-400`}
           >
-            <span>✕</span>
+            <span className="text-[10px] text-gray-400 mb-1">
+              {d.day}
+            </span>
+            <XIcon />
           </div>
         );
       }
 
-      // TODAY
+      // TODAY (center highlight, green, stronger border)
       if (d.status === "today") {
         return (
           <div
             key={i}
-            className={`${base} bg-black text-white border border-black relative overflow-hidden animate-pulse`}
+            className={`${base} bg-green-100 border-green-400 text-green-700 border-2 scale-[1.02]`}
           >
-            {/* subtle glow pulse layer */}
-            <div className="absolute inset-0 bg-white/10 animate-ping opacity-20" />
-
-            <span className="relative z-10">●</span>
+            <span className="text-[10px] text-green-700 mb-1 font-medium">
+              {d.day}
+            </span>
+            <CheckIcon size={22} />
           </div>
         );
       }
@@ -807,31 +813,29 @@ useEffect(() => {
       return (
         <div
           key={i}
-          className={`${base} border border-dashed border-gray-300 text-gray-300 bg-transparent`}
+          className={`${base} border-dashed border-gray-300 text-gray-300 bg-transparent`}
         >
-          <span>•</span>
+          <span className="text-[10px] text-gray-300 mb-1">
+            {d.day}
+          </span>
+          <span className="text-lg">•</span>
         </div>
       );
     })}
 
   </div>
 
-  {/* MINI STATS */}
-  <div className="grid grid-cols-3 gap-3 pt-4">
+  {/* MINI STATS (ONLY 2 BUBBLES) */}
+  <div className="grid grid-cols-2 gap-3 pt-4">
 
-    <div className="border rounded-2xl p-3">
+    <div className="border border-gray-200 rounded-2xl p-3">
       <p className="text-xs text-gray-400">Nejdelší streak</p>
       <p className="font-medium">12 dní</p>
     </div>
 
-    <div className="border rounded-2xl p-3">
+    <div className="border border-gray-200 rounded-2xl p-3">
       <p className="text-xs text-gray-400">Celkem dní</p>
       <p className="font-medium">43</p>
-    </div>
-
-    <div className="border rounded-2xl p-3">
-      <p className="text-xs text-gray-400">Úroveň</p>
-      <p className="font-medium">B1</p>
     </div>
 
   </div>
