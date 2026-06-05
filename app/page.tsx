@@ -306,9 +306,8 @@ useEffect(() => {
 </div>
 
   {/* RIGHT - PREMIUM BADGE */}
-  <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full bg-purple-50 border border-purple-200">
-  <Crown size={10} className="text-purple-500" />
-  <span className="text-[10px] font-medium text-purple-600 uppercase tracking-wide"></span>
+  <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-purple-100 border border-purple-200 flex items-center justify-center">
+  <Crown size={11} className="text-purple-500" />
 </div>
 
 </div>
@@ -394,7 +393,7 @@ useEffect(() => {
       <button
         onClick={() => console.log("settings")}
         className="
-          border border-gray-200 rounded-2xl p-3
+          border border-gray-200 rounded-2xl py-2 px-3
           flex items-center justify-center gap-2
           text-sm text-gray-600
           hover:bg-gray-50 transition
@@ -410,7 +409,7 @@ useEffect(() => {
           window.location.reload();
         }}
         className="
-          border border-gray-200 rounded-2xl p-3
+          border border-gray-200 rounded-2xl py-2 px-3
           flex items-center justify-center gap-2
           text-sm text-gray-600
           hover:bg-gray-50 transition
@@ -481,14 +480,14 @@ useEffect(() => {
 )}
 
 </div>
-
+{/*
 <button
   onClick={generateDaily}
   disabled={generating}
   className="px-4 py-2 rounded-xl bg-black text-white text-sm disabled:opacity-50"
 >
   {generating ? "Generating..." : "Generate today content"}
-</button>
+</button> */}
 
 </div>
 
