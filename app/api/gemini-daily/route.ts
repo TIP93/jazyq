@@ -197,7 +197,8 @@ Translation rules:
 
 grammarTranslationOrig:
 
-English sentence preserving grammarPattern
+sentence preserving grammarPattern
+language MUST match the value of the language field for each unit.
 may change vocabulary/context but NOT structure type
 
 grammarTranslationCz:
