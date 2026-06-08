@@ -786,96 +786,115 @@ useEffect(() => {
           <StreakPage user={user} />
         )}
 
-   <div className="print-only">
+  <div className="print-only">
+  <div className="max-w-[800px] mx-auto p-10 text-black">
 
-  <div className="max-w-[800px] mx-auto p-10">
-
-    <div className="text-center border-b pb-6 mb-8">
-      <h1 className="text-4xl font-light tracking-[0.25em]">
+    {/* HEADER */}
+    <div className="text-center mb-10 pb-6 border-b border-gray-300">
+      <h1 className="text-4xl font-light tracking-[0.3em]">
         JAZYQ
       </h1>
 
-      <p className="text-gray-500 mt-2">
-        tvoje denní pětiminutovka
+      <p className="text-gray-500 mt-2 text-sm">
+        daily 5-minute language session
       </p>
 
-      <p className="mt-4 text-sm text-gray-500">
-        {level} • {language.toUpperCase()}
-      </p>
+      <div className="mt-4 flex justify-center gap-3 text-sm text-gray-600">
+        <span className="px-3 py-1 border rounded-full">
+          {level}
+        </span>
+        <span className="px-3 py-1 border rounded-full">
+          {language.toUpperCase()}
+        </span>
+      </div>
     </div>
 
-    <section className="mb-8">
-      <h2 className="font-semibold text-xl mb-3">
-        Slovíčko dne
-      </h2>
+    {/* GRID */}
+    <div className="grid grid-cols-2 gap-6">
 
-      <p className="text-2xl">
-        {content?.wordForeign}
-      </p>
+      {/* WORD CARD */}
+      <div className="border rounded-2xl p-5">
+        <h2 className="text-xs uppercase tracking-widest text-gray-400 mb-3">
+          Word of the day
+        </h2>
 
-      <p className="text-gray-500">
-        {content?.wordNative}
-      </p>
-    </section>
+        <p className="text-3xl font-semibold">
+          {content?.wordForeign}
+        </p>
 
-    <section className="mb-8">
-      <h2 className="font-semibold text-xl mb-3">
-        Příkladová věta
-      </h2>
+        <p className="text-gray-500 mt-2">
+          {content?.wordNative}
+        </p>
+      </div>
 
-      <p>{content?.wordExampleForeign}</p>
+      {/* EXAMPLE */}
+      <div className="border rounded-2xl p-5">
+        <h2 className="text-xs uppercase tracking-widest text-gray-400 mb-3">
+          Example
+        </h2>
 
-      <p className="text-gray-500 mt-2">
-        {content?.wordExampleNative}
-      </p>
-    </section>
+        <p className="leading-relaxed">
+          {content?.wordExampleForeign}
+        </p>
 
-    <section className="mb-8">
-      <h2 className="font-semibold text-xl mb-3">
-        Gramatika
-      </h2>
+        <p className="text-gray-500 mt-3 text-sm">
+          {content?.wordExampleNative}
+        </p>
+      </div>
 
-      <p>{content?.grammarExplanation}</p>
+      {/* GRAMMAR */}
+      <div className="border rounded-2xl p-5 col-span-2">
+        <h2 className="text-xs uppercase tracking-widest text-gray-400 mb-3">
+          Grammar insight
+        </h2>
 
-      <p className="mt-3 font-medium">
-        {content?.grammarExample}
-      </p>
-    </section>
+        <p className="text-sm text-gray-700">
+          {content?.grammarExplanation}
+        </p>
 
-    <section className="mb-8">
-      <h2 className="font-semibold text-xl mb-3">
-        Překlad
-      </h2>
+        <p className="mt-3 font-medium">
+          {content?.grammarExample}
+        </p>
+      </div>
 
-      <p>{content?.grammarTranslationCz}</p>
+      {/* TRANSLATION */}
+      <div className="border rounded-2xl p-5">
+        <h2 className="text-xs uppercase tracking-widest text-gray-400 mb-3">
+          Translation
+        </h2>
 
-      <p className="text-gray-500 mt-2">
-        {content?.grammarTranslationOrig}
-      </p>
-    </section>
+        <p>{content?.grammarTranslationCz}</p>
 
-    <section className="mb-8">
-      <h2 className="font-semibold text-xl mb-3">
-        Čtení
-      </h2>
+        <p className="text-gray-500 mt-2 text-sm">
+          {content?.grammarTranslationOrig}
+        </p>
+      </div>
 
-      <p className="mb-4">
-        {content?.readingForeign}
-      </p>
+      {/* READING */}
+      <div className="border rounded-2xl p-5">
+        <h2 className="text-xs uppercase tracking-widest text-gray-400 mb-3">
+          Reading
+        </h2>
 
-      <hr className="my-4" />
+        <p className="text-sm leading-relaxed">
+          {content?.readingForeign}
+        </p>
 
-      <p className="text-gray-600">
-        {content?.readingNative}
-      </p>
-    </section>
+        <hr className="my-4" />
 
-    <div className="border-t pt-6 mt-10 text-center text-sm text-gray-400">
-      www.jazyq.cz
+        <p className="text-sm text-gray-600">
+          {content?.readingNative}
+        </p>
+      </div>
+
+    </div>
+
+    {/* FOOTER */}
+    <div className="mt-10 pt-6 border-t text-center text-xs text-gray-400">
+      jazyq.cz · daily language microlearning
     </div>
 
   </div>
-
 </div>
 
 </div>
