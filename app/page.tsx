@@ -506,13 +506,39 @@ useEffect(() => {
   
  {/* TOP STATUS BAR */}
 <div className="w-full max-w-5xl mx-auto flex items-center justify-between mb-4 px-1 text-sm text-gray-600">
-
-  {/* LEFT */}
+  
+  {/* LEFT: flag + level + greeting + separator + date */}
   <div className="flex items-center gap-4">
-    ...
+
+    <div className="flex items-center gap-3">
+      <span className={`fi fi-${languages.find(l => l.code === language)?.flag} rounded-sm shadow-sm`} />
+
+      <span className="font-semibold text-black">
+        {level}
+      </span>
+
+      <span className="text-gray-500 font-medium">
+        {greeting}
+      </span>
+    </div>
+
+    {/* Moderní jemný oddělovač */}
+    <div className="h-4 w-[1px] bg-gray-300" />
+
+    {/* Datum přesunuté doleva s tmavší šedou barvou */}
+    <span className="text-gray-700 font-medium capitalize">
+      {new Date().toLocaleDateString("cs-CZ", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })}
+    </span>
+
   </div>
 
-  {/* RIGHT */}
+
+    {/* RIGHT */}
   <div className="flex items-center gap-2">
 
     <button
@@ -545,7 +571,7 @@ useEffect(() => {
   </div>
 
 </div>
-<div className="print-area">
+
   <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-10 gap-4 auto-rows-[minmax(160px,auto)]">
 
 
@@ -748,9 +774,70 @@ useEffect(() => {
 
 </div>
 
-</div> </div>
+</div>
+
+<div className="hidden print:block p-10 text-black">
+  
+  {/* HEADER */}
+  <div className="flex justify-between items-center border-b pb-4 mb-6">
+    <h1 className="text-xl font-semibold">JAZYQ</h1>
+    <p className="text-sm text-gray-500">
+      Denní lekce
+    </p>
+  </div>
+
+  {/* WORD */}
+  <div className="mb-6">
+    <h2 className="text-lg font-bold">
+      {content?.wordForeign}
+    </h2>
+    <p className="text-gray-600">
+      {content?.wordNative}
+    </p>
+  </div>
+
+  {/* EXAMPLE (always expanded) */}
+  <div className="mb-6">
+    <h3 className="font-semibold mb-1">Příklad</h3>
+    <p>{content?.wordExampleForeign}</p>
+    <p className="text-gray-600">{content?.wordExampleNative}</p>
+  </div>
+
+  {/* GRAMMAR */}
+  <div className="mb-6">
+    <h3 className="font-semibold mb-1">Gramatika</h3>
+    <p>{content?.grammarExplanation}</p>
+    <p className="mt-2 font-medium">{content?.grammarExample}</p>
+    <p className="text-gray-600">{content?.grammarTranslationCz}</p>
+  </div>
+
+  {/* READING - OBA TEXTY NAJEDNOU */}
+  <div className="mb-6">
+    <h3 className="font-semibold mb-2">Čtení</h3>
+
+    <div className="space-y-4">
+      <div>
+        <p className="text-sm text-gray-500 mb-1">Foreign</p>
+        <p>{content?.readingForeign}</p>
+      </div>
+
+      <div>
+        <p className="text-sm text-gray-500 mb-1">Česky</p>
+        <p>{content?.readingNative}</p>
+      </div>
+    </div>
+  </div>
+
+  {/* FOOTER */}
+  <div className="border-t pt-4 text-xs text-gray-500">
+    www.jazyq.app • generated daily learning sheet
+  </div>
+
+</div>
 
   </div>
+
+  
 
    )}
 
@@ -761,6 +848,8 @@ useEffect(() => {
 </div>
 
     </div>
+
+    
   );
 
   function StreakPage({ user }: { user: any }) {
