@@ -24,12 +24,33 @@ body {
   font-family: Poppins, system-ui, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
 }
 
+.print-only {
+  display: none;
+}
+
 @media print {
+
   .no-print {
     display: none !important;
   }
 
-  .print\:block {
+  .print-only {
     display: block !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .print-only,
+  .print-only * {
+    visibility: visible;
+  }
+
+  .print-only {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    background: white;
   }
 }

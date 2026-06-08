@@ -776,65 +776,6 @@ useEffect(() => {
 
 </div>
 
-<div className="hidden print:block p-10 text-black">
-  
-  {/* HEADER */}
-  <div className="flex justify-between items-center border-b pb-4 mb-6">
-    <h1 className="text-xl font-semibold">JAZYQ</h1>
-    <p className="text-sm text-gray-500">
-      Denní lekce
-    </p>
-  </div>
-
-  {/* WORD */}
-  <div className="mb-6">
-    <h2 className="text-lg font-bold">
-      {content?.wordForeign}
-    </h2>
-    <p className="text-gray-600">
-      {content?.wordNative}
-    </p>
-  </div>
-
-  {/* EXAMPLE (always expanded) */}
-  <div className="mb-6">
-    <h3 className="font-semibold mb-1">Příklad</h3>
-    <p>{content?.wordExampleForeign}</p>
-    <p className="text-gray-600">{content?.wordExampleNative}</p>
-  </div>
-
-  {/* GRAMMAR */}
-  <div className="mb-6">
-    <h3 className="font-semibold mb-1">Gramatika</h3>
-    <p>{content?.grammarExplanation}</p>
-    <p className="mt-2 font-medium">{content?.grammarExample}</p>
-    <p className="text-gray-600">{content?.grammarTranslationCz}</p>
-  </div>
-
-  {/* READING - OBA TEXTY NAJEDNOU */}
-  <div className="mb-6">
-    <h3 className="font-semibold mb-2">Čtení</h3>
-
-    <div className="space-y-4">
-      <div>
-        <p className="text-sm text-gray-500 mb-1">Foreign</p>
-        <p>{content?.readingForeign}</p>
-      </div>
-
-      <div>
-        <p className="text-sm text-gray-500 mb-1">Česky</p>
-        <p>{content?.readingNative}</p>
-      </div>
-    </div>
-  </div>
-
-  {/* FOOTER */}
-  <div className="border-t pt-4 text-xs text-gray-500">
-    www.jazyq.app • generated daily learning sheet
-  </div>
-
-</div>
-
   </div>
 
   
@@ -845,7 +786,101 @@ useEffect(() => {
           <StreakPage user={user} />
         )}
 
+   <div className="print-only">
+
+  <div className="max-w-[800px] mx-auto p-10">
+
+    <div className="text-center border-b pb-6 mb-8">
+      <h1 className="text-4xl font-light tracking-[0.25em]">
+        JAZYQ
+      </h1>
+
+      <p className="text-gray-500 mt-2">
+        tvoje denní pětiminutovka
+      </p>
+
+      <p className="mt-4 text-sm text-gray-500">
+        {level} • {language.toUpperCase()}
+      </p>
+    </div>
+
+    <section className="mb-8">
+      <h2 className="font-semibold text-xl mb-3">
+        Slovíčko dne
+      </h2>
+
+      <p className="text-2xl">
+        {content?.wordForeign}
+      </p>
+
+      <p className="text-gray-500">
+        {content?.wordNative}
+      </p>
+    </section>
+
+    <section className="mb-8">
+      <h2 className="font-semibold text-xl mb-3">
+        Příkladová věta
+      </h2>
+
+      <p>{content?.wordExampleForeign}</p>
+
+      <p className="text-gray-500 mt-2">
+        {content?.wordExampleNative}
+      </p>
+    </section>
+
+    <section className="mb-8">
+      <h2 className="font-semibold text-xl mb-3">
+        Gramatika
+      </h2>
+
+      <p>{content?.grammarExplanation}</p>
+
+      <p className="mt-3 font-medium">
+        {content?.grammarExample}
+      </p>
+    </section>
+
+    <section className="mb-8">
+      <h2 className="font-semibold text-xl mb-3">
+        Překlad
+      </h2>
+
+      <p>{content?.grammarTranslationCz}</p>
+
+      <p className="text-gray-500 mt-2">
+        {content?.grammarTranslationOrig}
+      </p>
+    </section>
+
+    <section className="mb-8">
+      <h2 className="font-semibold text-xl mb-3">
+        Čtení
+      </h2>
+
+      <p className="mb-4">
+        {content?.readingForeign}
+      </p>
+
+      <hr className="my-4" />
+
+      <p className="text-gray-600">
+        {content?.readingNative}
+      </p>
+    </section>
+
+    <div className="border-t pt-6 mt-10 text-center text-sm text-gray-400">
+      www.jazyq.cz
+    </div>
+
+  </div>
+
 </div>
+
+</div>
+
+
 
     </div>
 
