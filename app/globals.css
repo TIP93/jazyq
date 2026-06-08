@@ -29,6 +29,15 @@ body {
 }
 
 @media print {
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
   body * {
     visibility: hidden;
   }
@@ -40,12 +49,8 @@ body {
 
   .print-only {
     position: absolute;
-    left: 0;
-    top: 0;
+    inset: 0;
     width: 100%;
-  }
-
-  .no-print {
-    display: none !important;
+    background: white;
   }
 }
