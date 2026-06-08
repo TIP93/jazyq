@@ -12,7 +12,7 @@ import {
   Eye,
   EyeOff,
   Lock,
-  Crown, Headphones, PlayCircle, User, Calendar, Settings, LogOut, CheckIcon, XIcon
+  Crown, Headphones, PlayCircle, User, Calendar, Settings, LogOut, CheckIcon, XIcon, Printer
 } from "lucide-react";
 
 import { supabase } from "@/lib/supabaseClient";
@@ -506,68 +506,43 @@ useEffect(() => {
   
  {/* TOP STATUS BAR */}
 <div className="w-full max-w-5xl mx-auto flex items-center justify-between mb-4 px-1 text-sm text-gray-600">
-  
-  {/* LEFT: flag + level + greeting + separator + date */}
+
+  {/* LEFT */}
   <div className="flex items-center gap-4">
-
-    <div className="flex items-center gap-3">
-      <span className={`fi fi-${languages.find(l => l.code === language)?.flag} rounded-sm shadow-sm`} />
-
-      <span className="font-semibold text-black">
-        {level}
-      </span>
-
-      <span className="text-gray-500 font-medium">
-        {greeting}
-      </span>
-    </div>
-
-    {/* Moderní jemný oddělovač */}
-    <div className="h-4 w-[1px] bg-gray-300" />
-
-    {/* Datum přesunuté doleva s tmavší šedou barvou */}
-    <span className="text-gray-700 font-medium capitalize">
-      {new Date().toLocaleDateString("cs-CZ", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })}
-    </span>
-
+    ...
   </div>
 
+  {/* RIGHT */}
+  <div className="flex items-center gap-2">
 
-<button
-  onClick={() => window.print()}
-  className="p-2.5 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
->
-  <FileText size={18} />
-</button>
+    <button
+      onClick={() => window.print()}
+      className="p-2.5 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 shadow-sm"
+    >
+      <Printer size={18} />
+    </button>
 
-  {/* RIGHT: Elegantní globální oko v rámečku */}
-  <button
-    onClick={() => {
-      const nextState = !showTranslations;
-      setShowTranslations(nextState);
-      
-      // Hromadná synchronizace všech lokálních stavů podle globálního oka
-      setShowAnswer(nextState);
-      setShowExampleTranslation(nextState);
-      setReadingFlipped(nextState);
-    }}
-    className={`
-      p-2.5 rounded-xl border transition-all duration-200
-      ${
-        showTranslations 
-          ? "bg-black border-black text-white hover:bg-gray-800" 
-          : "bg-white border-gray-200 text-gray-500 hover:text-black hover:border-gray-300 hover:bg-gray-50 shadow-sm"
-      }
-    `}
-    title={showTranslations ? "Skrýt všechny překlady" : "Zobrazit všechny překlady"}
-  >
-    {showTranslations ? <EyeOff size={18} /> : <Eye size={18} />}
-  </button>
+    <button
+      onClick={() => {
+        const nextState = !showTranslations;
+        setShowTranslations(nextState);
+        setShowAnswer(nextState);
+        setShowExampleTranslation(nextState);
+        setReadingFlipped(nextState);
+      }}
+      className={`
+        p-2.5 rounded-xl border transition-all duration-200
+        ${
+          showTranslations
+            ? "bg-black border-black text-white hover:bg-gray-800"
+            : "bg-white border-gray-200 text-gray-500 hover:text-black hover:border-gray-300 hover:bg-gray-50 shadow-sm"
+        }
+      `}
+    >
+      {showTranslations ? <EyeOff size={18} /> : <Eye size={18} />}
+    </button>
+
+  </div>
 
 </div>
 <div className="print-area">
