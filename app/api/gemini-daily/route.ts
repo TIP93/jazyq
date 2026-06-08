@@ -279,8 +279,12 @@ try {
   model.generateContent(prompt)
 );
 
+console.log("RAW GEMINI RESULT:", result);
+
   // někdy může failnout i .text()
   text = result.response?.text?.();
+
+  console.log("RAW TEXT:", text);
 
   if (!text) {
     throw new Error("Empty Gemini response text");
@@ -451,6 +455,7 @@ console.log("FINAL DATA READY:", {
   );
 }
 
+
     // 7) RESPONSE
     return Response.json({
       success: true,
@@ -459,12 +464,19 @@ console.log("FINAL DATA READY:", {
     });
 
   } catch (err: any) {
-    return Response.json(
-      {
-        error: "Server error",
-        details: err?.message ?? err,
+  console.error("🔥 FULL SERVER ERROR:", err);
+
+  return Response.json(
+    {
+      error: "Server error",
+      details: {
+        message: err?.message,
+        stack: err?.stack,
+        raw: err,
       },
-      { status: 500 }
-    );
-  }
+    },
+    { status: 500 }
+  );
+}
+  
 }
