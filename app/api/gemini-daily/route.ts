@@ -13,6 +13,8 @@ export async function POST(req: Request) {
    // const languages = ["en", "cs", "it", "es", "de", "fr", "pt", "ru", "jp", "cn"];
     const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
+    const expectedCount = languages.length * levels.length;
+
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
     const supabase = createClient(
@@ -340,11 +342,12 @@ try {
       );
     }
 
-    if (parsed.length !== 6) {
+if (parsed.length !== expectedCount) {
   return Response.json(
     {
-      error: "Expected exactly 6 items",
-      count: parsed.length,
+      error: "Expected items mismatch",
+      expected: expectedCount,
+      got: parsed.length,
     },
     { status: 500 }
   );
@@ -352,15 +355,25 @@ try {
 
 const generatedLevels = parsed.map((i) => i.level);
 
-const missingLevels = levels.filter(
-  (level) => !generatedLevels.includes(level)
-);
+const missing = [];
 
-if (missingLevels.length > 0) {
+for (const lang of languages) {
+  for (const level of levels) {
+    const exists = parsed.some(
+      (p) => p.language === lang && p.level === level
+    );
+
+    if (!exists) {
+      missing.push(`${lang}-${level}`);
+    }
+  }
+}
+
+if (missing.length > 0) {
   return Response.json(
     {
-      error: "Missing levels",
-      missingLevels,
+      error: "Missing language-level combinations",
+      missing,
     },
     { status: 500 }
   );
@@ -431,19 +444,10 @@ console.log("FINAL DATA READY:", {
       );
     }
 
-    if (!inserted || inserted.length !== 6) {
-
-      if (!inserted || inserted.length !== rows.length) {
+   if (!inserted || inserted.length !== expectedCount) {
   throw new Error(
-    `CRITICAL: partial insert detected. expected=${rows.length}, got=${inserted?.length ?? 0}`
+    `CRITICAL: partial insert detected. expected=${expectedCount}, got=${inserted?.length ?? 0}`
   );
-}
-
-  return Response.json({
-    error: "Incomplete insert - missing rows",
-    expected: 6,
-    got: inserted?.length ?? 0,
-  }, { status: 500 });
 }
 
     // 7) RESPONSE
