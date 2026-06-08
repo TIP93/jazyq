@@ -787,38 +787,39 @@ useEffect(() => {
         )}
 
   <div className="print-only">
-  <div className="max-w-[800px] mx-auto p-10 text-black">
+  <div className="max-w-[820px] mx-auto p-10 bg-[#f6f7fb] text-black">
 
     {/* HEADER */}
-    <div className="text-center mb-10 pb-6 border-b border-gray-300">
-      <h1 className="text-4xl font-light tracking-[0.3em]">
+    <div className="text-center mb-10">
+      <h1 className="text-4xl font-light tracking-[0.35em]">
         JAZYQ
       </h1>
 
       <p className="text-gray-500 mt-2 text-sm">
-        daily 5-minute language session
+        daily language microlearning
       </p>
 
-      <div className="mt-4 flex justify-center gap-3 text-sm text-gray-600">
-        <span className="px-3 py-1 border rounded-full">
+      <div className="mt-5 inline-flex gap-2">
+        <span className="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs text-gray-600">
           {level}
         </span>
-        <span className="px-3 py-1 border rounded-full">
+
+        <span className="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs text-gray-600">
           {language.toUpperCase()}
         </span>
       </div>
     </div>
 
     {/* GRID */}
-    <div className="grid grid-cols-2 gap-6">
+    <div className="grid grid-cols-2 gap-5">
 
-      {/* WORD CARD */}
-      <div className="border rounded-2xl p-5">
-        <h2 className="text-xs uppercase tracking-widest text-gray-400 mb-3">
-          Word of the day
-        </h2>
+      {/* WORD */}
+      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+        <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
+          Word
+        </p>
 
-        <p className="text-3xl font-semibold">
+        <p className="text-3xl font-medium">
           {content?.wordForeign}
         </p>
 
@@ -828,12 +829,12 @@ useEffect(() => {
       </div>
 
       {/* EXAMPLE */}
-      <div className="border rounded-2xl p-5">
-        <h2 className="text-xs uppercase tracking-widest text-gray-400 mb-3">
+      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+        <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
           Example
-        </h2>
+        </p>
 
-        <p className="leading-relaxed">
+        <p className="leading-relaxed text-gray-800">
           {content?.wordExampleForeign}
         </p>
 
@@ -842,47 +843,47 @@ useEffect(() => {
         </p>
       </div>
 
-      {/* GRAMMAR */}
-      <div className="border rounded-2xl p-5 col-span-2">
-        <h2 className="text-xs uppercase tracking-widest text-gray-400 mb-3">
+      {/* GRAMMAR FULL WIDTH */}
+      <div className="col-span-2 bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+        <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
           Grammar insight
-        </h2>
+        </p>
 
-        <p className="text-sm text-gray-700">
+        <p className="text-gray-700 text-sm leading-relaxed">
           {content?.grammarExplanation}
         </p>
 
-        <p className="mt-3 font-medium">
+        <p className="mt-3 font-medium text-gray-900">
           {content?.grammarExample}
         </p>
       </div>
 
       {/* TRANSLATION */}
-      <div className="border rounded-2xl p-5">
-        <h2 className="text-xs uppercase tracking-widest text-gray-400 mb-3">
+      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+        <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
           Translation
-        </h2>
+        </p>
 
         <p>{content?.grammarTranslationCz}</p>
 
-        <p className="text-gray-500 mt-2 text-sm">
+        <p className="text-gray-500 text-sm mt-2">
           {content?.grammarTranslationOrig}
         </p>
       </div>
 
       {/* READING */}
-      <div className="border rounded-2xl p-5">
-        <h2 className="text-xs uppercase tracking-widest text-gray-400 mb-3">
+      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+        <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
           Reading
-        </h2>
+        </p>
 
-        <p className="text-sm leading-relaxed">
+        <p className="text-sm leading-relaxed text-gray-800">
           {content?.readingForeign}
         </p>
 
-        <hr className="my-4" />
+        <div className="my-3 border-t border-gray-100" />
 
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-500">
           {content?.readingNative}
         </p>
       </div>
@@ -890,8 +891,8 @@ useEffect(() => {
     </div>
 
     {/* FOOTER */}
-    <div className="mt-10 pt-6 border-t text-center text-xs text-gray-400">
-      jazyq.cz · daily language microlearning
+    <div className="mt-10 text-center text-xs text-gray-400">
+      jazyq.cz · generated learning sheet
     </div>
 
   </div>
