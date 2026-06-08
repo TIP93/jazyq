@@ -787,111 +787,102 @@ useEffect(() => {
         )}
 
   <div className="print-only">
-  <div className="max-w-[820px] mx-auto p-10 bg-[#f6f7fb] text-black">
+  <div className="w-[210mm] h-[297mm] overflow-hidden mx-auto p-6 bg-[#f6f7fb] text-black flex flex-col">
 
     {/* HEADER */}
-    <div className="text-center mb-10">
-      <h1 className="text-4xl font-light tracking-[0.35em]">
+    <div className="text-center mb-4">
+      <h1 className="text-3xl font-light tracking-[0.35em]">
         JAZYQ
       </h1>
 
-      <p className="text-gray-500 mt-2 text-sm">
-        daily language microlearning
+      <p className="text-xs text-gray-500 mt-1">
+        tvoje denní pětiminutovka
       </p>
 
-      <div className="mt-5 inline-flex gap-2">
-        <span className="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs text-gray-600">
-          {level}
+      {/* META */}
+      <div className="mt-3 flex justify-center gap-2 flex-wrap text-xs">
+
+        <span className="px-2 py-1 bg-white border rounded-full text-gray-600">
+          {new Date().toLocaleDateString("cs-CZ")}
         </span>
 
-        <span className="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs text-gray-600">
-          {language.toUpperCase()}
+        <span className="px-2 py-1 bg-white border rounded-full">
+         <span className={`fi fi-${languages.find(l => l.code === language)?.flag} rounded-sm shadow-sm`} />
+<span className="uppercase">{language}</span>
+        </span>
+
+        <span className="px-2 py-1 bg-white border rounded-full">
+          {level}
         </span>
       </div>
     </div>
 
-    {/* GRID */}
-    <div className="grid grid-cols-2 gap-5">
+    {/* WORD */}
+    <div className="bg-white rounded-xl p-3 border mb-2">
+      <p className="text-[10px] uppercase text-gray-400 mb-1">Slovo</p>
+      <p className="text-2xl font-medium">{content?.wordForeign}</p>
+      <p className="text-gray-500 text-sm">{content?.wordNative}</p>
+    </div>
 
-      {/* WORD */}
-      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-        <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
-          Word
-        </p>
+    {/* EXAMPLE */}
+    <div className="bg-white rounded-xl p-3 border mb-2">
+      <p className="text-[10px] uppercase text-gray-400 mb-1">Příklad</p>
+      <p className="text-sm leading-snug text-gray-800">
+        {content?.wordExampleForeign}
+      </p>
+      <p className="text-xs text-gray-500 mt-1">
+        {content?.wordExampleNative}
+      </p>
+    </div>
 
-        <p className="text-3xl font-medium">
-          {content?.wordForeign}
-        </p>
+    {/* GRAMMAR */}
+    <div className="bg-white rounded-xl p-3 border mb-2">
+      <p className="text-[10px] uppercase text-gray-400 mb-1">
+        Gramatika
+      </p>
 
-        <p className="text-gray-500 mt-2">
-          {content?.wordNative}
-        </p>
-      </div>
+      <p className="text-sm text-gray-700 leading-snug">
+        {content?.grammarExplanation}
+      </p>
 
-      {/* EXAMPLE */}
-      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-        <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
-          Example
-        </p>
+      <p className="mt-2 text-sm font-medium">
+        {content?.grammarExample}
+      </p>
+    </div>
 
-        <p className="leading-relaxed text-gray-800">
-          {content?.wordExampleForeign}
-        </p>
+    {/* TRANSLATION + READING STACKED (FIX) */}
+    <div className="bg-white rounded-xl p-3 border mb-2">
+      <p className="text-[10px] uppercase text-gray-400 mb-1">
+        Překlad
+      </p>
 
-        <p className="text-gray-500 mt-3 text-sm">
-          {content?.wordExampleNative}
-        </p>
-      </div>
+      <p className="text-sm">
+        {content?.grammarTranslationCz}
+      </p>
 
-      {/* GRAMMAR FULL WIDTH */}
-      <div className="col-span-2 bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-        <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
-          Grammar insight
-        </p>
+      <p className="text-xs text-gray-500 mt-1">
+        {content?.grammarTranslationOrig}
+      </p>
+    </div>
 
-        <p className="text-gray-700 text-sm leading-relaxed">
-          {content?.grammarExplanation}
-        </p>
+    <div className="bg-white rounded-xl p-3 border mb-2 flex-1 overflow-hidden">
+      <p className="text-[10px] uppercase text-gray-400 mb-1">
+        Čtení
+      </p>
 
-        <p className="mt-3 font-medium text-gray-900">
-          {content?.grammarExample}
-        </p>
-      </div>
+      <p className="text-sm leading-snug text-gray-800 line-clamp-6">
+        {content?.readingForeign}
+      </p>
 
-      {/* TRANSLATION */}
-      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-        <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
-          Translation
-        </p>
+      <div className="border-t my-2" />
 
-        <p>{content?.grammarTranslationCz}</p>
-
-        <p className="text-gray-500 text-sm mt-2">
-          {content?.grammarTranslationOrig}
-        </p>
-      </div>
-
-      {/* READING */}
-      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-        <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">
-          Reading
-        </p>
-
-        <p className="text-sm leading-relaxed text-gray-800">
-          {content?.readingForeign}
-        </p>
-
-        <div className="my-3 border-t border-gray-100" />
-
-        <p className="text-sm text-gray-500">
-          {content?.readingNative}
-        </p>
-      </div>
-
+      <p className="text-xs text-gray-500 line-clamp-5">
+        {content?.readingNative}
+      </p>
     </div>
 
     {/* FOOTER */}
-    <div className="mt-10 text-center text-xs text-gray-400">
+    <div className="text-center text-[10px] text-gray-400 mt-2">
       jazyq.cz · generated learning sheet
     </div>
 

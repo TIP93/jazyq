@@ -162,8 +162,23 @@ A1–A2: 8–12 words
 B1–C1: 10–15 words
 Grammar system:
 grammarFamily = broad category
-grammarPattern = specific structure (e.g. Present Perfect with already)
+grammarPattern = MUST be exactly ONE atomic rule (e.g. Present Perfect with already)
+grammarPattern must NOT resemble a textbook section title.
 grammarContext = situation (travel, work, etc.)
+
+
+Atomic rule = single grammatical decision:
+- one form choice OR
+- one usage condition OR
+- one transformation rule
+
+Forbidden in grammarPattern:
+- lists of rules (e.g. un, una, uno, un')
+- category names
+- combined rules
+- explanations or summaries
+
+If grammarPattern contains more than one rule → regenerate.
 
 Do not repeat grammarFamily (3–5 days) or grammarPattern (10–14 days).
 Prefer least recently used grammar options.
