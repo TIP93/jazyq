@@ -261,7 +261,7 @@ No markdown. No explanation. No extra keys.
     "grammarExplanation": "Používej sloveso can pro věci, které umíš dělat.",
     "grammarExample": "She can swim very well.",
     "grammarTranslationCz": "Moje máma umí velmi dobře vařit.",
-    "grammarTranslationOrig": "My mum can cook very well."
+    "grammarTranslationOrig": "My mum can cook very well.",
     "readingForeign": "Tom likes sports and spends time outside every day. He can run very fast and can play football with his friends. His sister can swim well, but she cannot run as quickly as Tom. They enjoy being active and can learn new sports together.",
     "readingNative": "Tom má rád sport a každý den tráví čas venku. Umí běhat velmi rychle a umí hrát fotbal se svými kamarády. Jeho sestra umí dobře plavat, ale neumí běhat tak rychle jako Tom. Rádi jsou aktivní a dokážou se společně učit nové sporty."
 
@@ -303,20 +303,8 @@ console.log("RAW GEMINI RESULT:", result);
 }
 
     // 5) SAFE JSON PARSE
-    const jsonStart = text.indexOf("[");
-    const jsonEnd = text.lastIndexOf("]");
-
-    if (jsonStart === -1 || jsonEnd === -1) {
-      return Response.json(
-        {
-          error: "No JSON array found",
-          raw: text,
-        },
-        { status: 500 }
-      );
-    }
-
-    let parsed;
+    
+   let parsed;
 
 try {
   const cleaned = text
@@ -324,28 +312,24 @@ try {
     .replace(/```/g, "")
     .trim();
 
-  parsed = JSON.parse(cleaned.slice(
-    cleaned.indexOf("["),
-    cleaned.lastIndexOf("]") + 1
-  ));
-} catch (err) {
-      return Response.json(
-        {
-          error: "Invalid JSON from model",
-          raw: text,
-        },
-        { status: 500 }
-      );
-    }
+  parsed = JSON.parse(cleaned);
 
-    if (!Array.isArray(parsed)) {
-      return Response.json(
-        {
-          error: "Expected array from model",
-        },
-        { status: 500 }
-      );
-    }
+  if (!Array.isArray(parsed)) {
+    throw new Error("Response is not an array");
+  }
+
+} catch (err) {
+  console.log("RAW FAILED TEXT:", text);
+
+  return Response.json(
+    {
+      error: "Invalid JSON from model",
+      details: err instanceof Error ? err.message : err,
+      raw: text,
+    },
+    { status: 500 }
+  );
+}
 
 if (parsed.length !== expectedCount) {
   return Response.json(
@@ -357,8 +341,6 @@ if (parsed.length !== expectedCount) {
     { status: 500 }
   );
 }
-
-const generatedLevels = parsed.map((i) => i.level);
 
 const missing = [];
 
