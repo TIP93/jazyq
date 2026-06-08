@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@supabase/supabase-js";
+import { callWithRetry } from "@/app/api/gemini-daily/retry";
 
 export async function POST(req: Request) {
   try {
@@ -271,14 +272,12 @@ let text;
 try {
   console.log("🚀 STEP 2: calling Gemini");
 
-  result = await model.generateContent(prompt);
-
-  console.log("✅ STEP 3: Gemini response received");
+  result = await callWithRetry(() =>
+  model.generateContent(prompt)
+);
 
   // někdy může failnout i .text()
   text = result.response?.text?.();
-
-  console.log("📦 STEP 4: text extracted");
 
   if (!text) {
     throw new Error("Empty Gemini response text");
@@ -381,7 +380,6 @@ if (uniqueWords.size !== words.length) {
     { status: 500 }
   );
 }
-
     // 6) INSERT BULK
 const rows = parsed.map((item) => ({
   language: item.language,
@@ -405,10 +403,23 @@ grammarContext: item.grammarContext ?? "",
   contentDate: today,
 }));
 
-    const { data: inserted, error: insertError } = await supabase
-      .from("dailycontent")
-      .insert(rows)
-      .select();
+if (parsed.length !== rows.length) {
+  throw new Error("CRITICAL: parsed vs rows mismatch");
+}
+
+console.log("FINAL DATA READY:", {
+  count: rows.length,
+  levels: rows.map(r => r.level),
+  languages: rows.map(r => r.language),
+});
+
+  const { data: inserted, error: insertError } =
+  await supabase
+    .from("dailycontent")
+    .upsert(rows, {
+      onConflict: "contentDate,language,level",
+    })
+    .select();
 
     if (insertError) {
       return Response.json(
@@ -419,6 +430,21 @@ grammarContext: item.grammarContext ?? "",
         { status: 500 }
       );
     }
+
+    if (!inserted || inserted.length !== 6) {
+
+      if (!inserted || inserted.length !== rows.length) {
+  throw new Error(
+    `CRITICAL: partial insert detected. expected=${rows.length}, got=${inserted?.length ?? 0}`
+  );
+}
+
+  return Response.json({
+    error: "Incomplete insert - missing rows",
+    expected: 6,
+    got: inserted?.length ?? 0,
+  }, { status: 500 });
+}
 
     // 7) RESPONSE
     return Response.json({

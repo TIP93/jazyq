@@ -786,6 +786,7 @@ useEffect(() => {
           <StreakPage user={user} />
         )}
 
+  <div className="print-only">
   <div className="w-[210mm] h-[297mm] p-10 bg-[#f6f7fb] text-black flex flex-col gap-6">
 
   {/* HERO */}
@@ -844,6 +845,7 @@ useEffect(() => {
 
   </div>
 
+</div>
 </div>
 
 </div>
