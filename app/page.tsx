@@ -780,69 +780,122 @@ useEffect(() => {
           <StreakPage user={user} />
         )}
 
-  <div className="print-only">
-  <div className="w-[210mm] h-[297mm] p-10 bg-[#f6f7fb] text-black flex flex-col gap-6">
-
-  {/* HERO */}
-  <div className="text-center space-y-2">
-    <h1 className="text-4xl font-light tracking-[0.3em]">
-      {content?.wordForeign}
-    </h1>
-    <p className="text-gray-500 text-lg">
-      {content?.wordNative}
-    </p>
+  {/* ========================================================= */}
+{/* MODERN PRINTABLE A4 INFOGRAPHIC (TRENDY 2026 FLAT EDITION) */}
+{/* ========================================================= */}
+<div className="print-only relative w-[210mm] h-[297mm] max-h-[297mm] text-slate-900 pt-[12mm] pb-[12mm] px-[11mm] flex flex-col justify-between box-border font-['Inter',sans-serif] bg-white antialiased">
+  
+  {/* HEADER - Rafinovanější typografie a vzdušnost */}
+  <div className="w-full flex flex-col items-center mb-4">
+    <div className="font-['Poppins',sans-serif] text-4xl font-black tracking-[0.2em] text-slate-950 mb-2">
+      JAZYQ
+    </div>
+    
+    {/* Info řádek s o něco čistším kontrastem */}
+    <div className="font-['Inter',sans-serif] text-[10px] text-slate-400 uppercase tracking-[0.15em] flex items-center gap-3 mb-4 font-semibold">
+      <span className="flex items-center gap-1.5 text-slate-500"><Globe size={12} className="text-slate-400" /> {languages.find(l => l.code === language)?.code || "Zahraniční"}</span>
+      <span className="w-1 h-1 bg-slate-200 rounded-full" />
+      <span className="flex items-center gap-1.5 text-slate-500"><BookOpen size={12} className="text-slate-400" /> Úroveň {level}</span>
+      <span className="w-1 h-1 bg-slate-200 rounded-full" />
+      <span className="flex items-center gap-1.5 text-slate-500">
+        <Calendar size={12} className="text-slate-400" /> 
+        {new Date().toLocaleDateString("cs-CZ", { year: "numeric", month: "long", day: "numeric" })}
+      </span>
+    </div>
+    
+    {/* Jemnější, elegantnější dělicí linka */}
+    <div className="w-full border-b border-slate-100" />
   </div>
 
-  <div className="h-px bg-gray-200" />
-
-  {/* EXAMPLE */}
-  <div className="space-y-2">
-    <p className="text-xs uppercase tracking-widest text-gray-400">
-      Příklad
-    </p>
-    <p className="text-lg leading-relaxed">
-      {content?.wordExampleForeign}
-    </p>
-    <p className="text-sm text-gray-500">
-      {content?.wordExampleNative}
-    </p>
-  </div>
-
-  <div className="h-px bg-gray-200" />
-
-  {/* GRAMMAR */}
-  <div className="bg-yellow-50/40 p-4 rounded-xl">
-    <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">
-      Gramatika
-    </p>
-    <p className="text-sm leading-relaxed">
-      {content?.grammarExplanation}
-    </p>
-    <p className="mt-3 font-medium">
-      {content?.grammarExample}
-    </p>
-  </div>
-
-  <div className="grid grid-cols-2 gap-6 mt-auto">
-
-    <div>
-      <p className="text-xs uppercase text-gray-400 mb-2">Překlad</p>
-      <p className="text-sm">{content?.grammarTranslationCz}</p>
+  {/* MAIN CONTENT AREA - Čisté ploché bloky s moderní typografií bez stínů */}
+  <div className="flex-1 flex flex-col justify-start gap-6 mt-8">
+    
+    {/* SLOVÍČKO DNE */}
+    <div className="relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60">
+      <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
+        <Sparkles size={14} className="text-slate-400" />
+        Slovíčko dne
+      </div>
+      <h1 className="font-['Poppins',sans-serif] text-3xl font-bold tracking-wide text-slate-950 mb-1 leading-tight">
+        {content?.wordForeign}
+      </h1>
+      <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
+        {content?.wordNative}
+      </p>
     </div>
 
-    <div>
-      <p className="text-xs uppercase text-gray-400 mb-2">Čtení</p>
-      <p className="text-sm leading-relaxed">
+    {/* SEKCE: PŘÍKLAD */}
+    <div className="relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60">
+      <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
+        <Languages size={14} className="text-slate-400" />
+        Příkladová věta
+      </div>
+      <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 tracking-wide leading-relaxed mb-1.5">
+        {content?.wordExampleForeign}
+      </p>
+      <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
+        {content?.wordExampleNative}
+      </p>
+    </div>
+
+    {/* SEKCE: GRAMATIKA */}
+    <div className="relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60">
+      <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
+        <Lightbulb size={14} className="text-slate-400" />
+        Gramatika
+      </div>
+      <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-600 leading-relaxed mb-3">
+        {content?.grammarExplanation}
+      </p>
+      {/* Stylová přerušovaná čára typická pro moderní workbooky roku 2026 */}
+      <div className="mt-3 pt-3 border-t border-dashed border-slate-200">
+        <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 tracking-wide">
+          {content?.grammarExample}
+        </p>
+      </div>
+    </div>
+
+    {/* SEKCE: PŘEKLAD GRAMATIKY */}
+    <div className="relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60">
+      <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
+        <BookOpen size={14} className="text-slate-400" />
+        Překlad
+      </div>
+      <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 tracking-wide leading-relaxed mb-1.5">
+        {content?.grammarTranslationOrig}
+      </p>
+      <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
+        {content?.grammarTranslationCz}
+      </p>
+    </div>
+
+    {/* SEKCE: ČTENÍ / READING */}
+    <div className="relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60">
+      <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
+        <FileText size={14} className="text-slate-400" />
+        Čtení
+      </div>
+      <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 tracking-wide leading-relaxed mb-2">
         {content?.readingForeign}
       </p>
-       <p className="text-sm leading-relaxed">
+      <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
         {content?.readingNative}
       </p>
     </div>
 
   </div>
 
-</div>
+  {/* FOOTER - Minimalistické zakončení */}
+  <div className="w-full flex flex-col items-center mt-5">
+    <div className="w-full border-t border-slate-100 mb-3" />
+    <div className="font-['Poppins',sans-serif] text-xs font-semibold text-slate-400 uppercase tracking-[0.15em] mb-1">
+      tvoje denní pětiminutovka
+    </div>
+    <div className="font-['Inter',sans-serif] text-[11px] text-slate-500 font-bold tracking-wider">
+      www.jazyq.cz
+    </div>
+  </div>
+
 </div>
 
 </div>
