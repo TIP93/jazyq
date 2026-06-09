@@ -812,11 +812,11 @@ useEffect(() => {
     <div className="w-full border-b border-slate-200" />
   </div>
 
-  {/* MAIN CONTENT AREA - Zachován gap-6 pro vzdušnost mezi bloky */}
-  <div className="flex-1 flex flex-col justify-start gap-6 mt-6">
+  {/* MAIN CONTENT AREA - mt-8 pro velkou a čistou mezeru pod linkou headeru */}
+  <div className="flex-1 flex flex-col justify-start gap-6 mt-8">
     
-    {/* SLOVÍČKO DNE */}
-    <div className="relative bg-white rounded-xl p-5 border border-slate-200">
+    {/* SLOVÍČKO DNE - bg-slate-50/50 pro velmi jemný šedý tón */}
+    <div className="relative bg-slate-50/50 rounded-xl p-5 border border-slate-200">
       <div className="absolute -top-3 left-4 z-10 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5">
         <Sparkles size={15} className="text-slate-400" />
         Slovíčko dne
@@ -829,8 +829,8 @@ useEffect(() => {
       </p>
     </div>
 
-    {/* SEKCE: PŘÍKLAD - Sjednoceno na text-sm */}
-    <div className="relative bg-white rounded-xl p-5 border border-slate-200">
+    {/* SEKCE: PŘÍKLAD */}
+    <div className="relative bg-slate-50/50 rounded-xl p-5 border border-slate-200">
       <div className="absolute -top-3 left-4 z-10 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5">
         <Languages size={15} className="text-slate-400" />
         Příkladová věta
@@ -844,7 +844,7 @@ useEffect(() => {
     </div>
 
     {/* SEKCE: GRAMATIKA */}
-    <div className="relative bg-white rounded-xl p-5 border border-slate-200">
+    <div className="relative bg-slate-50/50 rounded-xl p-5 border border-slate-200">
       <div className="absolute -top-3 left-4 z-10 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5">
         <Lightbulb size={15} className="text-slate-400" />
         Gramatika
@@ -852,7 +852,8 @@ useEffect(() => {
       <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-600 leading-relaxed mb-3">
         {content?.grammarExplanation}
       </p>
-      <div className="bg-slate-50 p-3 rounded-lg border border-slate-200/60">
+      {/* Čistý příklad oddělený pouze jemnou linkou namísto tmavého boxu */}
+      <div className="mt-3 pt-3 border-t border-slate-200/60">
         <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900">
           {content?.grammarExample}
         </p>
@@ -860,7 +861,7 @@ useEffect(() => {
     </div>
 
     {/* SEKCE: PŘEKLAD GRAMATIKY */}
-    <div className="relative bg-white rounded-xl p-5 border border-slate-200">
+    <div className="relative bg-slate-50/50 rounded-xl p-5 border border-slate-200">
       <div className="absolute -top-3 left-4 z-10 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5">
         <BookOpen size={15} className="text-slate-400" />
         Překlad
@@ -874,7 +875,7 @@ useEffect(() => {
     </div>
 
     {/* SEKCE: ČTENÍ / READING */}
-    <div className="relative bg-white rounded-xl p-5 border border-slate-200">
+    <div className="relative bg-slate-50/50 rounded-xl p-5 border border-slate-200">
       <div className="absolute -top-3 left-4 z-10 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5">
         <FileText size={15} className="text-slate-400" />
         Čtení
