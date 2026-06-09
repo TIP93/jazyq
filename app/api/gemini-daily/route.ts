@@ -128,8 +128,7 @@ You are a structured language learning generator.
 Generate exactly 6 learning units, one per CEFR level:
 A1, A2, B1, B2, C1, C2.
 
-Languages:
-${languages.join(", ")}
+Language: ${lang}
 
 Previously used words (must not repeat):
 ${usedWords.join("\n")}
