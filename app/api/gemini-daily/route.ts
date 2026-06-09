@@ -330,21 +330,20 @@ if (parsed.length !== expectedCount) {
 
 const missing = [];
 
-for (const l of languages) { // <--- Změněno na 'l'
-  for (const level of levels) {
-    const exists = parsed.some(
-      (p) => p.language === l && p.level === level // <--- Změněno na 'l'
-    );
+// Kontrolujeme pouze aktuální jazyk 'lang' z hlavního cyklu, ne celé pole!
+for (const level of levels) {
+  const exists = parsed.some(
+    (p) => p.language === lang && p.level === level // <--- změněno zpět na lang
+  );
 
-    if (!exists) {
-      missing.push(`${l}-${level}`); // <--- Změněno na 'l'
-    }
+  if (!exists) {
+    missing.push(`${lang}-${level}`); // <--- změněno zpět na lang
   }
 }
 
 if (missing.length > 0) {
-  console.error(`❌ Jazyku ${lang} chybí tyto kombinace:`, missing);
-  continue; // <--- Přeskočí tento jazyk a jde na další
+  console.error(`❌ Jazyku ${lang} chybí v této dávce tyto úrovně:`, missing);
+  continue; // <--- Přeskočí tento jazyk a jde na další, tvůj kód zůstane bezpečně běžet
 }
 
 const words = parsed.map((i: any) =>
