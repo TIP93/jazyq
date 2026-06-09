@@ -789,96 +789,94 @@ useEffect(() => {
  {/* ========================================================= */}
 {/* MODERN PRINTABLE A4 INFOGRAPHIC (STRIKTNĚ JEDNA STRÁNKA)  */}
 {/* ========================================================= */}
-<div className="print-only w-[210mm] h-[297mm] max-h-[297mm] text-[#1e293b] pt-[15mm] pb-[15mm] pr-[15mm] pl-[20mm] flex flex-col justify-between overflow-hidden box-border font-['Inter',sans-serif]">
+<div className="print-only w-[210mm] h-[297mm] max-h-[297mm] text-slate-800 pt-[15mm] pb-[15mm] pr-[15mm] pl-[20mm] flex flex-col justify-between overflow-hidden box-border font-['Inter',sans-serif] bg-white">
   
-  {/* HEADER - Vycentrovaný název aplikace a úroveň */}
-  <div className="w-full flex flex-col items-center mb-5">
-    <div className="font-['Poppins',sans-serif] text-4xl font-black tracking-wider text-blue-600 mb-1">
+  {/* HEADER - Minimalistický vycentrovaný brand */}
+  <div className="w-full flex flex-col items-center mb-6">
+    <div className="font-['Poppins',sans-serif] text-4xl font-black tracking-widest text-slate-900 mb-1">
       JAZYQ
     </div>
-    <div className="font-['Inter',sans-serif] text-[10px] text-slate-400 uppercase tracking-[0.2em] mb-3">
+    <div className="font-['Inter',sans-serif] text-[10px] text-slate-400 uppercase tracking-[0.25em] mb-4">
       Studijní materiál &bull; Úroveň {level || "B2"}
     </div>
     <div className="w-full border-b border-slate-200" />
   </div>
 
-  {/* MAIN CONTENT AREA - Lineární struktura pro bezpečné zobrazení bez deformace sloupců */}
-  <div className="flex-1 flex flex-col justify-start gap-4 overflow-hidden">
+  {/* MAIN CONTENT AREA - Čistá lineární struktura bez rušivých prvků */}
+  <div className="flex-1 flex flex-col justify-start gap-5 overflow-hidden">
     
-    {/* HERO SEKCE (Hlavní slovíčko / fráze) */}
-    <div className="text-center bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 p-6 rounded-2xl text-white shadow-sm">
-      <h1 className="font-['Poppins',sans-serif] text-3xl font-bold tracking-wide mb-1">
+    {/* HERO SEKCE (Hlavní slovíčko / fráze) - Plochý moderní blok */}
+    <div className="text-center bg-slate-50 p-6 rounded-xl border border-slate-200/60">
+      <h1 className="font-['Poppins',sans-serif] text-3xl font-bold tracking-wide text-slate-900 mb-1">
         {content?.wordForeign}
       </h1>
-      <p className="font-['Inter',sans-serif] text-lg text-blue-100 font-medium">
+      <p className="font-['Inter',sans-serif] text-base text-slate-500 font-medium">
         {content?.wordNative}
       </p>
     </div>
 
-    {/* SEKCE: PŘÍKLAD (wordExampleForeign + wordExampleNative) */}
-    <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-      <div className="font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+    {/* SEKCE: PŘÍKLAD */}
+    <div className="bg-white rounded-xl p-5 border border-slate-200">
+      <div className="font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2.5">
         Příklad / Example
       </div>
-      {/* Striktní barevné kódování: Zelená pro cizí text */}
-      <p className="font-['Inter',sans-serif] text-base font-semibold text-green-600 leading-relaxed mb-1">
+      {/* Smaragdová pro cizí text */}
+      <p className="font-['Inter',sans-serif] text-base font-semibold text-emerald-700 leading-relaxed mb-1.5">
         {content?.wordExampleForeign}
       </p>
-      {/* Modrá pro mateřský jazyk */}
-      <p className="font-['Inter',sans-serif] text-sm font-medium text-blue-600 leading-relaxed">
+      {/* Indigo pro mateřský jazyk */}
+      <p className="font-['Inter',sans-serif] text-sm font-medium text-indigo-600 leading-relaxed">
         {content?.wordExampleNative}
       </p>
     </div>
 
-    {/* SEKCE: GRAMATIKA (grammarExplanation + grammarExample) */}
-    <div className="bg-green-50/30 rounded-2xl p-4 border-l-4 border-l-emerald-500 border-y border-r border-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-      <div className="font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+    {/* SEKCE: GRAMATIKA - Bez levé linky, sjednocený styl */}
+    <div className="bg-white rounded-xl p-5 border border-slate-200">
+      <div className="font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2.5">
         Gramatické pravidlo / Grammar
       </div>
-      <p className="font-['Inter',sans-serif] text-sm leading-relaxed text-slate-700 mb-2.5">
+      <p className="font-['Inter',sans-serif] text-sm leading-relaxed text-slate-600 mb-3">
         {content?.grammarExplanation}
       </p>
-      <div className="bg-white p-3 rounded-xl border border-slate-200/60">
-        <p className="font-['Inter',sans-serif] text-sm font-semibold text-green-600">
+      <div className="bg-slate-50 p-3 rounded-lg border border-slate-200/60">
+        <p className="font-['Inter',sans-serif] text-sm font-semibold text-emerald-700">
           {content?.grammarExample}
         </p>
       </div>
     </div>
 
-    {/* SEKCE: PŘEKLAD GRAMATIKY (grammarTranslationCz) */}
-    <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-      <div className="font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+    {/* SEKCE: PŘEKLAD GRAMATIKY */}
+    <div className="bg-white rounded-xl p-5 border border-slate-200">
+      <div className="font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2.5">
         Překlad gramatiky
       </div>
-      <p className="font-['Inter',sans-serif] text-sm font-medium text-blue-600 leading-relaxed">
+      <p className="font-['Inter',sans-serif] text-sm font-medium text-indigo-600 leading-relaxed">
         {content?.grammarTranslationCz}
       </p>
     </div>
 
-    {/* SEKCE: ČTENÍ / READING (readingForeign + readingNative) - Roztažené na plnou šířku kvůli dlouhému textu */}
-    <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.02)] max-h-[180px] overflow-hidden">
-      <div className="font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+    {/* SEKCE: ČTENÍ / READING - Plná šířka, upravené barvy */}
+    <div className="bg-white rounded-xl p-5 border border-slate-200 max-h-[180px] overflow-hidden">
+      <div className="font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2.5">
         Čtení / Reading
       </div>
-      {/* Zelená pro cizí text (může být dlouhý) */}
-      <p className="font-['Inter',sans-serif] text-sm font-semibold text-green-600 leading-relaxed mb-2 line-clamp-4">
+      <p className="font-['Inter',sans-serif] text-sm font-semibold text-emerald-700 leading-relaxed mb-2 line-clamp-4">
         {content?.readingForeign}
       </p>
-      {/* Modrá pro překlad */}
-      <p className="font-['Inter',sans-serif] text-sm font-medium text-blue-600 leading-relaxed line-clamp-3">
+      <p className="font-['Inter',sans-serif] text-sm font-medium text-indigo-600 leading-relaxed line-clamp-3">
         {content?.readingNative}
       </p>
     </div>
 
   </div>
 
-  {/* FOOTER - Vycentrované motto oddělené šedou linkou */}
-  <div className="w-full flex flex-col items-center mt-5">
-    <div className="w-full border-t border-slate-200 mb-3" />
-    <div className="font-['Poppins',sans-serif] text-sm font-medium text-slate-600 tracking-wide mb-0.5">
+  {/* FOOTER - Elegantní vycentrované zápatí s šedou linkou */}
+  <div className="w-full flex flex-col items-center mt-6">
+    <div className="w-full border-t border-slate-200 mb-4" />
+    <div className="font-['Poppins',sans-serif] text-sm font-medium text-slate-600 tracking-wide mb-1">
       Konzistence je silnější než intenzita. Tvoje každodenní pětiminutovka.
     </div>
-    <div className="font-['Inter',sans-serif] text-[11px] text-slate-400 font-semibold tracking-wider">
+    <div className="font-['Inter',sans-serif] text-[11px] text-slate-400 font-semibold tracking-widest">
       jazyq.vercel.app
     </div>
   </div>
