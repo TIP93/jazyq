@@ -787,92 +787,92 @@ useEffect(() => {
         )}
 
  {/* ========================================================= */}
-{/* MODERN PRINTABLE A4 INFOGRAPHIC (ONLY VISIBLE ON PRINT)  */}
+{/* MODERN PRINTABLE A4 INFOGRAPHIC (STRIKTNĚ JEDNA STRÁNKA)  */}
 {/* ========================================================= */}
-<div className="hidden print:flex w-[210mm] h-[297mm] bg-[#f8fafc] text-[#1e293b] pt-[15mm] pb-[15mm] pr-[15mm] pl-[20mm] flex-col justify-between overflow-hidden box-border">
+<div className="hidden print:flex w-[210mm] h-[297mm] max-h-[297mm] bg-white text-[#1e293b] pt-[12mm] pb-[12mm] pr-[15mm] pl-[20mm] flex-col justify-between overflow-hidden box-border [page-break-inside:avoid]">
   
-  {/* HEADER */}
-  <div className="w-full flex items-center justify-between border-b border-slate-200 pb-3 mb-4 text-xs font-['Inter'] text-slate-400 uppercase tracking-widest">
-    <div className="flex items-center gap-2">
-      <Sparkles size={14} className="text-blue-600" />
-      <span>JAZYQ &bull; STUDIJNÍ MATERIÁL</span>
+  {/* HEADER - Moderní vycentrovaný brand s jemnou linkou */}
+  <div className="w-full flex flex-col items-center mb-6">
+    <div className="font-['Poppins'] text-4xl font-black tracking-wider text-blue-600 mb-1 flex items-center gap-2">
+      <Sparkles size={28} className="text-blue-600 animate-pulse" />
+      JAZYQ
     </div>
-    <div>ÚROVEŇ: <span className="font-bold text-slate-700">{level}</span></div>
-    <div>
-      {new Date().toLocaleDateString("cs-CZ", { year: "numeric", month: "2-digit", day: "2-digit" })}
+    <div className="font-['Inter'] text-[10px] text-slate-400 uppercase tracking-[0.2em] mb-3">
+      Studijní materiál &bull; Úroveň {level || "B2"}
     </div>
+    <div className="w-full border-b border-slate-200" />
   </div>
 
-  {/* CONTAINER FLOW FOR SECTIONS */}
-  <div className="flex-1 flex flex-col justify-start">
+  {/* MAIN CONTENT AREA - Flexibilní, ale striktně omezená na prostor */}
+  <div className="flex-1 flex flex-col justify-start gap-4 overflow-hidden">
     
-    {/* HERO SEKCE (Moderní výrazný nadpis) */}
-    <div className="text-center bg-gradient-to-r from-blue-600 to-blue-800 p-6 rounded-2xl text-white shadow-sm mb-4">
+    {/* HERO SEKCE (Hlavní slovíčko/fáze) */}
+    <div className="text-center bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 p-6 rounded-2xl text-white shadow-sm">
       <h1 className="font-['Poppins'] text-3xl font-bold tracking-wide mb-1">
-        {content?.wordForeign}
+        {content?.wordForeign || "Loading..."}
       </h1>
-      <p className="font-['Inter'] text-lg text-blue-200 font-medium">
-        {content?.wordNative}
+      <p className="font-['Inter'] text-lg text-blue-100 font-medium">
+        {content?.wordNative || ""}
       </p>
     </div>
 
-    {/* SEKCE: PŘÍKLAD */}
-    <div className="bg-white rounded-2xl p-4 mb-4 border border-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-      <div className="font-['Poppins'] text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-2">
-        <Languages size={16} className="text-blue-500" />
-        Příklad / Example
+    {/* SEKCE: PŘÍKLAD - Barevné kódování textů */}
+    <div className="bg-white rounded-2xl p-4 border border-slate-200">
+      <div className="font-['Poppins'] text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-2">
+        <Languages size={15} className="text-blue-500" />
+        Příklad z praxe
       </div>
-      {/* Striktní barevné kódování: Zelená pro cizí originální text */}
+      {/* Zelená pro cizí jazyk */}
       <p className="font-['Inter'] text-base font-semibold text-green-600 leading-relaxed mb-1">
-        {content?.wordExampleForeign}
+        {content?.wordExampleForeign || ""}
       </p>
-      {/* Modrá pro mateřský / český překlad */}
+      {/* Modrá pro mateřský jazyk */}
       <p className="font-['Inter'] text-sm font-medium text-blue-600 leading-relaxed">
-        {content?.wordExampleNative}
+        {content?.wordExampleNative || ""}
       </p>
     </div>
 
     {/* SEKCE: GRAMATIKA */}
-    <div className="bg-green-50/40 rounded-2xl p-4 mb-4 border-l-4 border-l-emerald-500 border-y border-r border-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-      <div className="font-['Poppins'] text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-2">
-        <Lightbulb size={16} className="text-emerald-500" />
-        Gramatické pravidlo / Grammar
+    <div className="bg-green-50/30 rounded-2xl p-4 border-l-4 border-l-emerald-500 border-y border-r border-slate-200">
+      <div className="font-['Poppins'] text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-2">
+        <Lightbulb size={15} className="text-emerald-500" />
+        Gramatické pravidlo
       </div>
-      <p className="font-['Inter'] text-[14px] leading-relaxed text-slate-700 mb-2.5">
-        {content?.grammarExplanation}
+      <p className="font-['Inter'] text-sm leading-relaxed text-slate-700 mb-2.5">
+        {content?.grammarExplanation || ""}
       </p>
-      <div className="bg-white p-3 rounded-xl border border-slate-200/80">
+      <div className="bg-white p-3 rounded-xl border border-slate-200/60">
         <p className="font-['Inter'] text-sm font-semibold text-green-600">
-          {content?.grammarExample}
+          {content?.grammarExample || ""}
         </p>
       </div>
     </div>
 
-    {/* INFOGRAFICKÁ MŘÍŽKA (DVA SLOUPCE) */}
+    {/* DVOUSLOUPCOVÝ DETAIL */}
     <div className="grid grid-cols-2 gap-4">
       
-      {/* PŘEKLAD */}
-      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-        <div className="font-['Poppins'] text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-2">
-          <BookOpen size={16} className="text-amber-500" />
-          Překlad gramatiky
+      {/* LEVÝ: PŘEKLAD GRAMATIKY */}
+      <div className="bg-white rounded-2xl p-4 border border-slate-200">
+        <div className="font-['Poppins'] text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-2">
+          <BookOpen size={15} className="text-amber-500" />
+          Kontext v češtině
         </div>
         <p className="font-['Inter'] text-sm font-medium text-blue-600 leading-relaxed">
-          {content?.grammarTranslationCz}
+          {content?.grammarTranslationCz || ""}
         </p>
       </div>
 
-      {/* ČTENÍ */}
-      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-        <div className="font-['Poppins'] text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-2">
-          <FileText size={16} className="text-violet-500" />
-          Čtení / Reading
+      {/* PRAVÝ: ČTENÍ / READING */}
+      <div className="bg-white rounded-2xl p-4 border border-slate-200">
+        <div className="font-['Poppins'] text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-2">
+          <FileText size={15} className="text-violet-500" />
+          Trénink čtení
         </div>
         <p className="font-['Inter'] text-sm font-semibold text-green-600 leading-relaxed mb-1">
-          {content?.readingForeign}
+          {content?.readingForeign || ""}
         </p>
         <p className="font-['Inter'] text-sm font-medium text-blue-600 leading-relaxed">
-          {content?.readingNative}
+          {content?.readingNative || ""}
         </p>
       </div>
 
@@ -880,10 +880,15 @@ useEffect(() => {
 
   </div>
 
-  {/* FOOTER */}
-  <div className="w-full flex items-center justify-between border-t border-slate-200 pt-3 mt-4 text-[11px] font-['Inter'] text-slate-400">
-    <div>Konzistence je silnější než intenzita. Tvoje každodenní pětiminutovka.</div>
-    <div className="font-medium text-slate-500">jazyq.vercel.app</div>
+  {/* FOOTER - Vycentrované motto s oddělující linkou a webem */}
+  <div className="w-full flex flex-col items-center mt-6">
+    <div className="w-full border-t border-slate-200 mb-3" />
+    <div className="font-['Poppins'] text-sm font-medium text-slate-600 tracking-wide mb-1">
+      Tvoje denní pětiminutovka
+    </div>
+    <div className="font-['Inter'] text-[11px] text-slate-400 font-semibold tracking-wider">
+      jazyq.vercel.app
+    </div>
   </div>
 
 </div>
