@@ -812,30 +812,30 @@ useEffect(() => {
     <div className="w-full border-b border-slate-200" />
   </div>
 
-  {/* MAIN CONTENT AREA - Odstraněno overflow-hidden, aby z-10 štítky mohly volně dýchat přes okraje */}
+  {/* MAIN CONTENT AREA - Zachován gap-6 pro vzdušnost mezi bloky */}
   <div className="flex-1 flex flex-col justify-start gap-6 mt-6">
     
-    {/* SLOVÍČKO DNE - z-10 spolehlivě vynese štítek na nejvyšší vrstvu */}
-    <div className="relative bg-white rounded-xl p-5 pt-7 border border-slate-200">
-      <div className="absolute -top-2.5 left-4 z-10 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5">
+    {/* SLOVÍČKO DNE */}
+    <div className="relative bg-white rounded-xl p-5 border border-slate-200">
+      <div className="absolute -top-3 left-4 z-10 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5">
         <Sparkles size={15} className="text-slate-400" />
         Slovíčko dne
       </div>
-      <h1 className="font-['Poppins',sans-serif] text-3xl font-bold tracking-wide text-slate-900 mb-1 mt-1 leading-tight">
+      <h1 className="font-['Poppins',sans-serif] text-3xl font-bold tracking-wide text-slate-900 mb-1 leading-tight">
         {content?.wordForeign}
       </h1>
-      <p className="font-['Inter',sans-serif] text-base text-slate-500 font-normal">
+      <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
         {content?.wordNative}
       </p>
     </div>
 
-    {/* SEKCE: PŘÍKLAD */}
-    <div className="relative bg-white rounded-xl p-5 pt-7 border border-slate-200">
-      <div className="absolute -top-2.5 left-4 z-10 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5">
+    {/* SEKCE: PŘÍKLAD - Sjednoceno na text-sm */}
+    <div className="relative bg-white rounded-xl p-5 border border-slate-200">
+      <div className="absolute -top-3 left-4 z-10 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5">
         <Languages size={15} className="text-slate-400" />
         Příkladová věta
       </div>
-      <p className="font-['Inter',sans-serif] text-base font-semibold text-slate-900 leading-relaxed mb-1 mt-1">
+      <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 leading-relaxed mb-1.5">
         {content?.wordExampleForeign}
       </p>
       <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
@@ -844,12 +844,12 @@ useEffect(() => {
     </div>
 
     {/* SEKCE: GRAMATIKA */}
-    <div className="relative bg-white rounded-xl p-5 pt-7 border border-slate-200">
-      <div className="absolute -top-2.5 left-4 z-10 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5">
+    <div className="relative bg-white rounded-xl p-5 border border-slate-200">
+      <div className="absolute -top-3 left-4 z-10 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5">
         <Lightbulb size={15} className="text-slate-400" />
         Gramatika
       </div>
-      <p className="font-['Inter',sans-serif] text-sm leading-relaxed text-slate-600 mb-3 mt-1 font-normal">
+      <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-600 leading-relaxed mb-3">
         {content?.grammarExplanation}
       </p>
       <div className="bg-slate-50 p-3 rounded-lg border border-slate-200/60">
@@ -860,12 +860,12 @@ useEffect(() => {
     </div>
 
     {/* SEKCE: PŘEKLAD GRAMATIKY */}
-    <div className="relative bg-white rounded-xl p-5 pt-7 border border-slate-200">
-      <div className="absolute -top-2.5 left-4 z-10 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5">
+    <div className="relative bg-white rounded-xl p-5 border border-slate-200">
+      <div className="absolute -top-3 left-4 z-10 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5">
         <BookOpen size={15} className="text-slate-400" />
         Překlad
       </div>
-      <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 leading-relaxed mb-1 mt-1">
+      <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 leading-relaxed mb-1.5">
         {content?.grammarTranslationOrig}
       </p>
       <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
@@ -874,12 +874,12 @@ useEffect(() => {
     </div>
 
     {/* SEKCE: ČTENÍ / READING */}
-    <div className="relative bg-white rounded-xl p-5 pt-7 border border-slate-200">
-      <div className="absolute -top-2.5 left-4 z-10 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5">
+    <div className="relative bg-white rounded-xl p-5 border border-slate-200">
+      <div className="absolute -top-3 left-4 z-10 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5">
         <FileText size={15} className="text-slate-400" />
         Čtení
       </div>
-      <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 leading-relaxed mb-2 mt-1">
+      <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 leading-relaxed mb-2">
         {content?.readingForeign}
       </p>
       <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
