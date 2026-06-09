@@ -128,7 +128,7 @@ You are a structured language learning generator.
 Generate exactly 6 learning units, one per CEFR level:
 A1, A2, B1, B2, C1, C2.
 
-Language: ${lang}
+Language: ${lang} (Strictly British English for English language units)
 
 Previously used words (must not repeat):
 ${usedWords.join("\n")}
@@ -163,8 +163,9 @@ no proper nouns
 no duplicates across dataset
 avoid overused beginner words unless necessary for A1
 max one semantic category per batch
+wordForeign (for nouns in languages with grammatical gender, ALWAYS include the definite article, e.g., "il libro", "la maison", "der Tisch"),
 Sentence rules:
-wordExampleForeign must naturally include wordForeign
+wordExampleForeign must naturally include wordForeign (the article may change form or become indefinite to fit the sentence naturally)
 must match CEFR level difficulty
 A1–A2: 8–12 words
 B1–C1: 10–15 words
