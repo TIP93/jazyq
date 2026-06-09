@@ -475,13 +475,13 @@ useEffect(() => {
 
 </div>
 
-<button
+ {/*  <button
   onClick={generateDaily}
   disabled={generating}
   className="px-4 py-2 rounded-xl bg-black text-white text-sm disabled:opacity-50"
 >
   {generating ? "Generating..." : "Generate today content"}
-</button> 
+</button> */}
 
 
 </div>
