@@ -188,15 +188,11 @@ useEffect(() => {
 
     {[
       { code: "en", flag: "gb" },
-      { code: "cs", flag: "cz" },
-      { code: "it", flag: "it" },
-      { code: "es", flag: "es" },
       { code: "de", flag: "de" },
+      { code: "es", flag: "es" },
       { code: "fr", flag: "fr" },
-      { code: "pt", flag: "pt" },
-      { code: "ru", flag: "ru" },
-      { code: "jp", flag: "jp" },
-      { code: "cn", flag: "cn" },
+      { code: "it", flag: "it" },
+
     ].map((l) => (
       <button
         key={l.code}
