@@ -786,67 +786,85 @@ useEffect(() => {
           <StreakPage user={user} />
         )}
 
-  <div className="print-only">
-  <div className="w-[210mm] h-[297mm] p-10 bg-[#f6f7fb] text-black flex flex-col gap-6">
+  <div className="min-h-screen bg-gray-100 p-8 flex justify-center items-center print:p-0 print:bg-white">
+      
+      {/* A4 Container - přesné rozměry, bez přetékání, prostor pro šanon vlevo */}
+      <div className="w-[210mm] h-[297mm] bg-[#f8fafc] text-[#1e293b] pt-[20mm] pb-[20mm] pr-[15mm] pl-[20mm] flex flex-col justify-start overflow-hidden box-border print:shadow-none print:bg-[#f8fafc]">
+        
+        {/* HERO SEKCE (Moderní font a výrazný layout) */}
+        <div className="text-center bg-gradient-to-r from-blue-600 to-blue-800 p-7 rounded-2xl text-white shadow-sm mb-5">
+          <h1 className="font-['Poppins'] text-3xl font-bold tracking-wide mb-1.5">
+            {content?.wordForeign}
+          </h1>
+          <p className="font-['Inter'] text-lg text-blue-200 font-medium">
+            {content?.wordNative}
+          </p>
+        </div>
 
-  {/* HERO */}
-  <div className="text-center space-y-2">
-    <h1 className="text-4xl font-light tracking-[0.3em]">
-      {content?.wordForeign}
-    </h1>
-    <p className="text-gray-500 text-lg">
-      {content?.wordNative}
-    </p>
-  </div>
+        {/* SEKCE: PŘÍKLAD */}
+        <div className="bg-white rounded-2xl p-5 mb-4 border border-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+          <div className="font-['Poppins'] text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-2.5">
+            <i className="fa-solid fa-comment-dot text-lg text-blue-500"></i>
+            Příklad / Example
+          </div>
+          {/* Zelená pro cizí jazyk / podmínky */}
+          <p className="font-['Inter'] text-lg font-semibold text-green-600 leading-relaxed mb-1">
+            {content?.wordExampleForeign}
+          </p>
+          {/* Modrá pro následky / významové celky / překlad */}
+          <p className="font-['Inter'] text-base text-blue-600 leading-relaxed">
+            {content?.wordExampleNative}
+          </p>
+        </div>
 
-  <div className="h-px bg-gray-200" />
+        {/* SEKCE: GRAMATIKA */}
+        <div className="bg-green-50/50 rounded-2xl p-5 mb-4 border-l-5 border-l-emerald-500 border-y border-r border-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+          <div className="font-['Poppins'] text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-2.5">
+            <i className="fa-solid fa-graduation-cap text-lg text-emerald-500"></i>
+            Gramatika / Grammar
+          </div>
+          <p className="font-['Inter'] text-[14.5px] leading-relaxed text-slate-700 mb-3">
+            {content?.grammarExplanation}
+          </p>
+          <div className="bg-white p-3 rounded-lg border border-slate-200">
+            <p className="font-['Inter'] text-sm font-semibold text-green-600">
+              {content?.grammarExample}
+            </p>
+          </div>
+        </div>
 
-  {/* EXAMPLE */}
-  <div className="space-y-2">
-    <p className="text-xs uppercase tracking-widest text-gray-400">
-      Příklad
-    </p>
-    <p className="text-lg leading-relaxed">
-      {content?.wordExampleForeign}
-    </p>
-    <p className="text-sm text-gray-500">
-      {content?.wordExampleNative}
-    </p>
-  </div>
+        {/* SPODNÍ INFOGRAFICKÁ MŘÍŽKA */}
+        <div className="grid grid-cols-2 gap-4 mt-1">
+          
+          {/* PŘEKLAD */}
+          <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+            <div className="font-['Poppins'] text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-2.5">
+              <i className="fa-solid fa-language text-lg text-amber-500"></i>
+              Překlad
+            </div>
+            <p className="font-['Inter'] text-sm font-medium text-blue-600 leading-relaxed">
+              {content?.grammarTranslationCz}
+            </p>
+          </div>
 
-  <div className="h-px bg-gray-200" />
+          {/* ČTENÍ */}
+          <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+            <div className="font-['Poppins'] text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-2.5">
+              <i className="fa-solid fa-book-open text-lg text-violet-500"></i>
+              Čtení / Reading
+            </div>
+            <p className="font-['Inter'] text-sm font-semibold text-green-600 leading-relaxed mb-1">
+              {content?.readingForeign}
+            </p>
+            <p className="font-['Inter'] text-sm font-medium text-blue-600 leading-relaxed">
+              {content?.readingNative}
+            </p>
+          </div>
 
-  {/* GRAMMAR */}
-  <div className="bg-yellow-50/40 p-4 rounded-xl">
-    <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">
-      Gramatika
-    </p>
-    <p className="text-sm leading-relaxed">
-      {content?.grammarExplanation}
-    </p>
-    <p className="mt-3 font-medium">
-      {content?.grammarExample}
-    </p>
-  </div>
+        </div>
 
-  <div className="grid grid-cols-2 gap-6 mt-auto">
-
-    <div>
-      <p className="text-xs uppercase text-gray-400 mb-2">Překlad</p>
-      <p className="text-sm">{content?.grammarTranslationCz}</p>
+      </div>
     </div>
-
-    <div>
-      <p className="text-xs uppercase text-gray-400 mb-2">Čtení</p>
-      <p className="text-sm leading-relaxed">
-        {content?.readingForeign}
-      </p>
-    </div>
-
-  </div>
-
-</div>
-</div>
 
 </div>
 
