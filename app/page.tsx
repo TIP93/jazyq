@@ -808,7 +808,7 @@ useEffect(() => {
   </div>
 
   {/* MAIN CONTENT AREA - Čisté ploché bloky s moderní typografií bez stínů */}
-  <div className="flex-1 flex flex-col justify-start gap-6 mt-8">
+  <div className="flex-1 flex flex-col justify-start gap-8 mt-8">
     
     {/* SLOVÍČKO DNE */}
     <div className="relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60">
