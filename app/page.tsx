@@ -789,10 +789,10 @@ useEffect(() => {
  {/* ========================================================= */}
 {/* MODERN PRINTABLE A4 INFOGRAPHIC (STRIKTNĚ JEDNA STRÁNKA)  */}
 {/* ========================================================= */}
-<div className="print-only w-[210mm] h-[297mm] max-h-[297mm] text-slate-800 pt-[10mm] pb-[12mm] px-[11mm] flex flex-col justify-between overflow-hidden box-border font-['Inter',sans-serif] bg-white">
+<div className="print-only w-[210mm] h-[297mm] max-h-[297mm] text-slate-800 pt-[12mm] pb-[12mm] px-[11mm] flex flex-col justify-between overflow-hidden box-border font-['Inter',sans-serif] bg-white">
   
   {/* HEADER - Vycentrovaný název aplikace a strukturované info */}
-  <div className="w-full flex flex-col items-center mb-3">
+  <div className="w-full flex flex-col items-center mb-4">
     <div className="font-['Poppins',sans-serif] text-4xl font-black tracking-widest text-slate-900 mb-2">
       JAZYQ
     </div>
@@ -812,16 +812,16 @@ useEffect(() => {
     <div className="w-full border-b border-slate-200" />
   </div>
 
-  {/* MAIN CONTENT AREA - mt-6 přidává požadovanou vzdušnost pod čáru, gap-5 drží bloky u sebe */}
-  <div className="flex-1 flex flex-col justify-start gap-5 mt-6 overflow-hidden">
+  {/* MAIN CONTENT AREA - Zvýšený gap-6 pro vzdušnost mezi bloky, mt-6 drží odstup od čáry headeru */}
+  <div className="flex-1 flex flex-col justify-start gap-6 mt-6 overflow-hidden">
     
-    {/* SLOVÍČKO DNE - p-5 a pt-5 odstraňuje prázdné místo, -top-3 dokonale usazuje štítek */}
-    <div className="relative bg-white rounded-xl p-5 pt-5 border border-slate-200">
-      <div className="absolute -top-3 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none leading-none">
+    {/* SLOVÍČKO DNE - pt-7 dává textu prostor, aby nebyl překryt štítkem */}
+    <div className="relative bg-white rounded-xl p-5 pt-7 border border-slate-200">
+      <div className="absolute -top-2.5 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5 decoration-clone">
         <Sparkles size={15} className="text-slate-400" />
         Slovíčko dne
       </div>
-      <h1 className="font-['Poppins',sans-serif] text-3xl font-bold tracking-wide text-slate-900 mb-1 leading-tight">
+      <h1 className="font-['Poppins',sans-serif] text-3xl font-bold tracking-wide text-slate-900 mb-1 mt-1 leading-tight">
         {content?.wordForeign}
       </h1>
       <p className="font-['Inter',sans-serif] text-base text-slate-500 font-normal">
@@ -830,12 +830,12 @@ useEffect(() => {
     </div>
 
     {/* SEKCE: PŘÍKLAD */}
-    <div className="relative bg-white rounded-xl p-5 pt-5 border border-slate-200">
-      <div className="absolute -top-3 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none leading-none">
+    <div className="relative bg-white rounded-xl p-5 pt-7 border border-slate-200">
+      <div className="absolute -top-2.5 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5 decoration-clone">
         <Languages size={15} className="text-slate-400" />
         Příkladová věta
       </div>
-      <p className="font-['Inter',sans-serif] text-base font-semibold text-slate-900 leading-relaxed mb-1.5">
+      <p className="font-['Inter',sans-serif] text-base font-semibold text-slate-900 leading-relaxed mb-1 mt-1">
         {content?.wordExampleForeign}
       </p>
       <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
@@ -844,12 +844,12 @@ useEffect(() => {
     </div>
 
     {/* SEKCE: GRAMATIKA */}
-    <div className="relative bg-white rounded-xl p-5 pt-5 border border-slate-200">
-      <div className="absolute -top-3 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none leading-none">
+    <div className="relative bg-white rounded-xl p-5 pt-7 border border-slate-200">
+      <div className="absolute -top-2.5 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5 decoration-clone">
         <Lightbulb size={15} className="text-slate-400" />
         Gramatika
       </div>
-      <p className="font-['Inter',sans-serif] text-sm leading-relaxed text-slate-600 mb-3 font-normal">
+      <p className="font-['Inter',sans-serif] text-sm leading-relaxed text-slate-600 mb-3 mt-1 font-normal">
         {content?.grammarExplanation}
       </p>
       <div className="bg-slate-50 p-3 rounded-lg border border-slate-200/60">
@@ -860,12 +860,12 @@ useEffect(() => {
     </div>
 
     {/* SEKCE: PŘEKLAD GRAMATIKY */}
-    <div className="relative bg-white rounded-xl p-5 pt-5 border border-slate-200">
-      <div className="absolute -top-3 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none leading-none">
+    <div className="relative bg-white rounded-xl p-5 pt-7 border border-slate-200">
+      <div className="absolute -top-2.5 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5 decoration-clone">
         <BookOpen size={15} className="text-slate-400" />
         Překlad
       </div>
-      <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 leading-relaxed mb-1.5">
+      <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 leading-relaxed mb-1 mt-1">
         {content?.grammarTranslationOrig}
       </p>
       <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
@@ -874,12 +874,12 @@ useEffect(() => {
     </div>
 
     {/* SEKCE: ČTENÍ / READING */}
-    <div className="relative bg-white rounded-xl p-5 pt-5 border border-slate-200">
-      <div className="absolute -top-3 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none leading-none">
+    <div className="relative bg-white rounded-xl p-5 pt-7 border border-slate-200">
+      <div className="absolute -top-2.5 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none h-5 decoration-clone">
         <FileText size={15} className="text-slate-400" />
         Čtení
       </div>
-      <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 leading-relaxed mb-2">
+      <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 leading-relaxed mb-2 mt-1">
         {content?.readingForeign}
       </p>
       <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
