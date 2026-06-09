@@ -789,7 +789,7 @@ useEffect(() => {
  {/* ========================================================= */}
 {/* MODERN PRINTABLE A4 INFOGRAPHIC (STRIKTNĚ JEDNA STRÁNKA)  */}
 {/* ========================================================= */}
-<div className="hidden print:flex w-[210mm] h-[297mm] max-h-[297mm] bg-white text-[#1e293b] pt-[12mm] pb-[12mm] pr-[15mm] pl-[20mm] flex-col justify-between overflow-hidden box-border [page-break-inside:avoid]">
+<div className="print-only h-[297mm] max-h-[297mm] text-[#1e293b] pt-[12mm] pb-[12mm] pr-[15mm] pl-[20mm] flex flex-col justify-between overflow-hidden box-border">
   
   {/* HEADER - Moderní vycentrovaný brand s jemnou linkou */}
   <div className="w-full flex flex-col items-center mb-6">
