@@ -4,6 +4,14 @@ import { callWithRetry } from "@/app/api/gemini-daily/retry";
 
 export async function POST(req: Request) {
   try {
+
+    // === ZABEZPEČENÍ PRO CRON ===
+    const authHeader = req.headers.get("authorization");
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    // ============================
+    
     const body = await req.json().catch(() => ({}));
 const force = body?.force === true;
 // 1. Získání konkrétního jazyka z requestu (např. "en")
