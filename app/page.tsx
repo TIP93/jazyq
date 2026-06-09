@@ -789,11 +789,11 @@ useEffect(() => {
  {/* ========================================================= */}
 {/* MODERN PRINTABLE A4 INFOGRAPHIC (STRIKTNĚ JEDNA STRÁNKA)  */}
 {/* ========================================================= */}
-<div className="print-only w-[210mm] h-[297mm] max-h-[297mm] text-slate-800 pt-[8mm] pb-[12mm] px-[11mm] flex flex-col justify-between overflow-hidden box-border font-['Inter',sans-serif] bg-white">
+<div className="print-only w-[210mm] h-[297mm] max-h-[297mm] text-slate-800 pt-[10mm] pb-[12mm] px-[11mm] flex flex-col justify-between overflow-hidden box-border font-['Inter',sans-serif] bg-white">
   
-  {/* HEADER - Vycentrovaný název aplikace a strukturované info (posunuto výše) */}
-  <div className="w-full flex flex-col items-center mb-4">
-    <div className="font-['Poppins',sans-serif] text-4xl font-black tracking-widest text-slate-900 mb-1">
+  {/* HEADER - Vycentrovaný název aplikace a strukturované info */}
+  <div className="w-full flex flex-col items-center mb-3">
+    <div className="font-['Poppins',sans-serif] text-4xl font-black tracking-widest text-slate-900 mb-2">
       JAZYQ
     </div>
     
@@ -812,16 +812,16 @@ useEffect(() => {
     <div className="w-full border-b border-slate-200" />
   </div>
 
-  {/* MAIN CONTENT AREA - Širší struktura, opravené bezpečné odsazení pod štítky */}
-  <div className="flex-1 flex flex-col justify-start gap-5 overflow-hidden">
+  {/* MAIN CONTENT AREA - mt-6 přidává požadovanou vzdušnost pod čáru, gap-5 drží bloky u sebe */}
+  <div className="flex-1 flex flex-col justify-start gap-5 mt-6 overflow-hidden">
     
-    {/* SLOVÍČKO DNE - pt-8 zajišťuje, že štítek nepřekryje samotné slovo */}
-    <div className="relative bg-white rounded-xl p-5 pt-8 border border-slate-200">
-      <div className="absolute -top-2.5 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none">
+    {/* SLOVÍČKO DNE - p-5 a pt-5 odstraňuje prázdné místo, -top-3 dokonale usazuje štítek */}
+    <div className="relative bg-white rounded-xl p-5 pt-5 border border-slate-200">
+      <div className="absolute -top-3 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none leading-none">
         <Sparkles size={15} className="text-slate-400" />
         Slovíčko dne
       </div>
-      <h1 className="font-['Poppins',sans-serif] text-3xl font-bold tracking-wide text-slate-900 mb-1 leading-none">
+      <h1 className="font-['Poppins',sans-serif] text-3xl font-bold tracking-wide text-slate-900 mb-1 leading-tight">
         {content?.wordForeign}
       </h1>
       <p className="font-['Inter',sans-serif] text-base text-slate-500 font-normal">
@@ -830,24 +830,22 @@ useEffect(() => {
     </div>
 
     {/* SEKCE: PŘÍKLAD */}
-    <div className="relative bg-white rounded-xl p-5 pt-8 border border-slate-200">
-      <div className="absolute -top-2.5 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none">
+    <div className="relative bg-white rounded-xl p-5 pt-5 border border-slate-200">
+      <div className="absolute -top-3 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none leading-none">
         <Languages size={15} className="text-slate-400" />
         Příkladová věta
       </div>
-      {/* Černá a tučná pro cizí text */}
       <p className="font-['Inter',sans-serif] text-base font-semibold text-slate-900 leading-relaxed mb-1.5">
         {content?.wordExampleForeign}
       </p>
-      {/* Šedá a netučná pro mateřský jazyk */}
       <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
         {content?.wordExampleNative}
       </p>
     </div>
 
     {/* SEKCE: GRAMATIKA */}
-    <div className="relative bg-white rounded-xl p-5 pt-8 border border-slate-200">
-      <div className="absolute -top-2.5 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none">
+    <div className="relative bg-white rounded-xl p-5 pt-5 border border-slate-200">
+      <div className="absolute -top-3 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none leading-none">
         <Lightbulb size={15} className="text-slate-400" />
         Gramatika
       </div>
@@ -862,8 +860,8 @@ useEffect(() => {
     </div>
 
     {/* SEKCE: PŘEKLAD GRAMATIKY */}
-    <div className="relative bg-white rounded-xl p-5 pt-8 border border-slate-200">
-      <div className="absolute -top-2.5 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none">
+    <div className="relative bg-white rounded-xl p-5 pt-5 border border-slate-200">
+      <div className="absolute -top-3 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none leading-none">
         <BookOpen size={15} className="text-slate-400" />
         Překlad
       </div>
@@ -876,8 +874,8 @@ useEffect(() => {
     </div>
 
     {/* SEKCE: ČTENÍ / READING */}
-    <div className="relative bg-white rounded-xl p-5 pt-8 border border-slate-200">
-      <div className="absolute -top-2.5 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none">
+    <div className="relative bg-white rounded-xl p-5 pt-5 border border-slate-200">
+      <div className="absolute -top-3 left-4 bg-white px-2 font-['Poppins',sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2 select-none leading-none">
         <FileText size={15} className="text-slate-400" />
         Čtení
       </div>
@@ -891,7 +889,7 @@ useEffect(() => {
 
   </div>
 
-  {/* FOOTER - Aktualizovaná česká doména */}
+  {/* FOOTER */}
   <div className="w-full flex flex-col items-center mt-5">
     <div className="w-full border-t border-slate-200 mb-3" />
     <div className="font-['Poppins',sans-serif] text-sm font-medium text-slate-600 tracking-wide mb-1">
