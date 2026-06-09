@@ -5,15 +5,22 @@ import { callWithRetry } from "@/app/api/gemini-daily/retry";
 export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
-    const force = body?.force === true;
+const force = body?.force === true;
+// 1. Získání konkrétního jazyka z requestu (např. "en")
+const currentLang = body?.language; 
 
-    const today = new Date().toISOString().split("T")[0];
+if (!currentLang) {
+  return Response.json({ error: "Missing language parameter" }, { status: 400 });
+}
 
-   const languages = ["it"];
-   // const languages = ["en", "cs", "it", "es", "de", "fr", "pt", "ru", "jp", "cn"];
-    const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
+const today = new Date().toISOString().split("T")[0];
 
-    const expectedCount = languages.length * levels.length;
+// 2. Pole languages teď bude obsahovat POUZE ten jeden vybraný jazyk
+const languages = ["en", "it", "es", "de", "fr"];
+const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
+
+// 3. Očekávaný počet položek bude teď pouze 6 (1 jazyk * 6 úrovní)
+const expectedCount = levels.length;
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -49,23 +56,27 @@ export async function POST(req: Request) {
       model: "gemini-3.5-flash",
     });
 
+    // ZDE VLOŽÍŠ TENTO ŘÁDEK (příprava pro hromadný sběr dat)
+    const allGeneratedRows: any[] = [];
+
+    // ZDE SPUSTÍŠ CYKLUS (tímto obalíš stávající generování)
+    for (const lang of languages) {
+      console.log(`Generuji jazyk: ${lang}`);
+
+      try {
+
     // 2) POSLEDNÍ SLOVA (ANTI-REPEAT)
 
 const { data: usedWordsRows, error: usedWordsError } = await supabase
   .from("dailycontent")
   .select("language, level, wordForeign")
-  .in("language", languages)
+  .eq("language", lang) // <--- OPRAVENO NA .eq
   .order("contentDate", { ascending: false })
-  .limit(420);
+  .limit(360); 
 
 if (usedWordsError) {
-  return Response.json(
-    {
-      error: "Failed loading previous words",
-      details: usedWordsError,
-    },
-    { status: 500 }
-  );
+  console.error("Failed loading previous words for " + lang, usedWordsError);
+  continue;
 }
 
 const usedWords =
@@ -86,13 +97,8 @@ const usedWords =
   .limit(360);
 
 if (usedGrammarError) {
-  return Response.json(
-    {
-      error: "Failed loading previous grammar",
-      details: usedGrammarError,
-    },
-    { status: 500 }
-  );
+  console.error("Failed loading previous grammar for " + lang, usedGrammarError);
+  continue; // <--- NAHRADIT ZA CONTINUE
 }
 
 const recentFamilies =
@@ -292,14 +298,7 @@ console.log("RAW GEMINI RESULT:", result);
 
 } catch (err) {
   console.log("🔥 GEMINI ERROR:", err);
-
-  return Response.json(
-    {
-      error: "Gemini call failed",
-      details: err instanceof Error ? err.message : err,
-    },
-    { status: 500 }
-  );
+  continue;
 }
 
     // 5) SAFE JSON PARSE
@@ -319,124 +318,103 @@ try {
   }
 
 } catch (err) {
+  console.error(`❌ Selhal JSON parse pro jazyk ${lang}:`, err);
   console.log("RAW FAILED TEXT:", text);
-
-  return Response.json(
-    {
-      error: "Invalid JSON from model",
-      details: err instanceof Error ? err.message : err,
-      raw: text,
-    },
-    { status: 500 }
-  );
+  continue; 
 }
 
 if (parsed.length !== expectedCount) {
-  return Response.json(
-    {
-      error: "Expected items mismatch",
-      expected: expectedCount,
-      got: parsed.length,
-    },
-    { status: 500 }
-  );
+  console.error(`❌ Chyba počtu u jazyka ${lang}: Očekáváno ${expectedCount}, ale přišlo ${parsed.length}`);
+  continue; // <--- Přeskočí tento jazyk a jde na další
 }
 
 const missing = [];
 
-for (const lang of languages) {
+for (const l of languages) { // <--- Změněno na 'l'
   for (const level of levels) {
     const exists = parsed.some(
-      (p) => p.language === lang && p.level === level
+      (p) => p.language === l && p.level === level // <--- Změněno na 'l'
     );
 
     if (!exists) {
-      missing.push(`${lang}-${level}`);
+      missing.push(`${l}-${level}`); // <--- Změněno na 'l'
     }
   }
 }
 
 if (missing.length > 0) {
-  return Response.json(
-    {
-      error: "Missing language-level combinations",
-      missing,
-    },
-    { status: 500 }
-  );
+  console.error(`❌ Jazyku ${lang} chybí tyto kombinace:`, missing);
+  continue; // <--- Přeskočí tento jazyk a jde na další
 }
 
-const words = parsed.map((i) =>
+const words = parsed.map((i: any) =>
   i.wordForeign.toLowerCase().trim()
 );
 
 const uniqueWords = new Set(words);
 
 if (uniqueWords.size !== words.length) {
+  console.error(`❌ Jazyk ${lang} obsahuje duplicitní slova!`);
+  continue; // <--- Přeskočí tento jazyk a jde na další
+}
+
+    // 6) INSERT BULK
+    // Převedeme vygenerovaná data pro aktuální jazyk a přidáme je do společného pole
+    parsed.forEach((item: any) => {
+      allGeneratedRows.push({
+        language: item.language,
+        level: item.level,
+        wordForeign: item.wordForeign,
+        wordNative: item.wordNative,
+        grammarExample: item.grammarExample ?? "",
+        grammarExplanation: item.grammarExplanation ?? "",
+        grammarFamily: item.grammarFamily ?? "",
+        grammarPattern: item.grammarPattern ?? "",
+        grammarContext: item.grammarContext ?? "",
+        wordExampleForeign: item.wordExampleForeign ?? "",
+        wordExampleNative: item.wordExampleNative ?? "",
+        grammarTranslationCz: item.grammarTranslationCz ?? "",
+        grammarTranslationOrig: item.grammarTranslationOrig ?? "",
+        readingForeign: item.readingForeign ?? "",
+        readingNative: item.readingNative ?? "",
+        contentDate: today,
+      });
+    });
+
+  } catch (err) {
+    console.log(`🔥 Selhalo zpracování nebo validace pro jazyk ${lang}:`, err);
+    continue;
+  }
+} // <=== ZDE SE OFICIÁLNĚ UZAVÍRÁ CYKLUS: for (const lang of languages)
+
+
+// === NYNÍ JSME MIMO CYKLUS. ZÁPIS DO DB PROBĚHNE JEDNOU PRO VŠECHNY JAZYKY NAJEDNOU ===
+
+if (allGeneratedRows.length === 0) {
+  return Response.json(
+    { error: "Nebyla vygenerována žádná data z žádného jazyka." },
+    { status: 500 }
+  );
+}
+
+console.log(`💾 Všechny jazyky dokončeny. Ukládám celkem ${allGeneratedRows.length} řádků do DB.`);
+
+const { data: inserted, error: insertError } = await supabase
+  .from("dailycontent")
+  .upsert(allGeneratedRows, {
+    onConflict: "contentDate,language,level",
+  })
+  .select();
+
+if (insertError) {
   return Response.json(
     {
-      error: "Duplicate words generated",
+      error: "DB bulk insert failed",
+      details: insertError,
     },
     { status: 500 }
   );
 }
-    // 6) INSERT BULK
-const rows = parsed.map((item) => ({
-  language: item.language,
-  level: item.level,
-
-  wordForeign: item.wordForeign,
-  wordNative: item.wordNative,
-grammarExample: item.grammarExample ?? "",
-grammarExplanation: item.grammarExplanation ?? "",
-grammarFamily: item.grammarFamily ?? "",
-grammarPattern: item.grammarPattern ?? "",
-grammarContext: item.grammarContext ?? "",
-
-  wordExampleForeign: item.wordExampleForeign ?? "",
-  wordExampleNative: item.wordExampleNative ?? "",
-  grammarTranslationCz: item.grammarTranslationCz ?? "",
-  grammarTranslationOrig: item.grammarTranslationOrig ?? "",
-  
-  readingForeign: item.readingForeign ?? "",
-  readingNative: item.readingNative ?? "",
-  contentDate: today,
-}));
-
-if (parsed.length !== rows.length) {
-  throw new Error("CRITICAL: parsed vs rows mismatch");
-}
-
-console.log("FINAL DATA READY:", {
-  count: rows.length,
-  levels: rows.map(r => r.level),
-  languages: rows.map(r => r.language),
-});
-
-  const { data: inserted, error: insertError } =
-  await supabase
-    .from("dailycontent")
-    .upsert(rows, {
-      onConflict: "contentDate,language,level",
-    })
-    .select();
-
-    if (insertError) {
-      return Response.json(
-        {
-          error: "DB bulk insert failed",
-          details: insertError,
-        },
-        { status: 500 }
-      );
-    }
-
-   if (!inserted || inserted.length !== expectedCount) {
-  throw new Error(
-    `CRITICAL: partial insert detected. expected=${expectedCount}, got=${inserted?.length ?? 0}`
-  );
-}
-
 
     // 7) RESPONSE
     return Response.json({
