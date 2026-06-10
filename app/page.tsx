@@ -422,7 +422,7 @@ useEffect(() => {
     {/* TEXT */}
     <div>
       <p className="text-xs text-gray-500">
-        Streak
+        Série
       </p>
 
       <p className="text-sm font-medium text-black">

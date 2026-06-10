@@ -107,23 +107,35 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
           {streak} {streak === 1 ? 'den' : (streak > 1 && streak < 5 ? 'dny' : 'dní')} v řadě
         </h1>
         <p className="text-sm text-gray-400">
-          Cíl: {milestone.target} dní
+          CÍL: {milestone.target} DNÍ
         </p>
       </div>
 
       {/* VYCENTROVANÝ ORANŽOVÝ BLOK OD KRAJE KE KRAJI */}
-      <div className="w-full flex flex-col items-center gap-2 bg-amber-50 border border-amber-100 rounded-2xl p-4 text-center">
-        <div className="p-2 bg-amber-500 text-white rounded-xl shadow-xs">
-          <GiftIcon size={18} className="stroke-[2.5px]" />
-        </div>
-        <p className="text-xs text-amber-900 leading-normal max-w-md">
-          {milestone.remaining === 0 ? (
-            <span className="font-bold text-green-700">Skvělé! Odemkl jsi týdenní Premium zdarma.</span>
-          ) : (
-            <>Zbývá <strong>{milestone.remaining} {milestone.remaining === 1 ? 'den' : (milestone.remaining > 1 && milestone.remaining < 5 ? 'dny' : 'dní')}</strong> do získání týdenního <strong>Premium členství zdarma</strong>.</>
-          )}
-        </p>
-      </div>
+<div className="w-full flex flex-col items-center gap-3 bg-gradient-to-b from-amber-50 to-orange-50/30 border border-amber-100 rounded-2xl p-6 text-center shadow-xs">
+  <div className="p-3 bg-amber-500 text-white rounded-2xl shadow-md transform -rotate-3 animate-bounce-slow">
+    <GiftIcon size={22} className="stroke-[2.5px]" />
+  </div>
+  
+  <div className="space-y-1">
+    <h3 className="text-lg font-bold text-amber-950 tracking-tight">
+      {milestone.remaining === 0 ? (
+        "Odměna je tvoje!"
+      ) : (
+        <>Máš to na dosah!</>
+      )}
+    </h3>
+    <p className="text-sm text-amber-900/80 max-w-sm mx-auto leading-relaxed">
+      {milestone.remaining === 0 ? (
+        <span className="font-bold text-green-700 block">Skvělé! Odemkl jsi týdenní Premium zdarma.</span>
+      ) : (
+        <>
+          Zbývá <strong>{milestone.remaining} {milestone.remaining === 1 ? 'den' : (milestone.remaining > 1 && milestone.remaining < 5 ? 'dny' : 'dní')}</strong> do získání týdenního <span className="font-semibold text-amber-950">Premium členství zdarma</span>.
+        </>
+      )}
+    </p>
+  </div>
+</div>
 
       {/* DYNAMICKÝ TÝDENNÍ GRID */}
       <div className="grid grid-cols-7 gap-2.5 pt-2">
