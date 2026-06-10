@@ -466,9 +466,12 @@ useEffect(() => {
       
       {/* Google: Čisté minimalistické G */}
       {provider === "google" && (
-        <svg className="w-3.5 h-3.5 opacity-80" viewBox="0 0 24 24">
-          <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.866-3.577-7.866-8s3.536-8 7.866-8c2.46 0 4.105 1.025 5.047 1.926l3.227-3.107C18.316 2.032 15.54 1 12.24 1 6.033 1 1 6.033 1 12.24s5.033 11.24 11.24 11.24c6.478 0 10.793-4.537 10.793-10.984 0-.743-.078-1.313-.173-1.763H12.24z"/>
-        </svg>
+        <img 
+    src="/google-logo.svg" 
+    alt="Seznam" 
+    className="w-3.5 h-3.5 opacity-50 select-none"
+    draggable={false}
+  />
       )}
       
       {/* Seznam: Čisté, výrazné, tučné červené S */}
@@ -477,7 +480,7 @@ useEffect(() => {
   <img 
     src="/seznam-logo-esko-18-cervena.svg" 
     alt="Seznam" 
-    className="w-3.5 h-3.5 opacity-90 select-none"
+    className="w-3.5 h-3.5 opacity-50 select-none"
     draggable={false}
   />
 )}
