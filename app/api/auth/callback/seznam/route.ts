@@ -101,12 +101,13 @@ const fullName = [seznamUser.firstname, seznamUser.lastname].filter(Boolean).joi
     // 5. Vygenerování Supabase session pro frontend
     // Aby byl uživatel reálně přihlášený v prohlížeči, vygenerujeme mu přihlašovací link/token
     const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
-      type: "magiclink",
-      email: email,
-      options: {
-        redirectTo: new URL("/dashboard", request.url).toString() // Kam chceš uživatele poslat po přihlášení
-      }
-    });
+  type: "magiclink",
+  email: email,
+  options: {
+    // Přesměrujeme uživatele na hlavní stránku aplikace
+    redirectTo: new URL("/", request.url).toString() 
+  }
+});
 
     if (linkError || !linkData.properties?.action_link) {
       console.error("Chyba generování linku:", linkError);
