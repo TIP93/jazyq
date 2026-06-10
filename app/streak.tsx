@@ -15,7 +15,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
   const streak = stats.current_streak;
   const loggedDays = stats.logged_days || [];
 
-  // --- DYNAMICKÝ VÝPOČET MILNÍKŮ (14 -> 30 -> 60 -> 90 -> 90+90...) ---
+  // --- LOGIKA MILNÍKŮ (14 -> 30 -> 60 -> 90 -> 90+90...) ---
   const getMilestoneInfo = (currentStreak: number) => {
     let currentMilestoneTarget = 14;
     let previousMilestoneTarget = 0;
@@ -30,13 +30,11 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
       currentMilestoneTarget = 60;
       previousMilestoneTarget = 30;
     } else {
-      // Nekonečná smyčka po 90 dnech (90, 180, 270...)
       const cycle = Math.floor((currentStreak - 60) / 90);
       currentMilestoneTarget = 60 + (cycle + 1) * 90;
       previousMilestoneTarget = 60 + cycle * 90;
     }
 
-    // Výpočet procent do progress baru (bereme v úvahu posun od minulého milníku)
     const range = currentMilestoneTarget - previousMilestoneTarget;
     const earnedInCurrentRange = currentStreak - previousMilestoneTarget;
     const percentage = Math.min(Math.max((earnedInCurrentRange / range) * 100, 0), 100);
@@ -81,11 +79,24 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
   const dynamicWeek = generateDynamicWeek();
 
   return (
-    <div className="w-full max-w-2xl mx-auto bg-white border border-gray-200 rounded-3xl p-10 text-center space-y-8 shadow-sm">
+    <div className="w-full max-w-xl mx-auto bg-white border border-gray-200 rounded-3xl p-10 text-center space-y-8 shadow-sm">
       
-      {/* HERO SECTION: Ohýnek */}
-      <div className="relative w-20 h-20 mx-auto flex items-center justify-center bg-orange-50 rounded-2xl">
-        <div className={`text-4xl ${streak > 0 ? "animate-pulse" : "grayscale opacity-60"}`}>
+      {/* KULATÝ PROGRESS BAR KOLEM OHÝNKU */}
+      <div className="relative w-32 h-32 mx-auto flex items-center justify-center">
+        <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="44" className="stroke-gray-100 fill-none" strokeWidth="3" />
+          <circle 
+            cx="50" 
+            cy="50" 
+            r="44" 
+            className={`fill-none transition-all duration-700 ease-out ${streak > 0 ? "stroke-orange-500" : "stroke-gray-300"}`} 
+            strokeWidth="4" 
+            strokeDasharray="276.4"
+            strokeDashoffset={276.4 - (276.4 * milestone.percentage) / 100}
+            strokeLinecap="round"
+          />
+        </svg>
+        <div className={`text-5xl transition-transform duration-300 ${streak > 0 ? "animate-pulse scale-105" : "grayscale opacity-50"}`}>
           🔥
         </div>
       </div>
@@ -95,45 +106,23 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
         <h1 className="text-4xl font-semibold tracking-tight text-gray-900">
           {streak} {streak === 1 ? 'den' : (streak > 1 && streak < 5 ? 'dny' : 'dní')} v řadě
         </h1>
-        <p className="text-sm text-gray-500">
-          {streak > 0 
-            ? "Pokračuj v pravidelném učení. Každý den posiluje tvou paměť."
-            : "Začni svou sérii ještě dnes. Stačí jedno cvičení denně."
-          }
+        <p className="text-sm text-gray-400">
+          Cíl: {milestone.target} dní
         </p>
       </div>
 
-      {/* MODERNÍ PROGRESS BAR A ODMĚNA */}
-      <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 space-y-4 text-left">
-        <div className="flex justify-between items-end text-sm">
-          <div className="space-y-0.5">
-            <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Aktuální cíl</span>
-            <p className="font-semibold text-gray-900">{milestone.target} dní pravidelnosti</p>
-          </div>
-          <span className="text-xs font-semibold text-gray-500 bg-white px-2.5 py-1 rounded-lg border border-gray-200/60 shadow-2xs">
-            {milestone.remaining === 0 ? "Splněno!" : `Zbývá ${milestone.remaining} ${milestone.remaining === 1 ? 'den' : (milestone.remaining > 1 && milestone.remaining < 5 ? 'dny' : 'dní')}`}
-          </span>
+      {/* VÝRAZNÝ BAREVNÝ DÁREČEK – ČISTÁ MOTIVACE */}
+      <div className="inline-flex items-center gap-3 bg-amber-50 border border-amber-100 rounded-2xl px-5 py-3 text-left max-w-md mx-auto">
+        <div className="p-2 bg-amber-500 text-white rounded-xl shadow-xs">
+          <GiftIcon size={18} className="stroke-[2.5px]" />
         </div>
-
-        {/* Samotná linka pokroku */}
-        <div className="w-full h-2 bg-gray-200/70 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-black rounded-full transition-all duration-700 ease-out"
-            style={{ width: `${milestone.percentage}%` }}
-          />
-        </div>
-
-        {/* Decentní info o prémiu */}
-        <div className="flex items-start gap-3 pt-1 text-xs text-gray-600 border-t border-gray-200/50 mt-2">
-          <GiftIcon size={16} className="text-gray-900 shrink-0 mt-0.5" />
-          <p className="leading-normal">
-            {milestone.remaining === 0 ? (
-              <span className="font-medium text-green-600">Gratulujeme! Odemkl jsi týdenní Premium členství zdarma.</span>
-            ) : (
-              <>Dosáhni tohoto cíle a získej <strong>týdenní Premium členství zdarma</strong> jako poděkování za tvou píli.</>
-            )}
-          </p>
-        </div>
+        <p className="text-xs text-amber-900 leading-tight">
+          {milestone.remaining === 0 ? (
+            <span className="font-bold text-green-700">Skvělé! Odemkl jsi týdenní Premium zdarma.</span>
+          ) : (
+            <>Zbývá <strong>{milestone.remaining} {milestone.remaining === 1 ? 'den' : (milestone.remaining > 1 && milestone.remaining < 5 ? 'dny' : 'dní')}</strong> do získání týdenního <strong>Premium členství zdarma</strong>.</>
+          )}
+        </p>
       </div>
 
       {/* DYNAMICKÝ TÝDENNÍ GRID */}
