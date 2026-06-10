@@ -70,7 +70,7 @@ const [showLoginOptions, setShowLoginOptions] = useState(false);
 const [user, setUser] = useState<any>(null);
 const [view, setView] = useState<"learn" | "streak">("learn");
 
-const provider = user.app_metadata?.provider || user.user_metadata?.provider;
+const provider = user?.app_metadata?.provider || user?.user_metadata?.provider;
 
 const iconCircle =
   "w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center";
