@@ -133,24 +133,45 @@ async function signInWithGoogle() {
   });
 }
 
+// JEDINÝ SMLUVENÝ EFEKT PRO SPRÁVU UŽIVATELE A LOGOVÁNÍ STREAKU
 useEffect(() => {
-  async function loadUser() {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+  async function initializeUserAndStreak() {
+    try {
+      // 1. Získáme session a uživatele ze Supabase Auth
+      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { user } } = await supabase.auth.getUser();
 
-    console.log("SESSION", session);
+      console.log("PŘIHLÁŠENÝ UŽIVATEL:", user);
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+      // 2. Uložíme uživatele do lokálního stavu aplikace
+      setUser(user);
 
-    console.log("USER", user);
+      // 3. Pokud uživatel existuje, provedeme zápis dnešní návštěvy
+      if (user) {
+        console.log("Zapisuji dnešní přístup pro uživatele:", user.id);
+        
+        const todayDate = new Date().toISOString().split("T")[0];
 
-    setUser(user);
+        const { error: upsertError } = await supabase
+          .from("user_logs")
+          .upsert(
+            { user_id: user.id, log_date: todayDate },
+            { onConflict: "user_id,log_date" }
+          );
+
+        if (upsertError) {
+          throw upsertError;
+        }
+
+        // 4. Teprve po úspěšném zápisu zavoláme kalkulačku pro výpočet streaků
+        fetchStreakData(user.id);
+      }
+    } catch (error) {
+      console.error("Chyba při inicializaci uživatele nebo streaku:", error);
+    }
   }
 
-  loadUser();
+  initializeUserAndStreak();
 }, []);
 
 // 1. Vytvoříme stav (state) pro uložení reálných čísel z databáze
@@ -177,33 +198,6 @@ async function fetchStreakData(userId: string) {
     console.error("Chyba při načítání streak dat:", error);
   }
 }
-
-useEffect(() => {
-    async function loadUser() {
-      const { data: { session } } = await supabase.auth.getSession();
-      const { data: { user } } = await supabase.auth.getUser();
-
-      setUser(user);
-
-      if (user) {
-        try {
-          await supabase
-            .from("user_logs")
-            .upsert(
-              { user_id: user.id, log_date: new Date().toISOString().split("T")[0] },
-              { onConflict: "user_id,log_date" }
-            );
-          
-          // Teď už TypeScript ví, co fetchStreakData znamená! 🎉
-          fetchStreakData(user.id);
-        } catch (error) {
-          console.error("Error logging user access:", error);
-        }
-      }
-    }
-
-    loadUser();
-  }, []);
 
 useEffect(() => {
   setView("learn");
