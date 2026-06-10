@@ -579,21 +579,25 @@ useEffect(() => {
 </div>
 
     {/* LOGIN BUTTON */}
-    <div
-      onClick={() => setShowLoginOptions(!showLoginOptions)}
-      className="
-        border border-gray-200 rounded-2xl p-4
-        flex items-center gap-3
-        hover:bg-gray-50 transition cursor-pointer
-      "
-    >
-      <User size={20} className="text-gray-500" />
+    {/* LOGIN BUTTON */}
+<div
+  onClick={() => setShowLoginOptions(!showLoginOptions)}
+  className="
+    border border-gray-200 rounded-2xl p-4
+    flex items-center gap-3
+    hover:bg-gray-50 transition cursor-pointer bg-white
+  "
+>
+  {/* Sjednocený kruh pro ikonu – přesná kopie z Historie */}
+  <div className="w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center flex-shrink-0">
+    <User size={18} className="text-gray-500" />
+  </div>
 
-      <div>
-        <p className="text-xs text-gray-500">Účet</p>
-        <p className="text-sm">Přihlásit se</p>
-      </div>
-    </div>
+  <div>
+    <p className="text-xs text-gray-500">Účet</p>
+    <p className="text-sm font-medium text-black">Přihlásit se</p>
+  </div>
+</div>
   </>
 )}
 
