@@ -111,12 +111,12 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
         </p>
       </div>
 
-      {/* VÝRAZNÝ BAREVNÝ DÁREČEK – ČISTÁ MOTIVACE */}
-      <div className="inline-flex items-center gap-3 bg-amber-50 border border-amber-100 rounded-2xl px-5 py-3 text-left max-w-md mx-auto">
-        <div className="p-2 bg-amber-500 text-white rounded-xl shadow-xs">
+      {/* ORANŽOVÝ BLOK ZAROVNANÝ OD KRAJE KE KRAJI (w-full) */}
+      <div className="w-full flex items-center gap-4 bg-amber-50 border border-amber-100 rounded-2xl p-4 text-left">
+        <div className="p-2 bg-amber-500 text-white rounded-xl shadow-xs shrink-0">
           <GiftIcon size={18} className="stroke-[2.5px]" />
         </div>
-        <p className="text-xs text-amber-900 leading-tight">
+        <p className="text-xs text-amber-900 leading-normal">
           {milestone.remaining === 0 ? (
             <span className="font-bold text-green-700">Skvělé! Odemkl jsi týdenní Premium zdarma.</span>
           ) : (
@@ -180,11 +180,11 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
         </div>
       </div>
 
-      {/* CONTINUE CTA */}
+      {/* SUBTLE SUBTEXTOVÉ TLAČÍTKO */}
       <div className="pt-2">
         <button
           onClick={() => setView("learn")}
-          className="w-full sm:w-auto px-8 py-3.5 bg-gray-900 text-white rounded-2xl text-sm font-medium hover:bg-gray-800 active:scale-[0.98] transition-all shadow-xs"
+          className="w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-2xl hover:bg-gray-50 hover:text-gray-900 active:scale-[0.98] transition-all shadow-xs"
         >
           Pokračovat ve studiu
         </button>
