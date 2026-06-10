@@ -176,23 +176,39 @@ useEffect(() => {
 }, []);
 
 // 1. Vytvoříme stav (state) pro uložení reálných čísel z databáze
-const [streakStats, setStreakStats] = useState({ current_streak: 0, max_streak: 0 });
+const [streakStats, setStreakStats] = useState<{
+  current_streak: number;
+  max_streak: number;
+  logged_days: string[];
+}>({ current_streak: 0, max_streak: 0, logged_days: [] });
 
 // 2. Definujeme chybějící funkci fetchStreakData
 async function fetchStreakData(userId: string) {
   try {
-    // Zavoláme tu chytrou kalkulačku (RPC funkci), kterou jsme nahráli do Supabase
-    const { data, error } = await supabase.rpc("get_user_streaks", {
+    // 1. Získáme spočítané streaky z RPC kalkulačky
+    const { data: rpcData, error: rpcError } = await supabase.rpc("get_user_streaks", {
       target_user_id: userId,
     });
 
-    if (error) throw error;
+    if (rpcError) throw rpcError;
 
-    if (data) {
-      // Pokud nám Supabase vrátí data, uložíme je do našeho stavu
+    // 2. Vytáhneme reálné dny, kdy se uživatel logoval
+    const { data: logsData, error: logsError } = await supabase
+      .from("user_logs")
+      .select("log_date")
+      .eq("user_id", userId)
+      .order("log_date", { ascending: false });
+
+    if (logsError) throw logsError;
+
+    // Převedeme objekty z DB na jednoduché pole stringů ['2026-06-10', '2026-06-09', ...]
+    const extractedDays = logsData ? logsData.map(log => log.log_date) : [];
+
+    if (rpcData) {
       setStreakStats({
-        current_streak: data.current_streak,
-        max_streak: data.max_streak,
+        current_streak: rpcData.current_streak,
+        max_streak: rpcData.max_streak,
+        logged_days: extractedDays, // pošleme do stavu
       });
     }
   } catch (error) {
