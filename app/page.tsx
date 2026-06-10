@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import StreakPage from "./StreakPage";
 
 import {
   Globe,
@@ -151,6 +152,58 @@ useEffect(() => {
 
   loadUser();
 }, []);
+
+// 1. Vytvoříme stav (state) pro uložení reálných čísel z databáze
+const [streakStats, setStreakStats] = useState({ current_streak: 0, max_streak: 0 });
+
+// 2. Definujeme chybějící funkci fetchStreakData
+async function fetchStreakData(userId: string) {
+  try {
+    // Zavoláme tu chytrou kalkulačku (RPC funkci), kterou jsme nahráli do Supabase
+    const { data, error } = await supabase.rpc("get_user_streaks", {
+      target_user_id: userId,
+    });
+
+    if (error) throw error;
+
+    if (data) {
+      // Pokud nám Supabase vrátí data, uložíme je do našeho stavu
+      setStreakStats({
+        current_streak: data.current_streak,
+        max_streak: data.max_streak,
+      });
+    }
+  } catch (error) {
+    console.error("Chyba při načítání streak dat:", error);
+  }
+}
+
+useEffect(() => {
+    async function loadUser() {
+      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { user } } = await supabase.auth.getUser();
+
+      setUser(user);
+
+      if (user) {
+        try {
+          await supabase
+            .from("user_logs")
+            .upsert(
+              { user_id: user.id, log_date: new Date().toISOString().split("T")[0] },
+              { onConflict: "user_id,log_date" }
+            );
+          
+          // Teď už TypeScript ví, co fetchStreakData znamená! 🎉
+          fetchStreakData(user.id);
+        } catch (error) {
+          console.error("Error logging user access:", error);
+        }
+      }
+    }
+
+    loadUser();
+  }, []);
 
 useEffect(() => {
   setView("learn");
@@ -334,8 +387,8 @@ useEffect(() => {
       </p>
 
       <p className="text-sm font-medium text-black">
-        7 dní v řadě
-      </p>
+  {streakStats.current_streak} {streakStats.current_streak === 1 ? 'den' : (streakStats.current_streak > 1 && streakStats.current_streak < 5 ? 'dny' : 'dní')} v řadě
+</p>
     </div>
 
   </div>
@@ -777,8 +830,8 @@ useEffect(() => {
    )}
 
         {view === "streak" && (
-          <StreakPage user={user} />
-        )}
+  <StreakPage stats={streakStats} setView={setView} />
+)}
 
   {/* ========================================================= */}
 {/* MODERN PRINTABLE A4 INFOGRAPHIC (TRENDY 2026 FLAT EDITION) */}
@@ -906,127 +959,6 @@ useEffect(() => {
 
     
   );
-
-  function StreakPage({ user }: { user: any }) {
-  const streak = 7; // mock zatím
-
-  return (
-    <div className="w-full max-w-2xl mx-auto bg-white border border-gray-200 rounded-3xl p-10 text-center space-y-6">
-
-  {/* FIRE ICON */}
-  <div className="text-5xl">🔥</div>
-
-  {/* STREAK NUMBER */}
-  <h1 className="text-4xl font-semibold tracking-tight">
-    {streak} dní v řadě
-  </h1>
-
-  {/* MOTIVATION */}
-  <p className="text-gray-500 text-sm leading-relaxed">
-    Skvělá práce. Každý den, kdy se vrátíš, posiluješ svoji jazykovou paměť.
-    Konzistence je silnější než intenzita.
-  </p>
-
-  {/* TODAY STATUS */}
-  <div className="flex items-center justify-center gap-2 text-sm">
-    <span className="w-2 h-2 rounded-full bg-green-500"></span>
-    Dnes hotovo
-  </div>
-
-  {/* WEEK GRID */}
-  <div className="grid grid-cols-7 gap-2 pt-2">
-
-    {mockStreakDays.map((d, i) => {
-      const base =
-        "h-16 rounded-2xl flex flex-col items-center justify-center text-xs font-medium transition border";
-
-      // DONE
-      if (d.status === "done") {
-        return (
-          <div
-            key={i}
-            className={`${base} bg-green-50 border-green-200 text-green-600`}
-          >
-            <span className="text-[10px] text-gray-400 mb-1">
-              {d.day}
-            </span>
-            <CheckIcon />
-          </div>
-        );
-      }
-
-      // MISSED
-      if (d.status === "missed") {
-        return (
-          <div
-            key={i}
-            className={`${base} bg-gray-50 border-gray-200 text-gray-400`}
-          >
-            <span className="text-[10px] text-gray-400 mb-1">
-              {d.day}
-            </span>
-            <XIcon />
-          </div>
-        );
-      }
-
-      // TODAY (center highlight, green, stronger border)
-      if (d.status === "today") {
-        return (
-          <div
-            key={i}
-            className={`${base} bg-green-100 border-green-400 text-green-700 border-2 scale-[1.02]`}
-          >
-            <span className="text-[10px] text-green-700 mb-1 font-medium">
-              {d.day}
-            </span>
-            <CheckIcon size={22} />
-          </div>
-        );
-      }
-
-      // FUTURE
-      return (
-        <div
-          key={i}
-          className={`${base} border-dashed border-gray-300 text-gray-300 bg-transparent`}
-        >
-          <span className="text-[10px] text-gray-300 mb-1">
-            {d.day}
-          </span>
-          <span className="text-lg">•</span>
-        </div>
-      );
-    })}
-
-  </div>
-
-  {/* MINI STATS (ONLY 2 BUBBLES) */}
-  <div className="grid grid-cols-2 gap-3 pt-4">
-
-    <div className="border border-gray-200 rounded-2xl p-3">
-      <p className="text-xs text-gray-400">Nejdelší streak</p>
-      <p className="font-medium">12 dní</p>
-    </div>
-
-    <div className="border border-gray-200 rounded-2xl p-3">
-      <p className="text-xs text-gray-400">Celkem dní</p>
-      <p className="font-medium">43</p>
-    </div>
-
-  </div>
-
-  {/* CONTINUE CTA */}
-  <button
-    onClick={() => setView("learn")}
-    className="mt-4 px-5 py-3 bg-black text-white rounded-2xl text-sm hover:opacity-90 transition"
-  >
-    Pokračovat ve studiu
-  </button>
-
-</div>
-  );
-}
 
 }
 
