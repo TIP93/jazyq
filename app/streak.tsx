@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckIcon, XIcon, TargetIcon, ShieldAlertIcon } from "lucide-react";
+import { CheckIcon, XIcon, GiftIcon } from "lucide-react";
 
 interface StreakPageProps {
   stats: {
@@ -14,16 +14,48 @@ interface StreakPageProps {
 export default function StreakPage({ stats, setView }: StreakPageProps) {
   const streak = stats.current_streak;
   const loggedDays = stats.logged_days || [];
-  
-  // Výpočet milníku (např. nejbližší násobek 7 nebo 5 dní)
-  const nextMilestone = streak <= 7 ? 7 : Math.ceil((streak + 1) / 5) * 5;
-  const progressToMilestone = (streak / nextMilestone) * 100;
 
-  // ... (funkce generateDynamicWeek zůstává stejná jako v předchozím kroku)
+  // --- DYNAMICKÝ VÝPOČET MILNÍKŮ (14 -> 30 -> 60 -> 90 -> 90+90...) ---
+  const getMilestoneInfo = (currentStreak: number) => {
+    let currentMilestoneTarget = 14;
+    let previousMilestoneTarget = 0;
+
+    if (currentStreak <= 14) {
+      currentMilestoneTarget = 14;
+      previousMilestoneTarget = 0;
+    } else if (currentStreak <= 30) {
+      currentMilestoneTarget = 30;
+      previousMilestoneTarget = 14;
+    } else if (currentStreak <= 60) {
+      currentMilestoneTarget = 60;
+      previousMilestoneTarget = 30;
+    } else {
+      // Nekonečná smyčka po 90 dnech (90, 180, 270...)
+      const cycle = Math.floor((currentStreak - 60) / 90);
+      currentMilestoneTarget = 60 + (cycle + 1) * 90;
+      previousMilestoneTarget = 60 + cycle * 90;
+    }
+
+    // Výpočet procent do progress baru (bereme v úvahu posun od minulého milníku)
+    const range = currentMilestoneTarget - previousMilestoneTarget;
+    const earnedInCurrentRange = currentStreak - previousMilestoneTarget;
+    const percentage = Math.min(Math.max((earnedInCurrentRange / range) * 100, 0), 100);
+
+    return {
+      target: currentMilestoneTarget,
+      remaining: Math.max(currentMilestoneTarget - currentStreak, 0),
+      percentage: percentage,
+    };
+  };
+
+  const milestone = getMilestoneInfo(streak);
+
+  // --- GENEROVÁNÍ DYNAMICKÉHO TÝDNE (3-1-3) ---
   const dayNames = ["Ne", "Po", "Út", "St", "Čt", "Pá", "So"];
   const generateDynamicWeek = () => {
     const daysArr = [];
     const today = new Date();
+    
     for (let offset = -3; offset <= 3; offset++) {
       const currentTargetDate = new Date();
       currentTargetDate.setDate(today.getDate() + offset);
@@ -49,54 +81,67 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
   const dynamicWeek = generateDynamicWeek();
 
   return (
-    <div className="w-full max-w-2xl mx-auto bg-white border border-gray-100 rounded-3xl p-10 text-center space-y-8 shadow-sm">
+    <div className="w-full max-w-2xl mx-auto bg-white border border-gray-200 rounded-3xl p-10 text-center space-y-8 shadow-sm">
       
-      {/* 1. HERO POLOŽKA: Ohýnek s kruhovým indikátorem */}
-      <div className="relative w-32 h-32 mx-auto flex items-center justify-center">
-        {/* SVG čistý minimalistický kruh na pozadí */}
-        <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="45" className="stroke-gray-100 fill-none" strokeWidth="4" />
-          <circle 
-            cx="50" 
-            cy="50" 
-            r="45" 
-            className={`fill-none transition-all duration-500 ${streak > 0 ? "stroke-orange-500" : "stroke-gray-300"}`} 
-            strokeWidth="4" 
-            strokeDasharray="283"
-            strokeDashoffset={283 - (283 * Math.min(progressToMilestone, 100)) / 100}
-            strokeLinecap="round"
-          />
-        </svg>
-        <div className={`text-5xl transition-transform duration-300 ${streak > 0 ? "animate-pulse scale-110" : "grayscale opacity-60"}`}>
+      {/* HERO SECTION: Ohýnek */}
+      <div className="relative w-20 h-20 mx-auto flex items-center justify-center bg-orange-50 rounded-2xl">
+        <div className={`text-4xl ${streak > 0 ? "animate-pulse" : "grayscale opacity-60"}`}>
           🔥
         </div>
       </div>
 
-      {/* STREAK NUMBER */}
+      {/* SÉRIE S TEXTEM */}
       <div className="space-y-1">
         <h1 className="text-4xl font-semibold tracking-tight text-gray-900">
           {streak} {streak === 1 ? 'den' : (streak > 1 && streak < 5 ? 'dny' : 'dní')} v řadě
         </h1>
-        {/* Drobný milník přímo pod číslem */}
-        <p className="text-xs text-gray-400 flex items-center justify-center gap-1">
-          <TargetIcon size={12} /> Cíl: {nextMilestone} dní ({nextMilestone - streak} zbývá)
+        <p className="text-sm text-gray-500">
+          {streak > 0 
+            ? "Pokračuj v pravidelném učení. Každý den posiluje tvou paměť."
+            : "Začni svou sérii ještě dnes. Stačí jedno cvičení denně."
+          }
         </p>
       </div>
 
-      {/* MOTIVATION */}
-      <p className="text-gray-500 text-sm max-w-md mx-auto leading-relaxed">
-        {streak > 0 
-          ? "Skvělá práce. Každý den, kdy se vrátíš, posiluješ svoji jazykovou paměť. Konzistence je silnější než intenzita."
-          : "Začni svoji sérii ještě dnes! Stačit bude jedna pětiminutovka."
-        }
-      </p>
+      {/* MODERNÍ PROGRESS BAR A ODMĚNA */}
+      <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 space-y-4 text-left">
+        <div className="flex justify-between items-end text-sm">
+          <div className="space-y-0.5">
+            <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Aktuální cíl</span>
+            <p className="font-semibold text-gray-900">{milestone.target} dní pravidelnosti</p>
+          </div>
+          <span className="text-xs font-semibold text-gray-500 bg-white px-2.5 py-1 rounded-lg border border-gray-200/60 shadow-2xs">
+            {milestone.remaining === 0 ? "Splněno!" : `Zbývá ${milestone.remaining} ${milestone.remaining === 1 ? 'den' : (milestone.remaining > 1 && milestone.remaining < 5 ? 'dny' : 'dní')}`}
+          </span>
+        </div>
 
-      {/* DYNAMICKÝ WEEK GRID (Zvýrazněný layering pro dnešek) */}
+        {/* Samotná linka pokroku */}
+        <div className="w-full h-2 bg-gray-200/70 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-black rounded-full transition-all duration-700 ease-out"
+            style={{ width: `${milestone.percentage}%` }}
+          />
+        </div>
+
+        {/* Decentní info o prémiu */}
+        <div className="flex items-start gap-3 pt-1 text-xs text-gray-600 border-t border-gray-200/50 mt-2">
+          <GiftIcon size={16} className="text-gray-900 shrink-0 mt-0.5" />
+          <p className="leading-normal">
+            {milestone.remaining === 0 ? (
+              <span className="font-medium text-green-600">Gratulujeme! Odemkl jsi týdenní Premium členství zdarma.</span>
+            ) : (
+              <>Dosáhni tohoto cíle a získej <strong>týdenní Premium členství zdarma</strong> jako poděkování za tvou píli.</>
+            )}
+          </p>
+        </div>
+      </div>
+
+      {/* DYNAMICKÝ TÝDENNÍ GRID */}
       <div className="grid grid-cols-7 gap-2.5 pt-2">
         {dynamicWeek.map((d, i) => {
           const base = `h-16 rounded-2xl flex flex-col items-center justify-center text-xs font-medium transition-all ${
             d.isToday 
-              ? "shadow-md border-2 z-10 scale-[1.08] bg-white" 
+              ? "shadow-sm border-2 z-10 scale-[1.06] bg-white" 
               : "border bg-transparent"
           }`;
 
@@ -104,7 +149,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
 
           if (d.status === "done") {
             return (
-              <div key={i} className={`${base} ${d.isToday ? 'border-green-500 bg-green-50/30' : 'border-green-100 bg-green-50/50'} text-green-600`}>
+              <div key={i} className={`${base} ${d.isToday ? 'border-green-500 bg-green-50/20' : 'border-green-100 bg-green-50/40'} text-green-600`}>
                 <span className={`${labelWeight} mb-1`}>{d.dayLabel}</span>
                 <CheckIcon size={d.isToday ? 18 : 14} className={d.isToday ? "stroke-[3px]" : ""} />
               </div>
@@ -113,7 +158,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
 
           if (d.status === "missed") {
             return (
-              <div key={i} className={`${base} ${d.isToday ? 'border-red-400 text-red-500 bg-red-50/20' : 'border-gray-100 text-gray-400 bg-gray-50/30'}`}>
+              <div key={i} className={`${base} ${d.isToday ? 'border-red-400 text-red-500 bg-red-50/10' : 'border-gray-100 text-gray-400 bg-gray-50/20'}`}>
                 <span className={`${labelWeight} mb-1`}>{d.dayLabel}</span>
                 <XIcon size={d.isToday ? 18 : 14} className={d.isToday ? "stroke-[3px]" : ""} />
               </div>
@@ -150,7 +195,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
       <div className="pt-2">
         <button
           onClick={() => setView("learn")}
-          className="w-full sm:w-auto px-8 py-3.5 bg-gray-900 text-white rounded-2xl text-sm font-medium hover:bg-gray-800 active:scale-[0.98] transition-all shadow-sm"
+          className="w-full sm:w-auto px-8 py-3.5 bg-gray-900 text-white rounded-2xl text-sm font-medium hover:bg-gray-800 active:scale-[0.98] transition-all shadow-xs"
         >
           Pokračovat ve studiu
         </button>
