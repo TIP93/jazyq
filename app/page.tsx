@@ -133,29 +133,23 @@ async function signInWithGoogle() {
   });
 }
 
-// JEDINÝ SMLUVENÝ EFEKT PRO SPRÁVU UŽIVATELE A LOGOVÁNÍ STREAKU
 useEffect(() => {
-  async function initializeUserAndStreak() {
-    try {
-      // 1. Získáme session a uživatele ze Supabase Auth
-      const { data: { session } } = await supabase.auth.getSession();
-      const { data: { user } } = await supabase.auth.getUser();
-
-      console.log("PŘIHLÁŠENÝ UŽIVATEL:", user);
-
-      // 2. Uložíme uživatele do lokálního stavu aplikace
-      setUser(user);
-
-      // 3. Pokud uživatel existuje, provedeme zápis dnešní návštěvy
-      if (user) {
-        console.log("Zapisuji dnešní přístup pro uživatele:", user.id);
-        
+  // Nasloucháme na změnu auth stavu (přihlášení, odhlášení, inicializace tokenu)
+  const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    console.log("Auth event:", event, "Session:", session);
+    
+    if (session?.user) {
+      const currentUser = session.user;
+      setUser(currentUser);
+      
+      try {
+        console.log("Zapisuji dnešní přístup pro uživatele:", currentUser.id);
         const todayDate = new Date().toISOString().split("T")[0];
 
         const { error: upsertError } = await supabase
           .from("user_logs")
           .upsert(
-            { user_id: user.id, log_date: todayDate },
+            { user_id: currentUser.id, log_date: todayDate },
             { onConflict: "user_id,log_date" }
           );
 
@@ -163,15 +157,22 @@ useEffect(() => {
           throw upsertError;
         }
 
-        // 4. Teprve po úspěšném zápisu zavoláme kalkulačku pro výpočet streaků
-        fetchStreakData(user.id);
-      }
-    } catch (error) {
-      console.error("Chyba při inicializaci uživatele nebo streaku:", error);
-    }
-  }
+        // Teprve po úspěšném zápisu zavoláme kalkulačku pro výpočet streaků
+        fetchStreakData(currentUser.id);
 
-  initializeUserAndStreak();
+      } catch (error) {
+        console.error("Chyba při zápisu přístupu nebo streaku:", error);
+      }
+    } else {
+      // Uživatel není přihlášený
+      setUser(null);
+    }
+  });
+
+  // Uklidíme subscription při unmountu komponenty
+  return () => {
+    subscription.unsubscribe();
+  };
 }, []);
 
 // 1. Vytvoříme stav (state) pro uložení reálných čísel z databáze
