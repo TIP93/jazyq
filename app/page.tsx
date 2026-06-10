@@ -472,18 +472,14 @@ useEffect(() => {
       )}
       
       {/* Seznam: Čisté, výrazné, tučné červené S */}
-      {provider === "seznam" && (
-  <svg 
-    className="w-3.5 h-3.5 opacity-90" 
-    viewBox="0 0 100 100" 
-    fill="none" 
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path 
-      d="M74.1 23.9C67.4 16.7 57.3 12.5 45.9 12.5 24.1 12.5 6.5 30.1 6.5 51.9c0 21.8 17.6 39.4 39.4 39.4 17.6 0 32.7-11.5 37.7-27.3H61.2c-3.6 5.8-10.1 9.7-17.5 9.7-11.5 0-20.8-9.3-20.8-20.8s9.3-20.8 20.8-20.8c8.3 0 15.4 4.8 18.7 11.8h22.9c-.8-7.9-4.7-14.9-11.2-20z" 
-      fill="#CC0000" 
-    />
-  </svg>
+     {/* Seznam: Načtení tvého vlastního SVG souboru z public složky */}
+{provider === "seznam" && (
+  <img 
+    src="/seznam-logo-esko-18-cervena.svg" 
+    alt="Seznam" 
+    className="w-3.5 h-3.5 opacity-90 select-none"
+    draggable={false}
+  />
 )}
     </div>
 
