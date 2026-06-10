@@ -454,7 +454,7 @@ useEffect(() => {
           border border-gray-200 rounded-2xl py-2 px-3
           flex items-center justify-center gap-2
           text-sm text-gray-600
-          hover:bg-gray-50 transition
+          hover:bg-gray-50 transition cursor-pointer
         "
       >
         <Settings size={14} />
@@ -470,7 +470,7 @@ useEffect(() => {
           border border-gray-200 rounded-2xl py-2 px-3
           flex items-center justify-center gap-2
           text-sm text-gray-600
-          hover:bg-gray-50 transition
+          hover:bg-gray-50 transition cursor-pointer
         "
       >
         <LogOut size={14} />

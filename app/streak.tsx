@@ -184,7 +184,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
       <div className="pt-2">
         <button
           onClick={() => setView("learn")}
-          className="w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-2xl hover:bg-gray-50 hover:text-gray-900 active:scale-[0.98] transition-all shadow-xs"
+          className="cursor-pointer w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-2xl hover:bg-gray-50 hover:text-gray-900 active:scale-[0.98] transition-all shadow-xs"
         >
           Pokračovat ve studiu
         </button>
