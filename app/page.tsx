@@ -441,49 +441,49 @@ useEffect(() => {
     {/* USER CARD */}
     <div className="border border-gray-200 rounded-2xl p-4 bg-white flex gap-3">
 
-      {/* AVATAR */}
-      <div className="flex-shrink-0">
-        {user.user_metadata?.avatar_url ? (
-          <img
-            src={user.user_metadata.avatar_url}
-            alt="Avatar"
-            className="w-10 h-10 rounded-full"
-          />
-        ) : (
-          <div className={iconCircle}>
-            <User size={18} className="text-gray-500" />
-          </div>
-        )}
+  {/* AVATAR + PROVIDER BADGE */}
+  <div className="flex-shrink-0 relative"> {/* Přidáno 'relative' pro absolutní pozicování ikony */}
+    {user.user_metadata?.avatar_url ? (
+      <img
+        src={user.user_metadata.avatar_url}
+        alt="Avatar"
+        className="w-10 h-10 rounded-full"
+      />
+    ) : (
+      <div className={iconCircle}>
+        <User size={18} className="text-gray-500" />
       </div>
+    )}
 
-      {/* USER INFO */}
-      <div className="min-w-0 flex-1">
-    {/* Flex container pro štítek a čistou ikonku bez textu */}
+    {/* Ikona poskytovatele v pravém dolním rohu avataru (bez rámečku) */}
+    <div className="absolute -bottom-0.5 -right-0.5 flex items-center justify-center">
+      {provider === "google" && (
+        <img 
+          src="/google-logo.svg" 
+          alt="Google" 
+          className="w-3.5 h-3.5 opacity-80 select-none" /* Mírně zvýšena opacity, aby byla na avataru lépe vidět */
+          draggable={false}
+        />
+      )}
+      
+      {provider === "seznam" && (
+        <img 
+          src="/seznam-logo-esko-18-cervena.svg" 
+          alt="Seznam" 
+          className="w-3.5 h-3.5 opacity-80 select-none"
+          draggable={false}
+        />
+      )}
+    </div>
+  </div>
+
+  {/* USER INFO */}
+  <div className="min-w-0 flex-1">
+    {/* Teď už je zde pouze štítek */}
     <div className="flex items-center justify-between gap-2">
       <p className="text-[10px] uppercase tracking-wider text-gray-400">
         Free uživatel
       </p>
-      
-      {/* Google: Čisté minimalistické G */}
-      {provider === "google" && (
-        <img 
-    src="/google-logo.svg" 
-    alt="Seznam" 
-    className="w-3.5 h-3.5 opacity-50 select-none"
-    draggable={false}
-  />
-      )}
-      
-      {/* Seznam: Čisté, výrazné, tučné červené S */}
-     {/* Seznam: Načtení tvého vlastního SVG souboru z public složky */}
-{provider === "seznam" && (
-  <img 
-    src="/seznam-logo-esko-18-cervena.svg" 
-    alt="Seznam" 
-    className="w-3.5 h-3.5 opacity-50 select-none"
-    draggable={false}
-  />
-)}
     </div>
 
     <p className="text-sm font-medium text-black truncate mt-1">
@@ -493,7 +493,7 @@ useEffect(() => {
     </p>
   </div>
 
-    </div>
+</div>
 
     {/* ACTION BUTTONS */}
     <div className="grid grid-cols-2 gap-2 no-print">

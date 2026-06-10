@@ -112,22 +112,21 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
       </div>
 
       {/* VYCENTROVANÝ ORANŽOVÝ BLOK OD KRAJE KE KRAJI */}
-<div className="w-full flex flex-col items-center gap-3 bg-gradient-to-b from-amber-50 to-orange-50/30 border border-amber-100 rounded-2xl p-6 text-center shadow-xs">
-  <div className="p-3 bg-amber-500 text-white rounded-2xl shadow-md transform -rotate-3 animate-bounce-slow">
-    <GiftIcon size={22} className="stroke-[2.5px]" />
+{/* HORIZONTÁLNÍ KOMPAKTNÍ BLOK S DÁREČKEM */}
+<div className="w-full flex items-start gap-4 bg-gradient-to-br from-amber-50 to-orange-50/30 border border-amber-100 rounded-2xl p-4 text-left shadow-xs">
+  {/* Ikona vlevo */}
+  <div className="p-3 bg-amber-500 text-white rounded-xl shadow-xs shrink-0 mt-0.5">
+    <GiftIcon size={20} className="stroke-[2.5px]" />
   </div>
   
-  <div className="space-y-1">
-    <h3 className="text-lg font-bold text-amber-950 tracking-tight">
-      {milestone.remaining === 0 ? (
-        "Odměna je tvoje!"
-      ) : (
-        <>Máš to na dosah!</>
-      )}
+  {/* Textový obsah vpravo */}
+  <div className="space-y-0.5">
+    <h3 className="text-base font-bold text-amber-950 tracking-tight">
+      {milestone.remaining === 0 ? "Odměna je tvoje!" : "Máš to na dosah!"}
     </h3>
-    <p className="text-sm text-amber-900/80 max-w-sm mx-auto leading-relaxed">
+    <p className="text-sm text-amber-900/80 leading-relaxed">
       {milestone.remaining === 0 ? (
-        <span className="font-bold text-green-700 block">Skvělé! Odemkl jsi týdenní Premium zdarma.</span>
+        <span className="font-bold text-green-700">Skvělé! Odemkl jsi týdenní Premium zdarma.</span>
       ) : (
         <>
           Zbývá <strong>{milestone.remaining} {milestone.remaining === 1 ? 'den' : (milestone.remaining > 1 && milestone.remaining < 5 ? 'dny' : 'dní')}</strong> do získání týdenního <span className="font-semibold text-amber-950">Premium členství zdarma</span>.
