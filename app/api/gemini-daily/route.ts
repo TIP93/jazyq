@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@supabase/supabase-js";
 import { callWithRetry } from "@/app/api/gemini-daily/retry";
 
-export async function POST(req: Request) {
+export async function GET(req: Request) {
   try {
 
     // === ZABEZPEČENÍ PRO CRON ===
@@ -12,15 +12,11 @@ export async function POST(req: Request) {
     }
     // ============================
     
-    const body = await req.json().catch(() => ({}));
-const force = body?.force === true;
-// 1. Získání konkrétního jazyka z requestu (např. "en")
-const currentLang = body?.language; 
+// U GET požadavku taháme "force" parametr z URL adresy (např. /api/gemini-daily?force=true)
+    const { searchParams } = new URL(req.url);
+    const force = searchParams.get("force") === "true";
 
-if (!currentLang) {
-  return Response.json({ error: "Missing language parameter" }, { status: 400 });
-}
-
+    // Konfigurace jazyků a úrovní pro hromadný cron běh
 const today = new Date().toISOString().split("T")[0];
 
 // 2. Pole languages teď bude obsahovat POUZE ten jeden vybraný jazyk
