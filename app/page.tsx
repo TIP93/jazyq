@@ -70,6 +70,8 @@ const [showLoginOptions, setShowLoginOptions] = useState(false);
 const [user, setUser] = useState<any>(null);
 const [view, setView] = useState<"learn" | "streak">("learn");
 
+const provider = user.app_metadata?.provider || user.user_metadata?.provider;
+
 const iconCircle =
   "w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center";
 
@@ -456,18 +458,37 @@ useEffect(() => {
 
       {/* USER INFO */}
       <div className="min-w-0 flex-1">
+    {/* Flex container pro štítek a ikonku providera */}
+    <div className="flex items-center justify-between gap-2">
+      <p className="text-[10px] uppercase tracking-wider text-gray-400">
+        Free uživatel
+      </p>
+      
+      {/* Mini ikonka přihlašovacího agenta */}
+      {provider === "google" && (
+        <span className="text-[10px] bg-gray-50 border border-gray-200 text-gray-500 px-1.5 py-0.5 rounded flex items-center gap-1 font-medium">
+          <svg className="w-2.5 h-2.5" viewBox="0 0 24 24">
+            <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.866-3.577-7.866-8s3.536-8 7.866-8c2.46 0 4.105 1.025 5.047 1.926l3.227-3.107C18.316 2.032 15.54 1 12.24 1 6.033 1 1 6.033 1 12.24s5.033 11.24 11.24 11.24c6.478 0 10.793-4.537 10.793-10.984 0-.743-.078-1.313-.173-1.763H12.24z"/>
+          </svg>
+          Google
+        </span>
+      )}
+      
+      {provider === "seznam" && (
+        <span className="text-[10px] bg-red-50 border border-red-100 text-red-600 px-1.5 py-0.5 rounded flex items-center gap-1 font-medium">
+          {/* Rychlá čistá alternativa: červené eSko (můžeš vyměnit za FontAwesome/obrázek) */}
+          <span className="font-extrabold text-[9px] text-red-600 leading-none">S</span>
+          Seznam
+        </span>
+      )}
+    </div>
 
-        <p className="text-[10px] uppercase tracking-wider text-gray-400">
-          Free uživatel
-        </p>
-
-        <p className="text-sm font-medium text-black truncate mt-1">
-          {user.user_metadata?.full_name ||
-            user.user_metadata?.name ||
-            user.email}
-        </p>
-
-      </div>
+    <p className="text-sm font-medium text-black truncate mt-1">
+      {user.user_metadata?.full_name ||
+        user.user_metadata?.name ||
+        user.email}
+    </p>
+  </div>
 
     </div>
 
