@@ -65,16 +65,12 @@ export async function GET(request: Request) {
 
     const seznamUser = await userResponse.json();
     
-    // Seznam v 'identity' scope vrací většinnou e-mail pod account_name nebo přímo objekt s emailem.
-    // Pro Supabase potřebujeme unikátní e-mail a ID
-    //  OPRAVENÝ KÓD:
-// Seznam vrací e-mail přímo v poli 'email'. 
-// Pro jistotu přidáváme zálohu, kdyby se v budoucnu struktura změnila.
 const email = seznamUser.email || seznamUser.account_name;
 const seznamId = tokenData.oauth_user_id || seznamUser.id;
 
 // Pro plné jméno Seznam používá pole 'firstname' a 'lastname'
 const fullName = [seznamUser.firstname, seznamUser.lastname].filter(Boolean).join(" ");
+const avatarUrl = seznamUser.avatar_url || null;
 
     if (!email) {
       return NextResponse.redirect(new URL("/login?error=email_not_provided", request.url));
@@ -83,14 +79,15 @@ const fullName = [seznamUser.firstname, seznamUser.lastname].filter(Boolean).joi
     // 4. Integrace do Supabase přes Admin API
     // Vytvoříme nebo aktualizujeme uživatele v auth.users
     const { data: supabaseUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
-      email: email,
-      email_confirm: true,
-      user_metadata: { 
-  full_name: fullName || email,
-  provider: "seznam",
-  seznam_id: seznamId 
-},
-    });
+  email: email,
+  email_confirm: true,
+  user_metadata: { 
+    full_name: fullName || email,
+    avatar_url: avatarUrl, // <--- TADY JE TA MAGIE. Tímhle nakrmíš komponentu na frontendu
+    provider: "seznam",
+    seznam_id: seznamId 
+  },
+});
 
     // Pokud uživatel existuje, createUser selže na duplicitu e-mailu. V tom případě ho jen najdeme/aktualizujeme.
     if (authError && authError.message.includes("already exists")) {

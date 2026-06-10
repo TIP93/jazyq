@@ -238,8 +238,7 @@ const signInWithSeznam = () => {
   localStorage.setItem("oauth_state", state);
 
   // Sestavení URL přesně podle specifikace ze Seznam administrace
-  const authUrl = `https://login.szn.cz/api/v1/oauth/auth?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=identity&state=${state}`;
-
+  const authUrl = `https://login.szn.cz/api/v1/oauth/auth?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=identity,avatar&state=${state}`;
   window.location.href = authUrl;
 };
 
