@@ -442,7 +442,7 @@ useEffect(() => {
     <div className="border border-gray-200 rounded-2xl p-4 bg-white flex gap-3">
 
   {/* AVATAR + PROVIDER BADGE */}
-  <div className="flex-shrink-0 relative"> {/* Přidáno 'relative' pro absolutní pozicování ikony */}
+  <div className="flex-shrink-0 relative w-10 h-10"> {/* Přidáno 'w-10 h-10' pro explicitní velikost */}
     {user.user_metadata?.avatar_url ? (
       <img
         src={user.user_metadata.avatar_url}
@@ -450,36 +450,37 @@ useEffect(() => {
         className="w-10 h-10 rounded-full"
       />
     ) : (
-      <div className={iconCircle}>
+      <div className={`${iconCircle} w-10 h-10`}> {/* Ujistíme se, že i fallback má stejnou velikost */}
         <User size={18} className="text-gray-500" />
       </div>
     )}
 
-    {/* Ikona poskytovatele v pravém dolním rohu avataru (bez rámečku) */}
-    <div className="absolute -bottom-0.5 -right-0.5 flex items-center justify-center">
-      {provider === "google" && (
-        <img 
-          src="/google-logo.svg" 
-          alt="Google" 
-          className="w-3.5 h-3.5 opacity-80 select-none" /* Mírně zvýšena opacity, aby byla na avataru lépe vidět */
-          draggable={false}
-        />
-      )}
-      
-      {provider === "seznam" && (
-        <img 
-          src="/seznam-logo-esko-18-cervena.svg" 
-          alt="Seznam" 
-          className="w-3.5 h-3.5 opacity-80 select-none"
-          draggable={false}
-        />
-      )}
-    </div>
+    {/* Bílý kulatý odznáček v pravém dolním rohu */}
+    {provider && (provider === "google" || provider === "seznam") && (
+      <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-sm border border-gray-100 flex items-center justify-center">
+        {provider === "google" && (
+          <img 
+            src="/google-logo.svg" 
+            alt="Google" 
+            className="w-3.5 h-3.5 select-none" /* Opacity vrácena na 100%, na bílém pozadí to vypadá lépe */
+            draggable={false}
+          />
+        )}
+        
+        {provider === "seznam" && (
+          <img 
+            src="/seznam-logo-esko-18-cervena.svg" 
+            alt="Seznam" 
+            className="w-3.5 h-3.5 select-none"
+            draggable={false}
+          />
+        )}
+      </div>
+    )}
   </div>
 
   {/* USER INFO */}
   <div className="min-w-0 flex-1">
-    {/* Teď už je zde pouze štítek */}
     <div className="flex items-center justify-between gap-2">
       <p className="text-[10px] uppercase tracking-wider text-gray-400">
         Free uživatel

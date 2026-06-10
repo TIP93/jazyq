@@ -123,7 +123,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
         <span className="font-bold text-green-700 block">Skvělé! Odemkl jsi týdenní Premium zdarma.</span>
       ) : (
         <>
-          Zbývá <strong>{milestone.remaining} {milestone.remaining === 1 ? 'den' : (milestone.remaining > 1 && milestone.remaining < 5 ? 'dny' : 'dní')}</strong> do získání týdenního <span className="font-semibold text-amber-950">Premium členství zdarma</span>.
+          Zbývá <strong>{milestone.remaining} {milestone.remaining === 1 ? 'den' : (milestone.remaining > 1 && milestone.remaining < 5 ? 'dny' : 'dní')}</strong> do získání <span className="font-semibold text-amber-950">Premium členství na týden zdarma</span>.
         </>
       )}
     </p>
