@@ -224,6 +224,22 @@ async function fetchStreakData(userId: string) {
   }
 }
 
+function signInWithSeznam() {
+  const state = Math.random().toString(36).substring(2);
+  // Uložíme state do localStorage pro kontrolu po návratu
+  localStorage.setItem("oauth_state", state);
+
+  const url = new URL("https://login.szn.cz/api/v1/oauth/auth");
+  url.searchParams.append("client_id", process.env.NEXT_PUBLIC_SEZNAM_CLIENT_ID!);
+  url.searchParams.append("scope", "identity");
+  url.searchParams.append("response_type", "code");
+  url.searchParams.append("redirect_uri", process.env.NEXT_PUBLIC_SEZNAM_REDIRECT_URI!);
+  url.searchParams.append("state", state);
+
+  // Přesměrování na Seznam
+  window.location.href = url.toString();
+}
+
 useEffect(() => {
   setView("learn");
 }, [language, levelIndex]);
