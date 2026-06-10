@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import StreakPage from "./StreakPage";
+import StreakPage from "./streak";
 
 import {
   Globe,
