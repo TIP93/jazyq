@@ -224,21 +224,24 @@ async function fetchStreakData(userId: string) {
   }
 }
 
-function signInWithSeznam() {
-  const state = Math.random().toString(36).substring(2);
-  // Uložíme state do localStorage pro kontrolu po návratu
+const signInWithSeznam = () => {
+  const clientId = process.env.NEXT_PUBLIC_SEZNAM_CLIENT_ID;
+  const redirectUri = process.env.NEXT_PUBLIC_SEZNAM_REDIRECT_URI;
+  
+  if (!clientId || !redirectUri) {
+    console.error("Missing Seznam client ID or redirect URI");
+    return;
+  }
+
+  // Generování náhodného stavu (CSRF ochrana)
+  const state = Math.random().toString(36).substring(2, 15);
   localStorage.setItem("oauth_state", state);
 
-  const url = new URL("https://login.szn.cz/api/v1/oauth/auth");
-  url.searchParams.append("client_id", process.env.NEXT_PUBLIC_SEZNAM_CLIENT_ID!);
-  url.searchParams.append("scope", "identity");
-  url.searchParams.append("response_type", "code");
-  url.searchParams.append("redirect_uri", process.env.NEXT_PUBLIC_SEZNAM_REDIRECT_URI!);
-  url.searchParams.append("state", state);
+  // Sestavení URL přesně podle specifikace ze Seznam administrace
+  const authUrl = `https://login.szn.cz/api/v1/oauth/auth?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=identity&state=${state}`;
 
-  // Přesměrování na Seznam
-  window.location.href = url.toString();
-}
+  window.location.href = authUrl;
+};
 
 useEffect(() => {
   setView("learn");

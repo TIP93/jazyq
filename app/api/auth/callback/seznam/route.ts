@@ -67,8 +67,14 @@ export async function GET(request: Request) {
     
     // Seznam v 'identity' scope vrací většinnou e-mail pod account_name nebo přímo objekt s emailem.
     // Pro Supabase potřebujeme unikátní e-mail a ID
-    const email = seznamUser.account_name; // případně seznamUser.email podle přesné struktury scope
-    const seznamId = tokenData.oauth_user_id;
+    //  OPRAVENÝ KÓD:
+// Seznam vrací e-mail přímo v poli 'email'. 
+// Pro jistotu přidáváme zálohu, kdyby se v budoucnu struktura změnila.
+const email = seznamUser.email || seznamUser.account_name;
+const seznamId = tokenData.oauth_user_id || seznamUser.id;
+
+// Pro plné jméno Seznam používá pole 'firstname' a 'lastname'
+const fullName = [seznamUser.firstname, seznamUser.lastname].filter(Boolean).join(" ");
 
     if (!email) {
       return NextResponse.redirect(new URL("/login?error=email_not_provided", request.url));
@@ -80,10 +86,10 @@ export async function GET(request: Request) {
       email: email,
       email_confirm: true,
       user_metadata: { 
-        full_name: seznamUser.firstname && seznamUser.lastname ? `${seznamUser.firstname} ${seznamUser.lastname}` : email,
-        provider: "seznam",
-        seznam_id: seznamId 
-      },
+  full_name: fullName || email,
+  provider: "seznam",
+  seznam_id: seznamId 
+},
     });
 
     // Pokud uživatel existuje, createUser selže na duplicitu e-mailu. V tom případě ho jen najdeme/aktualizujeme.
