@@ -111,12 +111,12 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
         </p>
       </div>
 
-      {/* ORANŽOVÝ BLOK ZAROVNANÝ OD KRAJE KE KRAJI (w-full) */}
-      <div className="w-full flex items-center gap-4 bg-amber-50 border border-amber-100 rounded-2xl p-4 text-left">
-        <div className="p-2 bg-amber-500 text-white rounded-xl shadow-xs shrink-0">
+      {/* VYCENTROVANÝ ORANŽOVÝ BLOK OD KRAJE KE KRAJI */}
+      <div className="w-full flex flex-col items-center gap-2 bg-amber-50 border border-amber-100 rounded-2xl p-4 text-center">
+        <div className="p-2 bg-amber-500 text-white rounded-xl shadow-xs">
           <GiftIcon size={18} className="stroke-[2.5px]" />
         </div>
-        <p className="text-xs text-amber-900 leading-normal">
+        <p className="text-xs text-amber-900 leading-normal max-w-md">
           {milestone.remaining === 0 ? (
             <span className="font-bold text-green-700">Skvělé! Odemkl jsi týdenní Premium zdarma.</span>
           ) : (
@@ -163,16 +163,16 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
         })}
       </div>
 
-      {/* MINI STATS */}
+      {/* VYCENTROVANÉ MINI STATS */}
       <div className="grid grid-cols-2 gap-4 pt-2">
-        <div className="bg-gray-50/50 border border-gray-100 rounded-2xl p-4 text-left">
+        <div className="bg-gray-50/50 border border-gray-100 rounded-2xl p-4 text-center">
           <p className="text-xs text-gray-400 font-medium">Nejdelší série</p>
           <p className="text-xl font-semibold text-gray-800 mt-0.5">
             {stats.max_streak} {stats.max_streak === 1 ? 'den' : (stats.max_streak > 1 && stats.max_streak < 5 ? 'dny' : 'dní')}
           </p>
         </div>
 
-        <div className="bg-gray-50/50 border border-gray-100 rounded-2xl p-4 text-left">
+        <div className="bg-gray-50/50 border border-gray-100 rounded-2xl p-4 text-center">
           <p className="text-xs text-gray-400 font-medium">Celkem odpracováno</p>
           <p className="text-xl font-semibold text-gray-800 mt-0.5">
             {loggedDays.length > 0 ? loggedDays.length : streak} {loggedDays.length === 1 ? 'den' : (loggedDays.length > 1 && loggedDays.length < 5 ? 'dny' : 'dní')}
