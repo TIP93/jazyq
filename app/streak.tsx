@@ -111,24 +111,24 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
         </p>
       </div>
 
-      {/* VYCENTROVANÝ ORANŽOVÝ BLOK OD KRAJE KE KRAJI */}
-<div className="w-full flex flex-col items-center gap-3 bg-gradient-to-b from-amber-50 to-orange-50/30 border border-amber-100 rounded-2xl p-6 text-center shadow-xs">
-  <div className="p-3 bg-amber-500 text-white rounded-2xl shadow-md transform -rotate-3 animate-bounce-slow">
-    <GiftIcon size={22} className="stroke-[2.5px]" />
-  </div>
-  
-  <div className="space-y-1">
-    <p className="text-sm text-amber-900/80 max-w-sm mx-auto leading-relaxed">
-      {milestone.remaining === 0 ? (
-        <span className="font-bold text-green-700 block">Skvělé! Odemkl jsi týdenní Premium zdarma.</span>
-      ) : (
-        <>
-          Zbývá <strong>{milestone.remaining} {milestone.remaining === 1 ? 'den' : (milestone.remaining > 1 && milestone.remaining < 5 ? 'dny' : 'dní')}</strong> do získání <span className="font-semibold text-amber-950">Premium členství na týden zdarma</span>.
-        </>
-      )}
-    </p>
-  </div>
-</div>
+      {/* KOMPAKTNÍ HORIZONTÁLNÍ BLOK S DÁRKEM */}
+      <div className="w-full flex flex-row items-center gap-4 bg-gradient-to-r from-amber-50 to-orange-50/30 border border-amber-100 rounded-2xl p-4 text-left shadow-xs">
+        <div className="flex-shrink-0 p-2.5 bg-amber-500 text-white rounded-xl shadow-xs">
+          <GiftIcon size={18} className="stroke-[2.5px]" />
+        </div>
+        
+        <div className="flex-1">
+          <p className="text-sm text-amber-950 leading-snug">
+            {milestone.remaining === 0 ? (
+              <span className="font-bold text-green-700">Skvělé! Odemkl jsi týdenní Premium zdarma.</span>
+            ) : (
+              <>
+                Zbývá <strong>{milestone.remaining} {milestone.remaining === 1 ? 'den' : (milestone.remaining > 1 && milestone.remaining < 5 ? 'dny' : 'dní')}</strong> do získání <span className="font-medium">Premium na týden zdarma</span>.
+              </>
+            )}
+          </p>
+        </div>
+      </div>
 
       {/* DYNAMICKÝ TÝDENNÍ GRID */}
       <div className="grid grid-cols-7 gap-2.5 pt-2">
@@ -136,16 +136,23 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
           const base = `h-16 rounded-2xl flex flex-col items-center justify-center text-xs font-medium transition-all ${
             d.isToday 
               ? "shadow-sm border-2 z-10 scale-[1.06] bg-white" 
-              : "border bg-transparent"
+              : "border"
           }`;
 
           const labelWeight = d.isToday ? "font-bold text-gray-900 text-xs" : "text-[10px] text-gray-400";
 
           if (d.status === "done") {
             return (
-              <div key={i} className={`${base} ${d.isToday ? 'border-green-500 bg-green-50/20' : 'border-green-100 bg-green-50/40'} text-green-600`}>
-                <span className={`${labelWeight} mb-1`}>{d.dayLabel}</span>
-                <CheckIcon size={d.isToday ? 18 : 14} className={d.isToday ? "stroke-[3px]" : ""} />
+              <div 
+                key={i} 
+                className={`${base} ${
+                  d.isToday 
+                    ? 'border-green-500 bg-green-50 text-green-600 font-semibold' 
+                    : 'border-green-200 bg-green-500/10 text-green-700'
+                }`}
+              >
+                <span className={`${labelWeight} mb-1 ${!d.isToday && 'text-green-700/70'}`}>{d.dayLabel}</span>
+                <CheckIcon size={d.isToday ? 18 : 15} className="stroke-[3px]" />
               </div>
             );
           }
@@ -160,7 +167,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
           }
 
           return (
-            <div key={i} className={`${base} border-dashed border-gray-200 text-gray-300`}>
+            <div key={i} className={`${base} border-dashed border-gray-200 text-gray-300 bg-transparent`}>
               <span className={`${labelWeight} mb-1`}>{d.dayLabel}</span>
               <span className="text-base leading-none">•</span>
             </div>
