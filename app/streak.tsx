@@ -190,7 +190,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
             </div>
           </div>
 
-          {/* PROGRESS BAR – OPRAVENÉ POZICOVÁNÍ A STRUKTURA */}
+          {/* PROGRESS BAR – MATEMATICKY A VIZUÁLNĚ SYMETRICKÝ */}
           <div className="space-y-3">
             <div className="pl-1">
               <span className="text-xs uppercase tracking-wider font-semibold text-gray-400">
@@ -198,13 +198,13 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
               </span>
             </div>
             
-            {/* Box s vyváženým vnitřním paddingem (p-5) na obou stranách */}
-            <div className="relative bg-white border border-gray-200/60 rounded-2xl p-5 pt-11 pb-6 shadow-xs flex items-center select-none">
+            {/* Box s velkým pr-16, který vytvoří dostatek vzduchu pro vyčnívající dáreček */}
+            <div className="relative bg-white border border-gray-200/60 rounded-2xl p-5 pr-16 pt-11 pb-6 shadow-xs flex items-center select-none">
               
-              {/* Odsazení celého vnitřního baru zprava (pr-10), aby se uvolnilo místo pro dáreček a srovnal se padding */}
-              <div className="flex-1 relative bg-gray-100 h-2.5 rounded-full pr-10">
+              {/* Samotná čistá dráha progress baru, která definuje 100% šířku pro výpočet procent */}
+              <div className="flex-1 relative bg-gray-100 h-2.5 rounded-full">
                 
-                {/* UPRAVENÝ PLOVOUCÍ BADGE: Větší text a blíže k baru */}
+                {/* GEOMETRICKY PŘESNÝ BADGE: Vychází přímo z konce linky bez zkreslení */}
                 {milestone.percentage > 0 && (
                   <div 
                     className="absolute -top-[30px] flex flex-col items-center transition-all duration-1000 ease-out transform -translate-x-1/2 z-20"
@@ -225,9 +225,9 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
                   style={{ width: `${milestone.percentage}%` }}
                 />
 
-                {/* DÁREČEK NA DRÁZE: Usazený na 100% šířce zkráceného baru, takže lícuje vzdušně s celkovým layoutem */}
+                {/* DÁREČEK NA KONCI DRÁHY – Posunutý tak, aby měl kolem sebe hromadu vzduchu a bar končil přesně pod ním */}
                 <div 
-                  className={`absolute right-0 top-1/2 -translate-y-1/2 bg-white border border-gray-100 p-1 rounded-lg transition-all duration-300 transform translate-x-1/3 rotate-12 hover:rotate-0 hover:scale-110 cursor-pointer z-10 ${
+                  className={`absolute right-0 top-1/2 -translate-y-1/2 bg-white border border-gray-100 p-1 rounded-lg transition-all duration-300 transform translate-x-1/2 rotate-12 hover:rotate-0 hover:scale-110 cursor-pointer z-10 ${
                     milestone.remaining === 0 
                       ? "text-green-500 drop-shadow-[0_4px_6px_rgba(34,197,94,0.3)] animate-bounce" 
                       : "text-orange-500 drop-shadow-[0_2px_4px_rgba(249,115,22,0.15)]"
