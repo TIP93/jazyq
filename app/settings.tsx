@@ -122,13 +122,12 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
               
               {/* Nadpis spojeného bloku */}
               <div>
-                <h4 className="text-sm font-medium text-gray-900">Výchozí studovaný jazyk a úroveň</h4>
+                <h4 className="text-sm font-medium text-gray-900">Výchozí jazyk a úroveň</h4>
                 <p className="text-xs text-gray-400 mt-0.5">Tuto kombinaci uvidíš jako první při každé návštěvě aplikace JAZYQ.</p>
               </div>
 
               {/* 1. MATICE VLAJEK (3 na řádku, 2 řádky celkem) */}
               <div className="space-y-2">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block pl-0.5">Zvol si jazyk</span>
                 <div className="grid grid-cols-3 gap-3">
                   {languages.map((lang) => (
                     <button
@@ -164,7 +163,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
               {/* 2. MATICE ÚROVNÍ (6 na jednom řádku, bez popisků) */}
               <div className="space-y-2">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block pl-0.5">Zvol si úroveň</span>
                 <div className="grid grid-cols-6 gap-2">
                   {levels.map((lvl) => (
                     <button
