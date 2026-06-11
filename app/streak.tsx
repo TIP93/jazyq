@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckIcon, XIcon, GiftIcon, ArrowLeft, Flame } from "lucide-react";
+import { CheckIcon, XIcon, GiftIcon, ArrowLeft } from "lucide-react";
 
 interface StreakPageProps {
   stats: {
@@ -104,7 +104,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
       {/* PROPORCIONÁLNÍ DVOU-SLOUPCOVÝ LAYOUT */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
         
-        {/* LEVÝ PANEL (Aktivní série) */}
+        {/* LEVÝ PANEL (Aktivní série + Statistiky přesunuté sem) */}
         <div className="md:col-span-5 flex flex-col items-center text-center space-y-6 md:pt-4">
           
           {/* KULATÝ PROGRESS BAR KOLEM OHÝNKU */}
@@ -133,18 +133,29 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
               {streak} {streak === 1 ? 'den' : (streak > 1 && streak < 5 ? 'dny' : 'dní')} v řadě
             </h2>
             <p className="text-xs uppercase tracking-wider font-semibold text-gray-400">
-              CÍL MÍLNÍKU: {milestone.target} DNÍ
+              CÍL MILNÍKU: {milestone.target} DNÍ
             </p>
           </div>
 
-          {/* PROCENTUÁLNÍ UKAZATEL DOSAŽENÍ MILNÍKU */}
-          <div className="w-full bg-gray-50 border border-gray-100 rounded-xl p-3 text-xs text-gray-500 flex justify-between items-center">
-            <span>Pokrok k milníku:</span>
-            <span className="font-semibold text-gray-900">{Math.round(milestone.percentage)}%</span>
+          {/* VYCENTROVANÉ STATISTIKY PŘESUNUTÉ DOLEVA */}
+          <div className="grid grid-cols-2 gap-3 w-full pt-2">
+            <div className="bg-gray-50/60 border border-gray-100 rounded-2xl p-4 text-center">
+              <p className="text-xs text-gray-400 font-medium">Nejdelší série</p>
+              <p className="text-xl font-semibold text-gray-800 mt-0.5">
+                {stats.max_streak} {stats.max_streak === 1 ? 'den' : (stats.max_streak > 1 && stats.max_streak < 5 ? 'dny' : 'dní')}
+              </p>
+            </div>
+
+            <div className="bg-gray-50/60 border border-gray-100 rounded-2xl p-4 text-center">
+              <p className="text-xs text-gray-400 font-medium">Celkem odpracováno</p>
+              <p className="text-xl font-semibold text-gray-800 mt-0.5">
+                {loggedDays.length > 0 ? loggedDays.length : streak} {loggedDays.length === 1 ? 'den' : (loggedDays.length > 1 && loggedDays.length < 5 ? 'dny' : 'dní')}
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* PRAVÝ PANEL (Kalendář, odměny a statistiky v šedém kontejneru jako v nastavení) */}
+        {/* PRAVÝ PANEL (Odměny a Kalendář v šedém kontejneru) */}
         <div className="md:col-span-7 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 space-y-6">
           
           {/* KOMPAKTNÍ BLOK S DÁRKEM */}
@@ -217,28 +228,11 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
             </div>
           </div>
 
-          {/* STATISTIKY (Bílé karty na šedém podkladu jako v nastavení) */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white border border-gray-200/60 rounded-2xl p-4 text-center shadow-xs">
-              <p className="text-xs text-gray-400 font-medium">Nejdelší série</p>
-              <p className="text-xl font-semibold text-gray-800 mt-0.5">
-                {stats.max_streak} {stats.max_streak === 1 ? 'den' : (stats.max_streak > 1 && stats.max_streak < 5 ? 'dny' : 'dní')}
-              </p>
-            </div>
-
-            <div className="bg-white border border-gray-200/60 rounded-2xl p-4 text-center shadow-xs">
-              <p className="text-xs text-gray-400 font-medium">Celkem odpracováno</p>
-              <p className="text-xl font-semibold text-gray-800 mt-0.5">
-                {loggedDays.length > 0 ? loggedDays.length : streak} {loggedDays.length === 1 ? 'den' : (loggedDays.length > 1 && loggedDays.length < 5 ? 'dny' : 'dní')}
-              </p>
-            </div>
-          </div>
-
         </div>
 
       </div>
 
-      {/* SPODNÍ REZERVUAR PRO TLAČÍTKO POD DĚLÍCÍ LINKOU */}
+      {/* SPODNÍ DĚLÍCÍ LINKA A TLAČÍTKO */}
       <div className="pt-4 border-t border-gray-100 flex justify-center">
         <button
           onClick={() => setView("learn")}
