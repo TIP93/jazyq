@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckIcon, XIcon, GiftIcon, ArrowLeft } from "lucide-react";
+import { CheckIcon, XIcon, GiftIcon, ArrowLeft, Flame, Trophy, Award, Target } from "lucide-react";
 
 interface StreakPageProps {
   stats: {
@@ -101,64 +101,88 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
         </div>
       </div>
 
-      {/* DOKONALE VYVÁŽENÝ DVOU-SLOUPCOVÝ LAYOUT */}
+      {/* NOVÝ STRUKTUROVANÝ LAYOUT */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
         
-        {/* LEVÝ PANEL (Motivace: Série + Odměna pod tím) */}
-        <div className="md:col-span-5 flex flex-col items-center text-center space-y-6 md:pt-4">
-          
+        {/* LEVÝ PANEL - Pouze dominantní ohýnek */}
+        <div className="md:col-span-5 flex flex-col items-center text-center space-y-4 md:pt-10">
           {/* KULATÝ PROGRESS BAR KOLEM OHÝNKU */}
-          <div className="relative w-36 h-36 flex items-center justify-center">
+          <div className="relative w-40 h-40 flex items-center justify-center">
             <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="44" className="stroke-gray-100 fill-none" strokeWidth="3" />
+              <circle cx="50" cy="50" r="44" className="stroke-gray-100 fill-none" strokeWidth="2.5" />
               <circle 
                 cx="50" 
                 cy="50" 
                 r="44" 
                 className={`fill-none transition-all duration-700 ease-out ${streak > 0 ? "stroke-orange-500" : "stroke-gray-300"}`} 
-                strokeWidth="4" 
+                strokeWidth="3.5" 
                 strokeDasharray="276.4"
                 strokeDashoffset={276.4 - (276.4 * milestone.percentage) / 100}
                 strokeLinecap="round"
               />
             </svg>
-            <div className={`text-5xl transition-transform duration-300 ${streak > 0 ? "animate-pulse scale-105" : "grayscale opacity-50"}`}>
+            <div className={`text-6xl transition-transform duration-300 ${streak > 0 ? "animate-pulse scale-105" : "grayscale opacity-50"}`}>
               🔥
             </div>
           </div>
 
-          {/* SÉRIE S TEXTEM */}
           <div className="space-y-1">
-            <h2 className="text-3xl font-semibold tracking-tight text-gray-900">
-              {streak} {streak === 1 ? 'den' : (streak > 1 && streak < 5 ? 'dny' : 'dní')} v řadě
-            </h2>
-            <p className="text-xs uppercase tracking-wider font-semibold text-gray-400">
-              CÍL MILNÍKU: {milestone.target} DNÍ
+            <p className="text-xs uppercase tracking-wider font-bold text-gray-400">
+              CÍL MILNÍKU
             </p>
-          </div>
-
-          {/* INFO O PREMIUM / ODMĚNĚ (Přesunuto sem doleva, decentní čistý styl) */}
-          <div className="w-full flex flex-row items-center gap-3 bg-gradient-to-r from-amber-50/60 to-orange-50/20 border border-amber-100/70 rounded-2xl p-4 text-left shadow-xs">
-            <div className="flex-shrink-0 p-2 bg-amber-500 text-white rounded-xl">
-              <GiftIcon size={16} className="stroke-[2.5px]" />
-            </div>
-            <p className="text-xs text-amber-950 leading-snug">
-              {milestone.remaining === 0 ? (
-                <span className="font-bold text-green-700">Skvělé! Odemkl jsi týdenní Premium zdarma.</span>
-              ) : (
-                <>
-                  Zbývá <strong>{milestone.remaining} {milestone.remaining === 1 ? 'den' : (milestone.remaining > 1 && milestone.remaining < 5 ? 'dny' : 'dní')}</strong> do získání <span className="font-medium">Premium na týden zdarma</span>.
-                </>
-              )}
+            <p className="text-2xl font-semibold text-gray-900">
+              {milestone.target} dní
             </p>
           </div>
         </div>
 
-        {/* PRAVÝ PANEL (Data: Kalendář + Statistiky pod ním v šedém boxu) */}
+        {/* PRAVÝ PANEL - Tři bloky pod sebou, kalendář a spodní progress bar s dárkem */}
         <div className="md:col-span-7 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 space-y-6">
           
-          {/* KALENDÁŘ / DYNAMICKÝ TÝDENNÍ GRID */}
-          <div className="space-y-2">
+          {/* TŘI ELEGANTNÍ BLOKY POD SEBOU (Styl menu / nastavení) */}
+          <div className="space-y-2.5">
+            {/* 1. Aktuální série */}
+            <div className="bg-white border border-gray-200/60 rounded-xl p-3.5 flex items-center justify-between shadow-xs">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-orange-50 text-orange-500 rounded-lg">
+                  <Flame size={16} className="stroke-[2.5px]" />
+                </div>
+                <span className="text-sm font-medium text-gray-600">Aktuální série</span>
+              </div>
+              <span className="text-base font-semibold text-gray-900">
+                {streak} {streak === 1 ? 'den' : (streak > 1 && streak < 5 ? 'dny' : 'dní')}
+              </span>
+            </div>
+
+            {/* 2. Nejdelší série */}
+            <div className="bg-white border border-gray-200/60 rounded-xl p-3.5 flex items-center justify-between shadow-xs">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-amber-50 text-amber-500 rounded-lg">
+                  <Trophy size={16} className="stroke-[2.5px]" />
+                </div>
+                <span className="text-sm font-medium text-gray-600">Nejdelší série</span>
+              </div>
+              <span className="text-base font-semibold text-gray-900">
+                {stats.max_streak} {stats.max_streak === 1 ? 'den' : (stats.max_streak > 1 && stats.max_streak < 5 ? 'dny' : 'dní')}
+              </span>
+            </div>
+
+            {/* 3. Celkem odpracováno */}
+            <div className="bg-white border border-gray-200/60 rounded-xl p-3.5 flex items-center justify-between shadow-xs">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-50 text-blue-500 rounded-lg">
+                  <Award size={16} className="stroke-[2.5px]" />
+                </div>
+                <span className="text-sm font-medium text-gray-600">Celkem odpracováno</span>
+              </div>
+              <span className="text-base font-semibold text-gray-900">
+                {loggedDays.length > 0 ? loggedDays.length : streak} {loggedDays.length === 1 ? 'den' : (loggedDays.length > 1 && loggedDays.length < 5 ? 'dny' : 'dní')}
+              </span>
+            </div>
+          </div>
+
+          {/* KALENDÁŘ / TÝDENNÍ GRID */}
+          <div className="space-y-2 pt-1">
             <p className="text-xs uppercase tracking-wider font-semibold text-gray-400 pl-1">Týdenní přehled aktivity</p>
             <div className="grid grid-cols-7 gap-2">
               {dynamicWeek.map((d, i) => {
@@ -209,21 +233,49 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
             </div>
           </div>
 
-          {/* STATISTIKY (Přesunuté zpátky napravo pod kalendář) */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white border border-gray-200/60 rounded-2xl p-4 text-center shadow-xs">
-              <p className="text-xs text-gray-400 font-medium">Nejdelší série</p>
-              <p className="text-xl font-semibold text-gray-800 mt-0.5">
-                {stats.max_streak} {stats.max_streak === 1 ? 'den' : (stats.max_streak > 1 && stats.max_streak < 5 ? 'dny' : 'dní')}
-              </p>
+          {/* NOVÝ ČISTÝ PROGRESS BAR S PROCENTY A DÁREČKEM NA KONCI */}
+          <div className="pt-2 space-y-2">
+            <div className="flex justify-between items-center text-xs font-semibold text-gray-400 pl-1">
+              <span>Cesta k Premium zdarma</span>
+              <span className="text-gray-600 bg-white border border-gray-200/80 px-2 py-0.5 rounded-md shadow-xs">
+                {Math.round(milestone.percentage)} %
+              </span>
+            </div>
+            
+            <div className="flex items-center gap-3.5 bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs">
+              {/* Samotná linka progress baru */}
+              <div className="flex-1 bg-gray-100 h-2.5 rounded-full overflow-hidden relative">
+                <div 
+                  className={`h-full rounded-full transition-all duration-1000 ease-out ${
+                    milestone.remaining === 0 ? "bg-green-500" : "bg-gradient-to-r from-orange-500 to-amber-500"
+                  }`}
+                  style={{ width: `${milestone.percentage}%` }}
+                />
+              </div>
+
+              {/* Ikonka dárku na konci linky */}
+              <div 
+                className={`flex-shrink-0 p-2 border rounded-xl transition-all ${
+                  milestone.remaining === 0 
+                    ? "bg-green-500 border-green-500 text-white animate-bounce" 
+                    : "bg-gray-50 border-gray-200 text-gray-400"
+                }`}
+                title={milestone.remaining === 0 ? "Premium odemčeno!" : `Zbývá ${milestone.remaining} dní`}
+              >
+                <GiftIcon size={16} className="stroke-[2.5px]" />
+              </div>
             </div>
 
-            <div className="bg-white border border-gray-200/60 rounded-2xl p-4 text-center shadow-xs">
-              <p className="text-xs text-gray-400 font-medium">Celkem odpracováno</p>
-              <p className="text-xl font-semibold text-gray-800 mt-0.5">
-                {loggedDays.length > 0 ? loggedDays.length : streak} {loggedDays.length === 1 ? 'den' : (loggedDays.length > 1 && loggedDays.length < 5 ? 'dny' : 'dní')}
-              </p>
-            </div>
+            {/* Drobný subtext pod barem (už žádná velká barva) */}
+            <p className="text-[11px] text-gray-400 pl-1">
+              {milestone.remaining === 0 ? (
+                <span className="text-green-600 font-medium">Mise splněna! Týdenní Premium máš aktivní.</span>
+              ) : (
+                <>
+                  Zbývá odehrát <strong>{milestone.remaining} {milestone.remaining === 1 ? 'den' : (milestone.remaining > 1 && milestone.remaining < 5 ? 'dny' : 'dní')}</strong> pro odemčení cíle.
+                </>
+              )}
+            </p>
           </div>
 
         </div>
