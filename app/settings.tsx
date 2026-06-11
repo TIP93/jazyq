@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { User, Bell, Sliders, Palette, Trash2, ArrowLeft, Check, Sparkles, Volume2, Target, RotateCcw } from "lucide-react";
+import { Bell, Sliders, Palette, Trash2, ArrowLeft, Check, Sparkles, Volume2, Target, RotateCcw, Globe } from "lucide-react";
 
 interface SettingsPageProps {
   user: any;
@@ -11,21 +11,41 @@ interface SettingsPageProps {
 export default function SettingsPage({ user, setView }: SettingsPageProps) {
   // --- STAVY NASTAVENÍ ---
   const [activeTab, setActiveTab] = useState<"general" | "notifications" | "appearance" | "danger">("general");
+  
+  // Výchozí nastavení podle zadání: Angličtina + B1
   const [nativeLang, setNativeLang] = useState("cs");
-  const [targetLevel, setTargetLevel] = useState("A2");
+  const [targetLanguage, setTargetLanguage] = useState("en");
+  const [targetLevel, setTargetLevel] = useState("B1");
+  
   const [dailyReminder, setDailyReminder] = useState(true);
   const [reminderTime, setReminderTime] = useState("08:00");
   const [appTheme, setAppTheme] = useState("light");
   const [autoPlayAudio, setAutoPlayAudio] = useState(true);
   const [dailyGoal, setDailyGoal] = useState("standard");
 
-  // Pomocná data o poskytovateli přihlášení
-  const provider = user?.user_metadata?.provider || user?.app_metadata?.provider;
+  // Definice podporovaných jazyků v JAZYQ
+  const languages = [
+    { code: "en", label: "Angličtina", flag: "🇬🇧" },
+    { code: "de", label: "Němčina", flag: "🇩🇪" },
+    { code: "es", label: "Španělština", flag: "🇪🇸" },
+    { code: "fr", label: "Francouzština", flag: "🇫🇷" },
+    { code: "it", label: "Italština", flag: "🇮🇹" },
+  ];
+
+  // Škála úrovní A1 - C2
+  const levels = [
+    { code: "A1", label: "Začátečník" },
+    { code: "A2", label: "Mírně pokročilý" },
+    { code: "B1", label: "Středně pokročilý" },
+    { code: "B2", label: "Vyšší střední" },
+    { code: "C1", label: "Pokročilý" },
+    { code: "C2", label: "Proficient" },
+  ];
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-white border border-gray-200 rounded-3xl p-8 sm:p-10 space-y-8 shadow-sm">
       
-      {/* HLAVIČKA NASTAVENÍ S TLAČÍTKEM ZPĚT */}
+      {/* HLAVIČKA NASTAVENÍ S TLAČÍTKEM ZPÊT */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-6">
         <div className="flex items-center gap-4">
           <button
@@ -39,7 +59,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
               Nastavení aplikace
             </h1>
             <p className="text-sm text-gray-400 mt-0.5">
-              Správa tvého profilu, upozornění a preferencí výuky
+              Správa tvých preferencí výuky, upozornění a vzhledu rozhraní
             </p>
           </div>
         </div>
@@ -58,7 +78,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                 : "bg-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
             }`}
           >
-            <User size={18} />
+            <Globe size={18} />
             Základní nastavení
           </button>
 
@@ -105,33 +125,62 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           {/* SEKCE: ZÁKLADNÍ NASTAVENÍ */}
           {activeTab === "general" && (
             <div className="space-y-6">
-              {/* Profil uživatele */}
-              <div className="flex items-center gap-4 bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs">
-                {user?.user_metadata?.avatar_url ? (
-                  <img
-                    src={user.user_metadata.avatar_url}
-                    alt="Avatar"
-                    className="w-14 h-14 rounded-full border border-gray-100"
-                  />
-                ) : (
-                  <div className="w-14 h-14 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center text-gray-400">
-                    <User size={24} />
-                  </div>
-                )}
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs uppercase tracking-wider font-semibold text-gray-400">
-                    Přihlášený profil
-                  </p>
-                  <h3 className="text-lg font-medium text-gray-900 truncate mt-0.5">
-                    {user?.user_metadata?.full_name || user?.user_metadata?.name || "Uživatel JAZYQ"}
-                  </h3>
-                  <p className="text-sm text-gray-500 truncate">{user?.email}</p>
+              
+              {/* Výběr výchozího studovaného jazyka (Velké moderní vlajky) */}
+              <div className="bg-white border border-gray-200/60 rounded-2xl p-5 shadow-xs space-y-4">
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900">Výchozí studovaný jazyk</h4>
+                  <p className="text-xs text-gray-400 mt-0.5">Tento jazyk uvidíš jako první při otevření aplikace JAZYQ.</p>
                 </div>
-                {provider && (
-                  <div className="bg-gray-100 px-3 py-1 rounded-xl text-xs font-medium text-gray-600 capitalize">
-                    {provider}
-                  </div>
-                )}
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-1">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => setTargetLanguage(lang.code)}
+                      className={`flex flex-col items-center justify-center p-3 border rounded-xl transition-all cursor-pointer relative group ${
+                        targetLanguage === lang.code
+                          ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
+                          : "border-gray-100 text-gray-500 hover:border-gray-300 hover:bg-gray-50/50"
+                      }`}
+                    >
+                      <span className="text-3xl mb-1.5 filter group-hover:scale-105 transition-transform">{lang.flag}</span>
+                      <span className="text-[11px] tracking-tight truncate w-full text-center">{lang.label}</span>
+                      {targetLanguage === lang.code && (
+                        <div className="absolute top-1.5 right-1.5 bg-black text-white rounded-full p-0.5">
+                          <Check size={8} className="stroke-[3.5px]" />
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Výběr studované úrovně (Grid A1 - C2) */}
+              <div className="bg-white border border-gray-200/60 rounded-2xl p-5 shadow-xs space-y-4">
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900">Výchozí úroveň pokročilosti</h4>
+                  <p className="text-xs text-gray-400 mt-0.5">Přizpůsobí náročnost generovaných každodenních frází a rozborů.</p>
+                </div>
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 pt-1">
+                  {levels.map((lvl) => (
+                    <button
+                      key={lvl.code}
+                      onClick={() => setTargetLevel(lvl.code)}
+                      className={`flex flex-col items-center justify-center py-3.5 px-2 border rounded-xl text-center transition cursor-pointer ${
+                        targetLevel === lvl.code
+                          ? "border-black bg-gray-50 text-gray-900"
+                          : "border-gray-100 text-gray-500 hover:bg-gray-50"
+                      }`}
+                    >
+                      <span className={`text-base font-bold ${targetLevel === lvl.code ? "text-gray-900" : "text-gray-700"}`}>
+                        {lvl.code}
+                      </span>
+                      <span className="text-[9px] text-gray-400 font-normal mt-0.5 tracking-tight truncate w-full">
+                        {lvl.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Výběr mateřského jazyka */}
@@ -161,40 +210,12 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                 </div>
               </div>
 
-              {/* Výběr cílové úrovně */}
-              <div className="bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs space-y-3">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-900">Studovaná úroveň jazyka</h4>
-                  <p className="text-xs text-gray-400 mt-0.5">Přizpůsobí náročnost generovaných každodenních frází.</p>
-                </div>
-                <div className="grid grid-cols-3 gap-2 pt-1">
-                  {[
-                    { code: "A1", label: "A1 (Začátečník)" },
-                    { code: "A2", label: "A2 (Mírně pokročilý)" },
-                    { code: "B1", label: "B1 (Středně pokročilý)" },
-                  ].map((lvl) => (
-                    <button
-                      key={lvl.code}
-                      onClick={() => setTargetLevel(lvl.code)}
-                      className={`flex flex-col items-start gap-0.5 px-4 py-2.5 border rounded-xl text-left transition cursor-pointer ${
-                        targetLevel === lvl.code
-                          ? "border-black bg-gray-50 text-gray-900 font-semibold"
-                          : "border-gray-200 text-gray-500 hover:bg-gray-50"
-                      }`}
-                    >
-                      <span className="text-xs font-bold">{lvl.code}</span>
-                      <span className="text-[10px] opacity-80 font-normal">{lvl.label.split(" ")[1]}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
             </div>
           )}
 
           {/* SEKCE: UPOZORNĚNÍ A CÍLE */}
           {activeTab === "notifications" && (
             <div className="space-y-4">
-              {/* Denní e-mail */}
               <div className="flex items-center justify-between bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs">
                 <div>
                   <h4 className="text-sm font-medium text-gray-900">Denní připomenutí e-mailem</h4>
@@ -225,7 +246,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                 </div>
               )}
 
-              {/* Audio preference */}
               <div className="flex items-center justify-between bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-gray-50 text-gray-500 rounded-lg">
@@ -246,7 +266,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                 </button>
               </div>
 
-              {/* Denní cíle */}
               <div className="bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-gray-50 text-gray-500 rounded-lg">
@@ -319,10 +338,9 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             </div>
           )}
 
-          {/* SEKCE: ZRUŠIT ÚČET / NEBEZPEČNÁ ZÓNA */}
+          {/* SEKCE: ZRUŠIT ÚČET */}
           {activeTab === "danger" && (
             <div className="space-y-4">
-              {/* Resetování pokroku */}
               <div className="bg-white border border-red-100 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-0.5">
                   <h4 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
@@ -338,7 +356,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                 </button>
               </div>
 
-              {/* Smazání účtu */}
               <div className="bg-red-50/30 border border-red-100 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-0.5">
                   <h4 className="text-sm font-semibold text-red-950 flex items-center gap-2">
