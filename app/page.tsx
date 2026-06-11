@@ -3,6 +3,7 @@
 import Image from "next/image"; 
 import { useState, useEffect } from "react";
 import StreakPage from "./streak";
+import SettingsPage from "./settings";
 import { Roboto } from "next/font/google"; // Tady je velké R, protože importuješ funkci/typ
 
 // Tady vytváříš instanci s malým r
@@ -68,7 +69,7 @@ const isReady = !!allLevels?.levels;
 const [generating, setGenerating] = useState(false);
 const [showLoginOptions, setShowLoginOptions] = useState(false);
 const [user, setUser] = useState<any>(null);
-const [view, setView] = useState<"learn" | "streak">("learn");
+const [view, setView] = useState<"learn" | "streak" | "settings">("learn");
 
 const provider = user?.user_metadata?.provider || user?.app_metadata?.provider;
 
@@ -500,17 +501,17 @@ useEffect(() => {
     <div className="grid grid-cols-2 gap-2 no-print">
 
       <button
-        onClick={() => console.log("settings")}
-        className="
-          border border-gray-200 rounded-2xl py-2 px-3
-          flex items-center justify-center gap-2
-          text-sm text-gray-600
-          hover:bg-gray-50 transition cursor-pointer
-        "
-      >
-        <Settings size={14} />
-        Nastavení
-      </button>
+  onClick={() => setView("settings")} // <--- PŘIDAT TENTO ŘÁDEK
+  className="
+    border border-gray-200 rounded-2xl py-2 px-3
+    flex items-center justify-center gap-2
+    text-sm text-gray-600
+    hover:bg-gray-50 transition cursor-pointer
+  "
+>
+  <Settings size={14} />
+  Nastavení
+</button>
 
       <button
         onClick={async () => {
@@ -945,6 +946,11 @@ useEffect(() => {
 
         {view === "streak" && (
   <StreakPage stats={streakStats} setView={setView} />
+)}
+
+{/* VYKRESLENÍ STRÁNKY NASTAVENÍ */}
+{view === "settings" && (
+  <SettingsPage setView={setView} user={user} />
 )}
 
   {/* ========================================================= */}

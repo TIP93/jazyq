@@ -149,7 +149,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
                 className={`${base} ${
                   d.isToday 
                     ? 'border-green-500 bg-green-50/20' 
-                    : 'border-green-100 bg-green-50/40'
+                    : 'border-green-300 bg-green-50/40'
                 } text-green-600`}
               >
                 <span className={`${labelWeight} mb-1`}>{d.dayLabel}</span>
