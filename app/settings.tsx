@@ -370,4 +370,4 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
     </div>
   );
-}
+} 
