@@ -111,60 +111,77 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
         </p>
       </div>
 
-      {/* VYCENTROVANÝ ORANŽOVÝ BLOK OD KRAJE KE KRAJI */}
-<div className="w-full flex flex-col items-center gap-3 bg-gradient-to-b from-amber-50 to-orange-50/30 border border-amber-100 rounded-2xl p-6 text-center shadow-xs">
-  <div className="p-3 bg-amber-500 text-white rounded-2xl shadow-md transform -rotate-3 animate-bounce-slow">
-    <GiftIcon size={22} className="stroke-[2.5px]" />
-  </div>
-  
-  <div className="space-y-1">
-    <p className="text-sm text-amber-900/80 max-w-sm mx-auto leading-relaxed">
-      {milestone.remaining === 0 ? (
-        <span className="font-bold text-green-700 block">Skvělé! Odemkl jsi týdenní Premium zdarma.</span>
-      ) : (
-        <>
-          Zbývá <strong>{milestone.remaining} {milestone.remaining === 1 ? 'den' : (milestone.remaining > 1 && milestone.remaining < 5 ? 'dny' : 'dní')}</strong> do získání <span className="font-semibold text-amber-950">Premium členství na týden zdarma</span>.
-        </>
-      )}
-    </p>
-  </div>
-</div>
+      {/* KOMPAKTNÍ HORIZONTÁLNÍ BLOK S DÁRKEM */}
+      <div className="w-full flex flex-row items-center gap-4 bg-gradient-to-r from-amber-50 to-orange-50/30 border border-amber-100 rounded-2xl p-4 text-left shadow-xs">
+        <div className="flex-shrink-0 p-2.5 bg-amber-500 text-white rounded-xl shadow-xs">
+          <GiftIcon size={18} className="stroke-[2.5px]" />
+        </div>
+        
+        <div className="flex-1">
+          <p className="text-sm text-amber-950 leading-snug">
+            {milestone.remaining === 0 ? (
+              <span className="font-bold text-green-700">Skvělé! Odemkl jsi týdenní Premium zdarma.</span>
+            ) : (
+              <>
+                Zbývá <strong>{milestone.remaining} {milestone.remaining === 1 ? 'den' : (milestone.remaining > 1 && milestone.remaining < 5 ? 'dny' : 'dní')}</strong> do získání <span className="font-medium">Premium na týden zdarma</span>.
+              </>
+            )}
+          </p>
+        </div>
+      </div>
 
       {/* DYNAMICKÝ TÝDENNÍ GRID */}
       <div className="grid grid-cols-7 gap-2.5 pt-2">
         {dynamicWeek.map((d, i) => {
           const base = `h-16 rounded-2xl flex flex-col items-center justify-center text-xs font-medium transition-all ${
             d.isToday 
-              ? "shadow-md z-10 scale-[1.06] bg-white" 
+              ? "shadow-sm border-2 z-10 scale-[1.06] bg-white" 
               : "border bg-transparent"
           }`;
 
-          const labelWeight = d.isToday ? "font-bold text-xs" : "text-[10px]";
-
           if (d.status === "done") {
-            // ZELENÉ, TUČNÉ, PLNÉ DNY
+            // PŮVODNÍ ZELENÁ, POUZE PŘEDCHOZÍ DNY MAJÍ TUČNÝ NÁPIS DNE
+            const labelWeight = d.isToday ? "font-bold text-gray-900 text-xs" : "text-[10px] font-bold text-green-700/70";
+            
             return (
-              <div key={i} className={`${base} ${d.isToday ? 'border-4 border-green-600' : 'border border-green-500'} bg-green-500 text-white shadow-green-100`}>
-                <span className={`${labelWeight} font-bold mb-1`}>{d.dayLabel}</span>
-                <CheckIcon size={d.isToday ? 20 : 16} className="stroke-[3.5px]" />
+              <div 
+                key={i} 
+                className={`${base} ${
+                  d.isToday 
+                    ? 'border-green-500 bg-green-50/20' 
+                    : 'border-green-100 bg-green-50/40'
+                } text-green-600`}
+              >
+                <span className={`${labelWeight} mb-1`}>{d.dayLabel}</span>
+                <CheckIcon size={d.isToday ? 18 : 14} className={d.isToday ? "stroke-[3px]" : ""} />
               </div>
             );
           }
 
           if (d.status === "missed") {
-            // ČERVENÉ, TUČNÉ, OBTAŽENÉ DNY
+            // ZMĚNA: TMAVĚ ČERVENÝ RÁMEČEK, TEXT I KŘÍŽEK
+            const labelWeight = d.isToday ? "font-bold text-red-700 text-xs" : "text-[10px] text-red-700/60";
+            
             return (
-              <div key={i} className={`${base} ${d.isToday ? 'border-4 border-red-500 bg-red-50' : 'border-2 border-red-400 bg-red-50/50'} text-red-500 shadow-red-100`}>
-                <span className={`${labelWeight} font-bold mb-1`}>{d.dayLabel}</span>
-                <XIcon size={d.isToday ? 20 : 16} className="stroke-[3.5px]" />
+              <div 
+                key={i} 
+                className={`${base} ${
+                  d.isToday 
+                    ? 'border-red-600 bg-red-50/20' 
+                    : 'border-red-600 bg-red-50/10'
+                } text-red-700`}
+              >
+                <span className={`${labelWeight} mb-1`}>{d.dayLabel}</span>
+                <XIcon size={d.isToday ? 18 : 14} className="stroke-[3px]" />
               </div>
             );
           }
 
+          // BUDOUCÍ DNY (PŮVODNÍ)
+          const labelWeight = d.isToday ? "font-bold text-gray-900 text-xs" : "text-[10px] text-gray-400";
           return (
-            // BUDOUCÍ DNY
-            <div key={i} className={`${base} border-dashed border-gray-200 text-gray-300`}>
-              <span className={`${labelWeight} font-bold mb-1`}>{d.dayLabel}</span>
+            <div key={i} className={`${base} border-dashed border-gray-200 text-gray-300 bg-transparent`}>
+              <span className={`${labelWeight} mb-1`}>{d.dayLabel}</span>
               <span className="text-base leading-none">•</span>
             </div>
           );

@@ -471,7 +471,7 @@ useEffect(() => {
           <img 
             src="/seznam-logo-esko-18-cervena.svg" 
             alt="Seznam" 
-            className="w-3.5 h-3.5 select-none"
+            className="w-2.5 h-2.5 select-none"
             draggable={false}
           />
         )}
