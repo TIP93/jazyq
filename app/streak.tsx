@@ -79,30 +79,31 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
   const dynamicWeek = generateDynamicWeek();
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-white border border-gray-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+    // Sjednoceno na p-8 sm:p-10 space-y-8 přesně podle SettingsPage
+    <div className="w-full max-w-4xl mx-auto bg-white border border-gray-200 rounded-3xl p-8 sm:p-10 space-y-8 shadow-sm">
       
-      {/* HLAVIČKA VE STYLU NASTAVENÍ */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-5">
+      {/* HLAVIČKA VE STYLU NASTAVENÍ (Sjednocené velikosti písma a padding tlačítka) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-6">
         <div className="flex items-center gap-4">
           <button
             onClick={() => setView("learn")}
-            className="p-2 bg-white border border-gray-200 text-gray-500 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition shadow-xs cursor-pointer"
+            className="p-2.5 bg-white border border-gray-200 text-gray-500 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition shadow-xs cursor-pointer"
           >
             <ArrowLeft size={18} className="stroke-[2.5px]" />
           </button>
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
+            <h1 className="text-3xl font-semibold tracking-tight text-gray-900">
               Série aktivních dní
             </h1>
-            <p className="text-xs text-gray-400 mt-0.5">
+            <p className="text-sm text-gray-400 mt-0.5">
               Sleduj svůj denní pokrok a plň milníky pro získání odměn
             </p>
           </div>
         </div>
       </div>
 
-      {/* VYBALANCOVANÝ DUÁLNÍ PANEL */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
+      {/* VYBALANCOVANÝ DUÁLNÍ PANEL (Mezera gap-8 a zaoblení p-6 sladěno s pravým panelem Settings) */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
         
         {/* LEVÝ PANEL - Dominantní ohýnek */}
         <div className="md:col-span-5 flex flex-col items-center justify-center text-center border border-gray-100 rounded-2xl p-6 bg-gray-50/10 space-y-6">
@@ -138,8 +139,8 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
           </div>
         </div>
 
-        {/* PRAVÝ PANEL - Více vzdušný kalendář a progress bar (statistiky zakomentovány) */}
-        <div className="md:col-span-7 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 space-y-8 flex flex-col justify-center">
+        {/* PRAVÝ PANEL - Provzdušněný kalendář a progress bar (statistiky zakomentovány) */}
+        <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 space-y-6 flex flex-col justify-between">
           
           {/* ZAKOMENTOVANÉ STATISTIKY (Kdyby ses k nim chtěl někdy vrátit)
             
@@ -165,7 +166,6 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
             <p className="text-xs uppercase tracking-wider font-semibold text-gray-400 pl-1">Týdenní přehled aktivity</p>
             <div className="grid grid-cols-7 gap-2">
               {dynamicWeek.map((d, i) => {
-                // Zvětšena výška z h-14 na h-16 pro větší vzdušnost
                 const base = `h-16 rounded-xl flex flex-col items-center justify-center text-xs font-medium transition-all ${
                   d.isToday 
                     ? "shadow-sm border-2 z-10 scale-[1.03] bg-white" 
@@ -224,9 +224,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
               </span>
             </div>
             
-            {/* Větší vnitřní padding p-5 pro dýchání prvků */}
             <div className="flex items-center gap-4 bg-white border border-gray-200/60 rounded-2xl p-5 shadow-xs relative overflow-visible">
-              {/* Tlustší elegantní linka h-2.5 */}
               <div className="flex-1 bg-gray-100 h-2.5 rounded-full overflow-hidden">
                 <div 
                   className={`h-full rounded-full transition-all duration-1000 ease-out ${
@@ -236,7 +234,6 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
                 />
               </div>
 
-              {/* Výrazný elegantní dáreček */}
               <div 
                 className={`flex-shrink-0 transition-all duration-300 transform rotate-12 hover:rotate-0 hover:scale-110 cursor-help ${
                   milestone.remaining === 0 
@@ -249,7 +246,6 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
               </div>
             </div>
 
-            {/* Subtext */}
             <p className="text-xs text-gray-400 pl-1 leading-normal">
               {milestone.remaining === 0 ? (
                 <span className="text-green-600 font-medium">Skvělé! Odemkl jsi týdenní Premium zdarma.</span>
@@ -265,11 +261,11 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
 
       </div>
 
-      {/* SPODNÍ TLAČÍTKO */}
+      {/* SPODNÍ TLAČÍTKO - Sjednoceno na py-3 a rounded-2xl s SettingsPage */}
       <div className="pt-4 border-t border-gray-100 flex justify-center">
         <button
           onClick={() => setView("learn")}
-          className="cursor-pointer w-full sm:w-auto px-8 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 hover:text-gray-900 active:scale-[0.98] transition-all shadow-xs"
+          className="w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-2xl hover:bg-gray-50 hover:text-gray-900 active:scale-[0.98] transition-all shadow-xs cursor-pointer"
         >
           Pokračovat ve studiu
         </button>
