@@ -159,23 +159,23 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
           }
 
           if (d.status === "missed") {
-            // ZMĚNA: TMAVĚ ČERVENÝ RÁMEČEK, TEXT I KŘÍŽEK
-            const labelWeight = d.isToday ? "font-bold text-red-700 text-xs" : "text-[10px] text-red-700/60";
-            
-            return (
-              <div 
-                key={i} 
-                className={`${base} ${
-                  d.isToday 
-                    ? 'border-red-600 bg-red-50/20' 
-                    : 'border-red-600 bg-red-50/10'
-                } text-red-700`}
-              >
-                <span className={`${labelWeight} mb-1`}>{d.dayLabel}</span>
-                <XIcon size={d.isToday ? 18 : 14} className="stroke-[3px]" />
-              </div>
-            );
-          }
+  // ELEGANTNÍ PASTELOVÁ ČERVENÁ: Jemný okraj, tlumený křížek i text
+  const labelWeight = d.isToday ? "font-bold text-red-500 text-xs" : "text-[10px] text-red-400";
+  
+  return (
+    <div 
+      key={i} 
+      className={`${base} ${
+        d.isToday 
+          ? 'border-red-300 bg-red-50/30 text-red-500' 
+          : 'border-red-100 bg-red-50/10 text-red-400'
+      }`}
+    >
+      <span className={`${labelWeight} mb-1`}>{d.dayLabel}</span>
+      <XIcon size={d.isToday ? 18 : 14} className={d.isToday ? "stroke-[2.5px]" : "opacity-80"} />
+    </div>
+  );
+}
 
           // BUDOUCÍ DNY (PŮVODNÍ)
           const labelWeight = d.isToday ? "font-bold text-gray-900 text-xs" : "text-[10px] text-gray-400";

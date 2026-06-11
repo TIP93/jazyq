@@ -457,25 +457,25 @@ useEffect(() => {
 
     {/* Bílý kulatý odznáček v pravém dolním rohu */}
     {provider && (provider === "google" || provider === "seznam") && (
-      <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-sm border border-gray-100 flex items-center justify-center">
-        {provider === "google" && (
-          <img 
-            src="/google-logo.svg" 
-            alt="Google" 
-            className="w-3.5 h-3.5 select-none" /* Opacity vrácena na 100%, na bílém pozadí to vypadá lépe */
-            draggable={false}
-          />
-        )}
-        
-        {provider === "seznam" && (
-          <img 
-            src="/seznam-logo-esko-18-cervena.svg" 
-            alt="Seznam" 
-            className="w-2.5 h-2.5 select-none"
-            draggable={false}
-          />
-        )}
-      </div>
+      <div className="absolute -bottom-1 -right-1 bg-white rounded-full w-5 h-5 shadow-sm border border-gray-100 flex items-center justify-center">
+  {provider === "google" && (
+    <img 
+      src="/google-logo.svg" 
+      alt="Google" 
+      className="w-3.5 h-3.5 select-none"
+      draggable={false}
+    />
+  )}
+  
+  {provider === "seznam" && (
+    <img 
+      src="/seznam-logo-esko-18-cervena.svg" 
+      alt="Seznam" 
+      className="w-2.5 h-2.5 select-none" /* Zmenšené S teď plave uvnitř stejně velkého kolečka */
+      draggable={false}
+    />
+  )}
+</div>
     )}
   </div>
 
