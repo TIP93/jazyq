@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckIcon, XIcon, GiftIcon } from "lucide-react";
+import { CheckIcon, XIcon, GiftIcon, Calendar, Flame, Trophy, Award, ArrowRight } from "lucide-react";
 
 interface StreakPageProps {
   stats: {
@@ -71,6 +71,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
         dayLabel: dayNames[currentTargetDate.getDay()],
         isToday: offset === 0,
         status: status,
+        dateNum: currentTargetDate.getDate(),
       });
     }
     return daysArr;
@@ -81,55 +82,168 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
   return (
     <div className="w-full max-w-4xl mx-auto bg-white border border-gray-200 rounded-3xl p-8 sm:p-10 space-y-8 shadow-sm">
       
-      {/* ŠIROKÝ DVOU-SLOUPCOVÝ GRID */}
+      {/* HLAVIČKA VE STYLU NASTAVENÍ */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-6">
+        <div className="flex items-center gap-4">
+          <div className="p-2.5 bg-orange-50 text-orange-500 rounded-xl border border-orange-100">
+            <Flame size={20} className="stroke-[2.5px]" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-semibold tracking-tight text-gray-900">
+              Série aktivních dní
+            </h1>
+            <p className="text-sm text-gray-400 mt-0.5">
+              Sleduj svůj denní pokrok, plň milníky a odemykej odměny
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* DVOU-SLOUPCOVÝ MODERNÍ LAYOUT */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
         
-        {/* LEVÝ SLOUPEC (md:col-span-5) - Kompletně vycentrovaný plamínek + dáreček pod ním */}
-        <div className="md:col-span-5 flex flex-col items-center text-center space-y-6 border-b md:border-b-0 md:border-r border-gray-100 pb-6 md:pb-0 md:pr-8">
+        {/* LEVÝ PANEL (md:col-span-5) - Kruhový pokrok a stav milníku */}
+        <div className="md:col-span-5 flex flex-col items-center text-center space-y-6 md:border-r md:border-gray-100 md:pr-8 pb-6 md:pb-0">
           
-          {/* KULATÝ PROGRESS BAR KOLEM OHÝNKU */}
-          <div className="relative w-32 h-32 flex items-center justify-center">
+          {/* MODERNÍ KRUHOVÝ PROGRESS BAR */}
+          <div className="relative w-36 h-36 flex items-center justify-center">
             <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="44" className="stroke-gray-100 fill-none" strokeWidth="3" />
+              <circle cx="50" cy="50" r="44" className="stroke-gray-100 fill-none" strokeWidth="2.5" />
               <circle 
                 cx="50" 
                 cy="50" 
                 r="44" 
-                className={`fill-none transition-all duration-700 ease-out ${streak > 0 ? "stroke-orange-500" : "stroke-gray-300"}`} 
-                strokeWidth="4" 
+                className={`fill-none transition-all duration-1000 ease-out ${streak > 0 ? "stroke-orange-500" : "stroke-gray-300"}`} 
+                strokeWidth="3.5" 
                 strokeDasharray="276.4"
                 strokeDashoffset={276.4 - (276.4 * milestone.percentage) / 100}
                 strokeLinecap="round"
               />
             </svg>
-            <div className={`text-5xl transition-transform duration-300 ${streak > 0 ? "animate-pulse scale-105" : "grayscale opacity-50"}`}>
-              🔥
+            <div className="flex flex-col items-center justify-center">
+              <span className={`text-4xl mb-0.5 ${streak > 0 ? "animate-pulse" : "grayscale opacity-50"}`}>🔥</span>
+              <span className="text-2xl font-bold text-gray-900 leading-none">{streak}</span>
+              <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mt-1">Dní v řadě</span>
             </div>
           </div>
 
-          {/* SÉRIE S TEXTEM */}
-          <div className="space-y-1">
-            <h1 className="text-3xl font-semibold tracking-tight text-gray-900 leading-tight">
-              {streak} {streak === 1 ? 'den' : (streak > 1 && streak < 5 ? 'dny' : 'dní')} v řadě
-            </h1>
-            <p className="text-xs uppercase tracking-wider font-semibold text-gray-400">
-              CÍL: {milestone.target} DNÍ
+          {/* DETAIL MILNÍKU */}
+          <div className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl p-4 space-y-2">
+            <div className="flex justify-between text-xs font-semibold uppercase tracking-wider text-gray-400">
+              <span>Aktuální cíl</span>
+              <span className="text-orange-600">{milestone.target} dní</span>
+            </div>
+            <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+              <div 
+                className="bg-orange-500 h-full rounded-full transition-all duration-1000 ease-out"
+                style={{ width: `${milestone.percentage}%` }}
+              />
+            </div>
+            <p className="text-xs text-gray-500 text-left pt-1">
+              Dokončeno **{Math.round(milestone.percentage)}%** z cesty k dalšímu milníku.
             </p>
           </div>
 
-          {/* BLOK S DÁREČKEM PŘESUNUTÝ SEM DOLŮ (POD PLAMÍNEK) */}
-          <div className="w-full flex flex-row items-center gap-4 bg-gradient-to-r from-amber-50 to-orange-50/30 border border-amber-100 rounded-2xl p-4 text-left shadow-xs">
-            <div className="flex-shrink-0 p-2.5 bg-amber-500 text-white rounded-xl shadow-xs">
-              <GiftIcon size={18} className="stroke-[2.5px]" />
+          {/* STATISTIKY (Přesunuto do levého panelu pod cíl) */}
+          <div className="grid grid-cols-2 gap-3 w-full">
+            <div className="bg-white border border-gray-100 rounded-xl p-3 text-left shadow-xs">
+              <div className="flex items-center gap-2 text-gray-400 mb-1">
+                <Trophy size={14} className="text-amber-500" />
+                <span className="text-[10px] font-medium uppercase tracking-wider">Rekord</span>
+              </div>
+              <p className="text-base font-semibold text-gray-800">
+                {stats.max_streak} {stats.max_streak === 1 ? 'den' : (stats.max_streak > 1 && stats.max_streak < 5 ? 'dny' : 'dní')}
+              </p>
+            </div>
+
+            <div className="bg-white border border-gray-100 rounded-xl p-3 text-left shadow-xs">
+              <div className="flex items-center gap-2 text-gray-400 mb-1">
+                <Award size={14} className="text-blue-500" />
+                <span className="text-[10px] font-medium uppercase tracking-wider">Celkem</span>
+              </div>
+              <p className="text-base font-semibold text-gray-800">
+                {loggedDays.length > 0 ? loggedDays.length : streak} {loggedDays.length === 1 ? 'den' : (loggedDays.length > 1 && loggedDays.length < 5 ? 'dny' : 'dní')}
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        {/* PRAVÝ PANEL (md:col-span-7) - Moderní kalendář a dárková sekce */}
+        <div className="md:col-span-7 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 space-y-6">
+          
+          {/* SEKCE: MODERNÍ HORIZONTÁLNÍ KALENDÁŘ */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-gray-900 font-medium text-sm">
+              <Calendar size={16} className="text-gray-400" />
+              <h3>Aktivita v tomto týdnu</h3>
+            </div>
+
+            <div className="grid grid-cols-7 gap-2">
+              {dynamicWeek.map((d, i) => {
+                // Výchozí stylování pro moderní minimalistické dny
+                let dayStyle = "bg-white border-gray-200 text-gray-600";
+                let iconEl = <span className="text-lg leading-none font-semibold mt-1">{d.dateNum}</span>;
+
+                if (d.status === "done") {
+                  dayStyle = d.isToday 
+                    ? "border-green-500 bg-green-50/30 text-green-700 font-bold ring-2 ring-green-100" 
+                    : "border-green-200 bg-green-50/10 text-green-600";
+                  iconEl = (
+                    <div className={`rounded-full p-0.5 mt-1 ${d.isToday ? 'bg-green-500 text-white' : 'bg-green-100 text-green-600'}`}>
+                      <CheckIcon size={12} className="stroke-[3px]" />
+                    </div>
+                  );
+                } else if (d.status === "missed") {
+                  dayStyle = d.isToday
+                    ? "border-red-400 bg-red-50/30 text-red-700 font-bold"
+                    : "border-red-100 bg-transparent text-red-400/80";
+                  iconEl = (
+                    <div className={`rounded-full p-0.5 mt-1 ${d.isToday ? 'bg-red-400 text-white' : 'bg-red-50 text-red-400'}`}>
+                      <XIcon size={12} className="stroke-[3px]" />
+                    </div>
+                  );
+                } else if (d.status === "future") {
+                  dayStyle = "border-dashed border-gray-200 text-gray-300 bg-transparent";
+                  iconEl = <span className="text-gray-300 font-normal text-sm mt-1">•</span>;
+                }
+
+                return (
+                  <div 
+                    key={i} 
+                    className={`h-20 border rounded-xl flex flex-col items-center justify-between py-2.5 transition-all text-center relative ${dayStyle}`}
+                  >
+                    <span className="text-[10px] font-semibold uppercase tracking-wider opacity-60">
+                      {d.dayLabel}
+                    </span>
+                    {iconEl}
+                    {d.isToday && (
+                      <span className="absolute -bottom-1.5 px-1.5 bg-gray-900 text-[8px] text-white font-bold rounded-md uppercase tracking-wide scale-90">
+                        Dnes
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* SEKCE: ODMĚNA (STYL INSPIROVANÝ PREMIUM UPGRADEM V NASTAVENÍ) */}
+          <div className="w-full flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-gradient-to-r from-amber-50 to-orange-50/40 border border-amber-100 rounded-2xl p-5 text-left shadow-xs">
+            <div className="flex-shrink-0 p-3 bg-amber-500 text-white rounded-xl shadow-xs">
+              <GiftIcon size={20} className="stroke-[2.5px]" />
             </div>
             
             <div className="flex-1">
-              <p className="text-sm text-amber-950 leading-snug">
+              <h4 className="text-sm font-bold text-amber-950">
+                {milestone.remaining === 0 ? "Odměna odemčena!" : "Odměna na dosah"}
+              </h4>
+              <p className="text-xs text-amber-900/80 leading-relaxed mt-0.5">
                 {milestone.remaining === 0 ? (
-                  <span className="font-bold text-green-700">Skvělé! Odemkl jsi týdenní Premium zdarma.</span>
+                  <span className="font-semibold text-green-700">Skvělé! Právě jsi odemkl týdenní Premium výuku zdarma.</span>
                 ) : (
                   <>
-                    Zbývá <strong>{milestone.remaining} {milestone.remaining === 1 ? 'den' : (milestone.remaining > 1 && milestone.remaining < 5 ? 'dny' : 'dní')}</strong> do získání <span className="font-medium">Premium na týden zdarma</span>.
+                    Udržuj oheň! Zbývá ti už jen <strong>{milestone.remaining} {milestone.remaining === 1 ? 'den' : (milestone.remaining > 1 && milestone.remaining < 5 ? 'dny' : 'dní')}</strong> studia k získání <span className="font-medium text-amber-950">JAZYQ Premium na týden zdarma</span>.
                   </>
                 )}
               </p>
@@ -138,91 +252,16 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
 
         </div>
 
-        {/* PRAVÝ SLOUPEC (md:col-span-7) - Grid a Statistiky */}
-        <div className="md:col-span-7 space-y-6">
-          
-          {/* DYNAMICKÝ TÝDENNÍ GRID */}
-          <div className="grid grid-cols-7 gap-2">
-            {dynamicWeek.map((d, i) => {
-              const base = `h-16 rounded-2xl flex flex-col items-center justify-center text-xs font-medium transition-all ${
-                d.isToday 
-                  ? "shadow-sm border-2 z-10 scale-[1.06] bg-white" 
-                  : "border bg-transparent"
-              }`;
-
-              if (d.status === "done") {
-                const labelWeight = d.isToday ? "font-bold text-gray-900 text-xs" : "text-[10px] font-bold text-green-700/70";
-                
-                return (
-                  <div 
-                    key={i} 
-                    className={`${base} ${
-                      d.isToday 
-                        ? 'border-green-500 bg-green-50/20' 
-                        : 'border-green-300 bg-green-50/40'
-                    } text-green-600`}
-                  >
-                    <span className={`${labelWeight} mb-1`}>{d.dayLabel}</span>
-                    <CheckIcon size={d.isToday ? 18 : 14} className={d.isToday ? "stroke-[3px]" : ""} />
-                  </div>
-                );
-              }
-
-              if (d.status === "missed") {
-                const labelWeight = d.isToday ? "font-bold text-red-500 text-xs" : "text-[10px] text-red-400";
-                
-                return (
-                  <div 
-                    key={i} 
-                    className={`${base} ${
-                      d.isToday 
-                        ? 'border-red-300 bg-red-50/30 text-red-500' 
-                        : 'border-red-100 bg-red-50/10 text-red-400'
-                    }`}
-                  >
-                    <span className={`${labelWeight} mb-1`}>{d.dayLabel}</span>
-                    <XIcon size={d.isToday ? 18 : 14} className={d.isToday ? "stroke-[2.5px]" : "opacity-80"} />
-                  </div>
-                );
-              }
-
-              const labelWeight = d.isToday ? "font-bold text-gray-900 text-xs" : "text-[10px] text-gray-400";
-              return (
-                <div key={i} className={`${base} border-dashed border-gray-200 text-gray-300 bg-transparent`}>
-                  <span className={`${labelWeight} mb-1`}>{d.dayLabel}</span>
-                  <span className="text-base leading-none">•</span>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* MINI STATS */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-gray-50/50 border border-gray-100 rounded-2xl p-4 text-center">
-              <p className="text-xs text-gray-400 font-medium">Nejdelší série</p>
-              <p className="text-xl font-semibold text-gray-800 mt-0.5">
-                {stats.max_streak} {stats.max_streak === 1 ? 'den' : (stats.max_streak > 1 && stats.max_streak < 5 ? 'dny' : 'dní')}
-              </p>
-            </div>
-
-            <div className="bg-gray-50/50 border border-gray-100 rounded-2xl p-4 text-center">
-              <p className="text-xs text-gray-400 font-medium">Celkem odpracováno</p>
-              <p className="text-xl font-semibold text-gray-800 mt-0.5">
-                {loggedDays.length > 0 ? loggedDays.length : streak} {loggedDays.length === 1 ? 'den' : (loggedDays.length > 1 && loggedDays.length < 5 ? 'dny' : 'dní')}
-              </p>
-            </div>
-          </div>
-
-        </div>
       </div>
 
       {/* SPODNÍ AKČNÍ TLAČÍTKO */}
       <div className="pt-4 border-t border-gray-100 flex justify-center">
         <button
           onClick={() => setView("learn")}
-          className="cursor-pointer w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-2xl hover:bg-gray-50 hover:text-gray-900 active:scale-[0.98] transition-all shadow-xs"
+          className="group cursor-pointer w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-2xl hover:bg-gray-50 hover:text-gray-900 active:scale-[0.98] transition-all shadow-xs flex items-center justify-center gap-2"
         >
           Pokračovat ve studiu
+          <ArrowRight size={14} className="text-gray-400 group-hover:text-gray-900 transition-colors" />
         </button>
       </div>
 
