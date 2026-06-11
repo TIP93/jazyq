@@ -199,7 +199,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
             </div>
             
             {/* Box s velkým pr-16, který vytvoří dostatek vzduchu pro vyčnívající dáreček */}
-            <div className="relative bg-white border border-gray-200/60 rounded-2xl p-5 pr-16 pt-11 pb-6 shadow-xs flex items-center select-none">
+            <div className="relative bg-white border border-gray-200/60 rounded-2xl p-5 pr-12 pt-11 pb-6 shadow-xs flex items-center select-none">
               
               {/* Samotná čistá dráha progress baru, která definuje 100% šířku pro výpočet procent */}
               <div className="flex-1 relative bg-gray-100 h-2.5 rounded-full">
