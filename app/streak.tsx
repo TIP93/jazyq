@@ -190,7 +190,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
             </div>
           </div>
 
-          {/* PROGRESS BAR S MODERNÍM BADGE INDIKÁTOREM A AKTIVNÍM DÁREČKEM */}
+          {/* PROGRESS BAR – OPRAVENÉ POZICOVÁNÍ A STRUKTURA */}
           <div className="space-y-3">
             <div className="pl-1">
               <span className="text-xs uppercase tracking-wider font-semibold text-gray-400">
@@ -198,23 +198,21 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
               </span>
             </div>
             
-            {/* Kontejner s extra horním paddingem, aby byl prostor pro plovoucí badge */}
-            <div className="relative bg-white border border-gray-200/60 rounded-2xl p-5 pt-12 pb-6 shadow-xs flex items-center select-none">
+            {/* Box s vyváženým vnitřním paddingem (p-5) na obou stranách */}
+            <div className="relative bg-white border border-gray-200/60 rounded-2xl p-5 pt-11 pb-6 shadow-xs flex items-center select-none">
               
-              {/* Hlavní dráha progress baru */}
-              <div className="flex-1 relative bg-gray-100 h-2.5 rounded-full pr-6">
+              {/* Odsazení celého vnitřního baru zprava (pr-10), aby se uvolnilo místo pro dáreček a srovnal se padding */}
+              <div className="flex-1 relative bg-gray-100 h-2.5 rounded-full pr-10">
                 
-                {/* MODERNÍ PLOVOUCÍ BADGE S JEMNÝM POZADÍM A ŠIPKOU DOLŮ */}
+                {/* UPRAVENÝ PLOVOUCÍ BADGE: Větší text a blíže k baru */}
                 {milestone.percentage > 0 && (
                   <div 
-                    className="absolute -top-9 flex flex-col items-center transition-all duration-1000 ease-out transform -translate-x-1/2 z-20"
+                    className="absolute -top-[30px] flex flex-col items-center transition-all duration-1000 ease-out transform -translate-x-1/2 z-20"
                     style={{ left: `${milestone.percentage}%` }}
                   >
-                    {/* Samotná bublina s procentem */}
-                    <span className="px-2 py-0.5 bg-orange-50 text-[11px] font-bold text-orange-600 rounded-md border border-orange-100 leading-none shadow-3xs">
+                    <span className="px-2 py-0.5 bg-orange-50 text-xs font-bold text-orange-600 rounded-md border border-orange-100 leading-none shadow-3xs">
                       {Math.round(milestone.percentage)}%
                     </span>
-                    {/* Malý zobáček pod bublinou směřující přesně na bar */}
                     <div className="w-1.5 h-1.5 bg-orange-50 border-r border-b border-orange-100 rotate-45 -mt-[4px] z-10" />
                   </div>
                 )}
@@ -227,7 +225,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
                   style={{ width: `${milestone.percentage}%` }}
                 />
 
-                {/* DÁREČEK NA KONCI DRÁHY - Usazený přímo na ose s rotací a zvětšením na hover */}
+                {/* DÁREČEK NA DRÁZE: Usazený na 100% šířce zkráceného baru, takže lícuje vzdušně s celkovým layoutem */}
                 <div 
                   className={`absolute right-0 top-1/2 -translate-y-1/2 bg-white border border-gray-100 p-1 rounded-lg transition-all duration-300 transform translate-x-1/3 rotate-12 hover:rotate-0 hover:scale-110 cursor-pointer z-10 ${
                     milestone.remaining === 0 
