@@ -8,7 +8,7 @@ interface StreakPageProps {
     max_streak: number;
     logged_days?: string[];
   };
-  setView: (view: "learn" | "streak" | "settings") => void; // Rozšířeno pro kompatibilitu s page.tsx
+  setView: (view: "learn" | "streak" | "settings") => void;
 }
 
 export default function StreakPage({ stats, setView }: StreakPageProps) {
@@ -79,17 +79,16 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
   const dynamicWeek = generateDynamicWeek();
 
   return (
-    // Zvětšeno na max-w-4xl, text-center odstraněn z hlavního kontejneru a dán lokálně
     <div className="w-full max-w-4xl mx-auto bg-white border border-gray-200 rounded-3xl p-8 sm:p-10 space-y-8 shadow-sm">
       
       {/* ŠIROKÝ DVOU-SLOUPCOVÝ GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
         
-        {/* LEVÝ SLOUPEC (md:col-span-5) - Ohýnek a hlavní text */}
-        <div className="md:col-span-5 flex flex-col items-center md:items-start text-center md:text-left space-y-5 border-b md:border-b-0 md:border-r border-gray-100 pb-6 md:pb-0 md:pr-8">
+        {/* LEVÝ SLOUPEC (md:col-span-5) - Kompletně vycentrovaný plamínek + dáreček pod ním */}
+        <div className="md:col-span-5 flex flex-col items-center text-center space-y-6 border-b md:border-b-0 md:border-r border-gray-100 pb-6 md:pb-0 md:pr-8">
           
           {/* KULATÝ PROGRESS BAR KOLEM OHÝNKU */}
-          <div className="relative w-32 h-32 flex items-center justify-center mx-auto md:mx-0">
+          <div className="relative w-32 h-32 flex items-center justify-center">
             <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r="44" className="stroke-gray-100 fill-none" strokeWidth="3" />
               <circle 
@@ -117,12 +116,8 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
               CÍL: {milestone.target} DNÍ
             </p>
           </div>
-        </div>
 
-        {/* PRAVÝ SLOUPEC (md:col-span-7) - Dárek, Grid a Statistiky */}
-        <div className="md:col-span-7 space-y-6">
-          
-          {/* KOMPAKTNÍ HORIZONTÁLNÍ BLOK S DÁRKEM */}
+          {/* BLOK S DÁREČKEM PŘESUNUTÝ SEM DOLŮ (POD PLAMÍNEK) */}
           <div className="w-full flex flex-row items-center gap-4 bg-gradient-to-r from-amber-50 to-orange-50/30 border border-amber-100 rounded-2xl p-4 text-left shadow-xs">
             <div className="flex-shrink-0 p-2.5 bg-amber-500 text-white rounded-xl shadow-xs">
               <GiftIcon size={18} className="stroke-[2.5px]" />
@@ -141,6 +136,11 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
             </div>
           </div>
 
+        </div>
+
+        {/* PRAVÝ SLOUPEC (md:col-span-7) - Grid a Statistiky */}
+        <div className="md:col-span-7 space-y-6">
+          
           {/* DYNAMICKÝ TÝDENNÍ GRID */}
           <div className="grid grid-cols-7 gap-2">
             {dynamicWeek.map((d, i) => {
@@ -196,7 +196,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
             })}
           </div>
 
-          {/* VYCENTROVANÉ MINI STATS */}
+          {/* MINI STATS */}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-gray-50/50 border border-gray-100 rounded-2xl p-4 text-center">
               <p className="text-xs text-gray-400 font-medium">Nejdelší série</p>
@@ -216,7 +216,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
         </div>
       </div>
 
-      {/* SPODNÍ AKČNÍ TLAČÍTKO – VYCENTROVANÉ */}
+      {/* SPODNÍ AKČNÍ TLAČÍTKO */}
       <div className="pt-4 border-t border-gray-100 flex justify-center">
         <button
           onClick={() => setView("learn")}
