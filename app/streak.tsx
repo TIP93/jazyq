@@ -190,7 +190,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
             </div>
           </div>
 
-          {/* PROGRESS BAR S ELEGANTNÍ RYSKOU A DÁREČKEM NA KONCI DRÁHY */}
+          {/* PROGRESS BAR S MODERNÍM BADGE INDIKÁTOREM A AKTIVNÍM DÁREČKEM */}
           <div className="space-y-3">
             <div className="pl-1">
               <span className="text-xs uppercase tracking-wider font-semibold text-gray-400">
@@ -198,28 +198,28 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
               </span>
             </div>
             
-            {/* Hlavní čistá karta s dostatečným prostorem nahoře pro plovoucí rysku */}
-            <div className="relative bg-white border border-gray-200/60 rounded-2xl p-5 pt-10 pb-6 shadow-xs flex items-center select-none">
+            {/* Kontejner s extra horním paddingem, aby byl prostor pro plovoucí badge */}
+            <div className="relative bg-white border border-gray-200/60 rounded-2xl p-5 pt-12 pb-6 shadow-xs flex items-center select-none">
               
-              {/* Dráha progress baru, na jejímž konci leží fixně dáreček */}
+              {/* Hlavní dráha progress baru */}
               <div className="flex-1 relative bg-gray-100 h-2.5 rounded-full pr-6">
                 
-                {/* PLOVOUCÍ INDIKÁTOR: Procenta + podtržení + vertikální čárka dolů */}
+                {/* MODERNÍ PLOVOUCÍ BADGE S JEMNÝM POZADÍM A ŠIPKOU DOLŮ */}
                 {milestone.percentage > 0 && (
                   <div 
-                    className="absolute -top-7 flex flex-col items-center transition-all duration-1000 ease-out transform -translate-x-1/2"
+                    className="absolute -top-9 flex flex-col items-center transition-all duration-1000 ease-out transform -translate-x-1/2 z-20"
                     style={{ left: `${milestone.percentage}%` }}
                   >
-                    {/* Číslo s decentním spodním podtržením */}
-                    <span className="text-xs font-bold text-orange-600 border-b border-orange-200 pb-0.5 leading-none">
+                    {/* Samotná bublina s procentem */}
+                    <span className="px-2 py-0.5 bg-orange-50 text-[11px] font-bold text-orange-600 rounded-md border border-orange-100 leading-none shadow-3xs">
                       {Math.round(milestone.percentage)}%
                     </span>
-                    {/* Vertikální tenká ryska mířící přímo na bar */}
-                    <div className="w-px h-2 bg-orange-400 mt-0.5" />
+                    {/* Malý zobáček pod bublinou směřující přesně na bar */}
+                    <div className="w-1.5 h-1.5 bg-orange-50 border-r border-b border-orange-100 rotate-45 -mt-[4px] z-10" />
                   </div>
                 )}
 
-                {/* Aktivní oranžově naplněná linka */}
+                {/* Aktivní barevný pokrok */}
                 <div 
                   className={`h-full rounded-full transition-all duration-1000 ease-out ${
                     milestone.remaining === 0 ? "bg-green-500" : "bg-gradient-to-r from-orange-500 to-amber-500"
@@ -227,9 +227,9 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
                   style={{ width: `${milestone.percentage}%` }}
                 />
 
-                {/* DÁREČKEM NA KONCI BARU: Leží na ose, bílý podklad kryje šedou linku */}
+                {/* DÁREČEK NA KONCI DRÁHY - Usazený přímo na ose s rotací a zvětšením na hover */}
                 <div 
-                  className={`absolute right-0 top-1/2 -translate-y-1/2 bg-white border border-gray-100 p-1 rounded-lg transition-all duration-300 transform translate-x-1/3 rotate-12 ${
+                  className={`absolute right-0 top-1/2 -translate-y-1/2 bg-white border border-gray-100 p-1 rounded-lg transition-all duration-300 transform translate-x-1/3 rotate-12 hover:rotate-0 hover:scale-110 cursor-pointer z-10 ${
                     milestone.remaining === 0 
                       ? "text-green-500 drop-shadow-[0_4px_6px_rgba(34,197,94,0.3)] animate-bounce" 
                       : "text-orange-500 drop-shadow-[0_2px_4px_rgba(249,115,22,0.15)]"
