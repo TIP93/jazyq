@@ -95,7 +95,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
               Série aktivních dní
             </h1>
             <p className="text-sm text-gray-400 mt-0.5">
-              Sleduj svůj denní pokrok a plň milníky pro získání odměn
+              Sleduj svůj denní pokrok a přihlašuj se každý den pro získání odměny
             </p>
           </div>
         </div>
@@ -199,7 +199,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
             </div>
             
             {/* Box s velkým pr-16, který vytvoří dostatek vzduchu pro vyčnívající dáreček */}
-            <div className="relative bg-white border border-gray-200/60 rounded-2xl p-5 pr-[45px] pt-11 pb-6 shadow-xs flex items-center select-none">
+            <div className="relative bg-white border border-gray-200/60 rounded-2xl p-5 pr-[36px] pt-11 pb-6 shadow-xs flex items-center select-none">
               
               {/* Samotná čistá dráha progress baru, která definuje 100% šířku pro výpočet procent */}
               <div className="flex-1 relative bg-gray-100 h-2.5 rounded-full">
