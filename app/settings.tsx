@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Bell, Sliders, Palette, Trash2, ArrowLeft, Check, Sparkles, Volume2, Target, RotateCcw, Globe } from "lucide-react";
+import Image from "next/image";
+import { Bell, Palette, Trash2, ArrowLeft, Check, Sparkles, Volume2, Target, RotateCcw, Sliders } from "lucide-react";
 
 interface SettingsPageProps {
   user: any;
@@ -12,8 +13,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
   // --- STAVY NASTAVENÍ ---
   const [activeTab, setActiveTab] = useState<"general" | "notifications" | "appearance" | "danger">("general");
   
-  // Výchozí nastavení podle zadání: Angličtina + B1
-  const [nativeLang, setNativeLang] = useState("cs");
+  // Výchozí nastavení aplikace (Angličtina + B1)
   const [targetLanguage, setTargetLanguage] = useState("en");
   const [targetLevel, setTargetLevel] = useState("B1");
   
@@ -23,16 +23,17 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
   const [autoPlayAudio, setAutoPlayAudio] = useState(true);
   const [dailyGoal, setDailyGoal] = useState("standard");
 
-  // Definice podporovaných jazyků v JAZYQ
+  // Definice 6 jazyků (matice 3x2, čeština na konci) podle assetů z page.tsx
   const languages = [
-    { code: "en", label: "Angličtina", flag: "🇬🇧" },
-    { code: "de", label: "Němčina", flag: "🇩🇪" },
-    { code: "es", label: "Španělština", flag: "🇪🇸" },
-    { code: "fr", label: "Francouzština", flag: "🇫🇷" },
-    { code: "it", label: "Italština", flag: "🇮🇹" },
+    { code: "en", label: "Angličtina", flag: "gb" },
+    { code: "de", label: "Němčina", flag: "de" },
+    { code: "es", label: "Španělština", flag: "es" },
+    { code: "fr", label: "Francouzština", flag: "fr" },
+    { code: "it", label: "Italština", flag: "it" },
+    { code: "cs", label: "Čeština", flag: "cz" }, // Výhledově pro cizince
   ];
 
-  // Škála úrovní A1 - C2
+  // Škála 6 úrovní (matice 3x2)
   const levels = [
     { code: "A1", label: "Začátečník" },
     { code: "A2", label: "Mírně pokročilý" },
@@ -45,7 +46,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
   return (
     <div className="w-full max-w-4xl mx-auto bg-white border border-gray-200 rounded-3xl p-8 sm:p-10 space-y-8 shadow-sm">
       
-      {/* HLAVIČKA NASTAVENÍ S TLAČÍTKEM ZPÊT */}
+      {/* HLAVIČKA NASTAVENÍ */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-6">
         <div className="flex items-center gap-4">
           <button
@@ -68,7 +69,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
       {/* DVOU-SLOUPCOVÝ LAYOUT */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
         
-        {/* LEVÝ PANEL: NAVIGACE MEZI SEKCMI */}
+        {/* LEVÝ PANEL: NAVIGACE */}
         <div className="md:col-span-4 flex flex-col gap-2">
           <button
             onClick={() => setActiveTab("general")}
@@ -78,7 +79,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                 : "bg-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
             }`}
           >
-            <Globe size={18} />
+            <Sliders size={18} />
             Základní nastavení
           </button>
 
@@ -122,31 +123,43 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
         {/* PRAVÝ PANEL: DYNAMICKÝ OBSAH */}
         <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 space-y-6">
           
-          {/* SEKCE: ZÁKLADNÍ NASTAVENÍ */}
+          {/* SEKCE: ZÁKLADNÍ NASTAVENÍ (SLOUČENÝ BLOK) */}
           {activeTab === "general" && (
-            <div className="space-y-6">
+            <div className="bg-white border border-gray-200/60 rounded-2xl p-5 shadow-xs space-y-6">
               
-              {/* Výběr výchozího studovaného jazyka (Velké moderní vlajky) */}
-              <div className="bg-white border border-gray-200/60 rounded-2xl p-5 shadow-xs space-y-4">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-900">Výchozí studovaný jazyk</h4>
-                  <p className="text-xs text-gray-400 mt-0.5">Tento jazyk uvidíš jako první při otevření aplikace JAZYQ.</p>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-1">
+              {/* Nadpis spojeného bloku */}
+              <div>
+                <h4 className="text-sm font-medium text-gray-900">Výchozí studovaný jazyk a úroveň</h4>
+                <p className="text-xs text-gray-400 mt-0.5">Tuto kombinaci uvidíš jako první při každé návštěvě aplikace JAZYQ.</p>
+              </div>
+
+              {/* 1. MATICE VLAJEK (3 na řádku, 2 řádky celkem) */}
+              <div className="space-y-2">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block pl-0.5">Zvol si jazyk</span>
+                <div className="grid grid-cols-3 gap-3">
                   {languages.map((lang) => (
                     <button
                       key={lang.code}
                       onClick={() => setTargetLanguage(lang.code)}
-                      className={`flex flex-col items-center justify-center p-3 border rounded-xl transition-all cursor-pointer relative group ${
+                      className={`flex flex-col items-center justify-center p-3.5 border rounded-xl transition-all cursor-pointer relative group ${
                         targetLanguage === lang.code
                           ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
                           : "border-gray-100 text-gray-500 hover:border-gray-300 hover:bg-gray-50/50"
                       }`}
                     >
-                      <span className="text-3xl mb-1.5 filter group-hover:scale-105 transition-transform">{lang.flag}</span>
-                      <span className="text-[11px] tracking-tight truncate w-full text-center">{lang.label}</span>
+                      {/* Využití existující logiky SVG vlajek z page.tsx */}
+                      <div className="w-9 h-6 relative mb-2 shadow-3xs rounded-xs overflow-hidden filter group-hover:scale-105 transition-transform">
+                        <Image
+                          src={`https://flagcdn.com/${lang.flag}.svg`}
+                          alt={lang.label}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <span className="text-xs tracking-tight truncate w-full text-center">{lang.label}</span>
+                      
                       {targetLanguage === lang.code && (
-                        <div className="absolute top-1.5 right-1.5 bg-black text-white rounded-full p-0.5">
+                        <div className="absolute top-2 right-2 bg-black text-white rounded-full p-0.5">
                           <Check size={8} className="stroke-[3.5px]" />
                         </div>
                       )}
@@ -155,56 +168,34 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                 </div>
               </div>
 
-              {/* Výběr studované úrovně (Grid A1 - C2) */}
-              <div className="bg-white border border-gray-200/60 rounded-2xl p-5 shadow-xs space-y-4">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-900">Výchozí úroveň pokročilosti</h4>
-                  <p className="text-xs text-gray-400 mt-0.5">Přizpůsobí náročnost generovaných každodenních frází a rozborů.</p>
-                </div>
-                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 pt-1">
+              <hr className="border-gray-100" />
+
+              {/* 2. MATICE ÚROVNÍ (3 na řádku, 2 řádky celkem) */}
+              <div className="space-y-2">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block pl-0.5">Zvol si úroveň</span>
+                <div className="grid grid-cols-3 gap-3">
                   {levels.map((lvl) => (
                     <button
                       key={lvl.code}
                       onClick={() => setTargetLevel(lvl.code)}
-                      className={`flex flex-col items-center justify-center py-3.5 px-2 border rounded-xl text-center transition cursor-pointer ${
+                      className={`flex flex-col items-center justify-center py-3 px-2 border rounded-xl text-center transition cursor-pointer relative ${
                         targetLevel === lvl.code
-                          ? "border-black bg-gray-50 text-gray-900"
+                          ? "border-black bg-gray-50 text-gray-900 shadow-2xs"
                           : "border-gray-100 text-gray-500 hover:bg-gray-50"
                       }`}
                     >
                       <span className={`text-base font-bold ${targetLevel === lvl.code ? "text-gray-900" : "text-gray-700"}`}>
                         {lvl.code}
                       </span>
-                      <span className="text-[9px] text-gray-400 font-normal mt-0.5 tracking-tight truncate w-full">
+                      <span className="text-[10px] text-gray-400 font-normal mt-0.5 tracking-tight truncate w-full">
                         {lvl.label}
                       </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Výběr mateřského jazyka */}
-              <div className="bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs space-y-3">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-900">Mateřský jazyk pro překlady</h4>
-                  <p className="text-xs text-gray-400 mt-0.5">V tomto jazyce se ti budou zobrazovat vysvětlivky a překlady.</p>
-                </div>
-                <div className="grid grid-cols-2 gap-2 pt-1">
-                  {[
-                    { code: "cs", label: "Čeština" },
-                    { code: "en", label: "English" },
-                  ].map((lang) => (
-                    <button
-                      key={lang.code}
-                      onClick={() => setNativeLang(lang.code)}
-                      className={`flex items-center justify-between px-4 py-2.5 border rounded-xl text-xs font-medium transition cursor-pointer ${
-                        nativeLang === lang.code
-                          ? "border-black bg-gray-50 text-gray-900 font-semibold"
-                          : "border-gray-200 text-gray-500 hover:bg-gray-50"
-                      }`}
-                    >
-                      {lang.label}
-                      {nativeLang === lang.code && <Check size={14} className="text-black stroke-[3px]" />}
+                      
+                      {targetLevel === lvl.code && (
+                        <div className="absolute top-2 right-2 bg-black text-white rounded-full p-0.5">
+                          <Check size={8} className="stroke-[3.5px]" />
+                        </div>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -326,15 +317,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                   ))}
                 </div>
               </div>
-
-              <div className="bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs flex items-center gap-3">
-                <div className="p-2 bg-amber-50 text-amber-600 rounded-lg">
-                  <Sparkles size={16} />
-                </div>
-                <p className="text-xs text-gray-500 leading-normal">
-                  Při zapnutí sépie nebo tmavého režimu se automaticky upraví i barevné kódování gramatických celků pro maximální čitelnost a ochranu očí.
-                </p>
-              </div>
             </div>
           )}
 
@@ -376,7 +358,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
       </div>
 
-      {/* SPODNÍ AKČNÍ TLAČÍTKO PRO NÁVRAT DO STUDIA */}
+      {/* SPODNÍ TLAČÍTKO */}
       <div className="pt-4 border-t border-gray-100 flex justify-center">
         <button
           onClick={() => setView("learn")}
