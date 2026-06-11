@@ -104,10 +104,8 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
       {/* DUÁLNÍ PANEL */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
         
-        {/* LEVÝ PANEL - Dominantní ohýnek */}
+        {/* LEVÝ PANEL - Ohýnek */}
         <div className="md:col-span-4 flex flex-col items-center justify-center text-center border border-gray-100 rounded-2xl p-6 bg-gray-50/10 space-y-6">
-          
-          {/* KULATÝ PROGRESS BAR KOLEM OHÝNKU */}
           <div className="relative w-36 h-36 flex items-center justify-center">
             <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r="44" className="stroke-gray-100 fill-none" strokeWidth="2.5" />
@@ -127,7 +125,6 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
             </div>
           </div>
 
-          {/* SÉRIE TEXT + ZMĚNA NA REKORD */}
           <div className="space-y-1">
             <h2 className="text-3xl font-semibold tracking-tight text-gray-900">
               {streak} {streak === 1 ? 'den' : (streak > 1 && streak < 5 ? 'dny' : 'dní')} v řadě
@@ -138,10 +135,10 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
           </div>
         </div>
 
-        {/* PRAVÝ PANEL - Provzdušněný kalendář a progress bar */}
+        {/* PRAVÝ PANEL - Kalendář a Pokrok */}
         <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 space-y-6 flex flex-col justify-between">
           
-          {/* KALENDÁŘ / PROVZDUŠNĚNÝ TÝDENNÍ GRID */}
+          {/* KALENDÁŘ / TÝDENNÍ GRID */}
           <div className="space-y-2.5">
             <p className="text-xs uppercase tracking-wider font-semibold text-gray-400 pl-1">Týdenní přehled aktivity</p>
             <div className="grid grid-cols-7 gap-2">
@@ -193,7 +190,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
             </div>
           </div>
 
-          {/* NOVÝ PROGRESS BAR S PROCENTY NA KONCI LINKY A DÁREČKEM NA DORAZ */}
+          {/* PROGRESS BAR S ELEGANTNÍ RYSKOU A DÁREČKEM NA KONCI DRÁHY */}
           <div className="space-y-3">
             <div className="pl-1">
               <span className="text-xs uppercase tracking-wider font-semibold text-gray-400">
@@ -201,40 +198,46 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
               </span>
             </div>
             
-            {/* Obalící box bez vnitřního paddingu na pravé straně pro dojezd do konce */}
-            <div className="relative bg-white border border-gray-200/60 rounded-2xl p-5 pr-14 shadow-xs min-h-[76px] flex items-center">
+            {/* Hlavní čistá karta s dostatečným prostorem nahoře pro plovoucí rysku */}
+            <div className="relative bg-white border border-gray-200/60 rounded-2xl p-5 pt-10 pb-6 shadow-xs flex items-center select-none">
               
-              {/* Kontejner pro progress linku a plovoucí procenta */}
-              <div className="flex-1 relative bg-gray-100 h-2.5 rounded-full">
+              {/* Dráha progress baru, na jejímž konci leží fixně dáreček */}
+              <div className="flex-1 relative bg-gray-100 h-2.5 rounded-full pr-6">
                 
-                {/* Čistá procenta plovoucí přesně nad koncem linky */}
+                {/* PLOVOUCÍ INDIKÁTOR: Procenta + podtržení + vertikální čárka dolů */}
                 {milestone.percentage > 0 && (
                   <div 
-                    className="absolute -top-6 text-xs font-bold text-orange-600 transition-all duration-1000 ease-out transform -translate-x-1/2 select-none"
+                    className="absolute -top-7 flex flex-col items-center transition-all duration-1000 ease-out transform -translate-x-1/2"
                     style={{ left: `${milestone.percentage}%` }}
                   >
-                    {Math.round(milestone.percentage)}%
+                    {/* Číslo s decentním spodním podtržením */}
+                    <span className="text-xs font-bold text-orange-600 border-b border-orange-200 pb-0.5 leading-none">
+                      {Math.round(milestone.percentage)}%
+                    </span>
+                    {/* Vertikální tenká ryska mířící přímo na bar */}
+                    <div className="w-px h-2 bg-orange-400 mt-0.5" />
                   </div>
                 )}
 
-                {/* Samotná barevná linka */}
+                {/* Aktivní oranžově naplněná linka */}
                 <div 
                   className={`h-full rounded-full transition-all duration-1000 ease-out ${
                     milestone.remaining === 0 ? "bg-green-500" : "bg-gradient-to-r from-orange-500 to-amber-500"
                   }`}
                   style={{ width: `${milestone.percentage}%` }}
                 />
-              </div>
 
-              {/* Dáreček usazený absolutně na pravém okraji boxu – linka končí hned u něj */}
-              <div 
-                className={`absolute right-4 transition-all duration-300 transform rotate-12 ${
-                  milestone.remaining === 0 
-                    ? "text-green-500 drop-shadow-[0_4px_6px_rgba(34,197,94,0.3)] animate-bounce" 
-                    : "text-orange-500 drop-shadow-[0_4px_6px_rgba(249,115,22,0.25)]"
-                }`}
-              >
-                <GiftIcon size={24} className="stroke-[2.2px]" />
+                {/* DÁREČKEM NA KONCI BARU: Leží na ose, bílý podklad kryje šedou linku */}
+                <div 
+                  className={`absolute right-0 top-1/2 -translate-y-1/2 bg-white border border-gray-100 p-1 rounded-lg transition-all duration-300 transform translate-x-1/3 rotate-12 ${
+                    milestone.remaining === 0 
+                      ? "text-green-500 drop-shadow-[0_4px_6px_rgba(34,197,94,0.3)] animate-bounce" 
+                      : "text-orange-500 drop-shadow-[0_2px_4px_rgba(249,115,22,0.15)]"
+                  }`}
+                >
+                  <GiftIcon size={20} className="stroke-[2.2px]" />
+                </div>
+
               </div>
             </div>
 
