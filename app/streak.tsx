@@ -79,10 +79,9 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
   const dynamicWeek = generateDynamicWeek();
 
   return (
-    // Sjednoceno na p-8 sm:p-10 space-y-8 přesně podle SettingsPage
     <div className="w-full max-w-4xl mx-auto bg-white border border-gray-200 rounded-3xl p-8 sm:p-10 space-y-8 shadow-sm">
       
-      {/* HLAVIČKA VE STYLU NASTAVENÍ (Sjednocené velikosti písma a padding tlačítka) */}
+      {/* HLAVIČKA VE STYLU NASTAVENÍ */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-6">
         <div className="flex items-center gap-4">
           <button
@@ -102,11 +101,11 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
         </div>
       </div>
 
-      {/* VYBALANCOVANÝ DUÁLNÍ PANEL (Mezera gap-8 a zaoblení p-6 sladěno s pravým panelem Settings) */}
+      {/* OPRAVENÝ DUÁLNÍ PANEL (4 + 8 = 12) */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
         
-        {/* LEVÝ PANEL - Dominantní ohýnek */}
-        <div className="md:col-span-5 flex flex-col items-center justify-center text-center border border-gray-100 rounded-2xl p-6 bg-gray-50/10 space-y-6">
+        {/* LEVÝ PANEL - Opraveno na md:col-span-4 */}
+        <div className="md:col-span-4 flex flex-col items-center justify-center text-center border border-gray-100 rounded-2xl p-6 bg-gray-50/10 space-y-6">
           
           {/* KULATÝ PROGRESS BAR KOLEM OHÝNKU */}
           <div className="relative w-36 h-36 flex items-center justify-center">
@@ -139,11 +138,10 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
           </div>
         </div>
 
-        {/* PRAVÝ PANEL - Provzdušněný kalendář a progress bar (statistiky zakomentovány) */}
+        {/* PRAVÝ PANEL - md:col-span-8 */}
         <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 space-y-6 flex flex-col justify-between">
           
-          {/* ZAKOMENTOVANÉ STATISTIKY (Kdyby ses k nim chtěl někdy vrátit)
-            
+          {/* ZAKOMENTOVANÉ STATISTIKY
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-white border border-gray-200/60 rounded-xl p-3 flex flex-col items-center justify-center text-center shadow-xs">
                 <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wider">Nejdelší série</p>
@@ -151,7 +149,6 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
                   {stats.max_streak} {stats.max_streak === 1 ? 'den' : (stats.max_streak > 1 && stats.max_streak < 5 ? 'dny' : 'dní')}
                 </p>
               </div>
-
               <div className="bg-white border border-gray-200/60 rounded-xl p-3 flex flex-col items-center justify-center text-center shadow-xs">
                 <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wider">Celkem odpracováno</p>
                 <p className="text-base font-semibold text-gray-800 mt-0.5">
@@ -261,7 +258,7 @@ export default function StreakPage({ stats, setView }: StreakPageProps) {
 
       </div>
 
-      {/* SPODNÍ TLAČÍTKO - Sjednoceno na py-3 a rounded-2xl s SettingsPage */}
+      {/* SPODNÍ TLAČÍTKO */}
       <div className="pt-4 border-t border-gray-100 flex justify-center">
         <button
           onClick={() => setView("learn")}
