@@ -74,7 +74,7 @@ async function loadUserSettings(userId: string) {
   try {
     const { data, error } = await supabase
       .from("user_settings")
-      .select("target_language, target_level")
+      .select("target_language, target_level, show_translations")
       .eq("user_id", userId)
       .single();
 
@@ -188,6 +188,12 @@ useEffect(() => {
           const idx = levels.indexOf(settings.target_level);
           if (idx !== -1) setLevelIndex(idx);
         }
+        if (settings.show_translations === true) {
+  setShowTranslations(true);
+  setShowExampleTranslation(true);
+  setShowAnswer(true);
+  setReadingFlipped(false); // Čtení zůstane skryté
+}
       }
       
       try {
@@ -220,6 +226,10 @@ useEffect(() => {
       // Uživatel není přihlášen, nastavíme defaulty a vypneme loading
       setUser(null);
       setLanguage("en");
+      setShowTranslations(false);
+      setShowExampleTranslation(false);
+      setShowAnswer(false);
+      setReadingFlipped(false);
       setLevelIndex(2);
       setAuthLoading(false);
     }

@@ -313,7 +313,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                   </div>
                   <div>
                     <h4 className="text-sm font-medium text-gray-900">Zobrazovat překlady okamžitě</h4>
-                    <p className="text-xs text-gray-400 mt-0.5">Pokud vypneš, překlad věty se zobrazí až po kliknutí na nápovědu.</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Pokud zapneš, všechny překlady se budou zobrazovat automaticky.</p>
                   </div>
                 </div>
                 <button
