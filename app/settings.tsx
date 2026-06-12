@@ -18,16 +18,16 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
   const [targetLevel, setTargetLevel] = useState(() => user?.user_settings?.target_level || "B1");
   const [appTheme, setAppTheme] = useState(() => user?.user_settings?.app_theme || "light");
   
-  // Bezpečný převod z DB při inicializaci (přijímá boolean i string "true")
- const [showTranslations, setShowTranslations] = useState<boolean>(() => {
-  const rawVal = user?.user_settings?.show_translations;
-  // Pokud je to string "true" nebo čistý boolean true, vrátí to natvrdo true. Jinak false.
-  return String(rawVal) === "true" || rawVal === true;
-});
+  // Bezpečný převod z DB při inicializaci na čistý boolean
+  const [showTranslations, setShowTranslations] = useState<boolean>(() => {
+    const rawVal = user?.user_settings?.show_translations;
+    return rawVal === true || String(rawVal) === "true";
+  });
   
-  const [pdfWithTranslations, setPdfWithTranslations] = useState(() => {
+  const [pdfWithTranslations, setPdfWithTranslations] = useState<boolean>(() => {
     const rawVal = user?.user_settings?.pdf_with_translations;
-    return rawVal === true || rawVal === "true" || rawVal === undefined;
+    if (rawVal === undefined || rawVal === null) return true; // Výchozí hodnota, pokud neexistuje
+    return rawVal === true || String(rawVal) === "true";
   });
   
   const [appLocale, setAppLocale] = useState(() => user?.user_settings?.app_locale || "cs");
@@ -37,28 +37,25 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
   // Synchronizace stavů, pokud se objekt user načte asynchronně později
   useEffect(() => {
-  if (user?.user_settings) {
-    const settings = user.user_settings;
-    
-    // Zachovávám tvůj kompletní kód pro ostatní pole
-    if (settings.target_language) setTargetLanguage(settings.target_language);
-    if (settings.target_level) setTargetLevel(settings.target_level);
-    if (settings.app_theme) setAppTheme(settings.app_theme);
-    if (settings.app_locale) setAppLocale(settings.app_locale);
-    
-    // TADY JE TA ZMĚNA: Použijeme tvou logiku, ale přidáme kontrolu existence
-    if (settings.show_translations !== undefined && settings.show_translations !== null) {
-      // Převedeme na boolean okamžitě při každém načtení
-      const boolValue = String(settings.show_translations) === "true";
-      setShowTranslations(boolValue);
-    }
+    if (user?.user_settings) {
+      const settings = user.user_settings;
+      
+      if (settings.target_language) setTargetLanguage(settings.target_language);
+      if (settings.target_level) setTargetLevel(settings.target_level);
+      if (settings.app_theme) setAppTheme(settings.app_theme);
+      if (settings.app_locale) setAppLocale(settings.app_locale);
+      
+      if (settings.show_translations !== undefined && settings.show_translations !== null) {
+        const boolValue = settings.show_translations === true || String(settings.show_translations) === "true";
+        setShowTranslations(boolValue);
+      }
 
-    if (settings.pdf_with_translations !== undefined && settings.pdf_with_translations !== null) {
-      const boolValue = String(settings.pdf_with_translations) === "true";
-      setPdfWithTranslations(boolValue);
+      if (settings.pdf_with_translations !== undefined && settings.pdf_with_translations !== null) {
+        const boolValue = settings.pdf_with_translations === true || String(settings.pdf_with_translations) === "true";
+        setPdfWithTranslations(boolValue);
+      }
     }
-  }
-}, [user]);
+  }, [user]);
 
   const handleSaveSettings = async () => {
     if (!user?.id) {
@@ -78,8 +75,8 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             target_language: targetLanguage,
             target_level: targetLevel,
             app_theme: appTheme,
-            show_translations: showTranslations, // Uloží se již jako čistý boolean
-            pdf_with_translations: pdfWithTranslations,
+            show_translations: showTranslations, // Již posíláme čistý boolean
+            pdf_with_translations: pdfWithTranslations, // Již posíláme čistý boolean
             app_locale: appLocale,
           },
           { onConflict: "user_id" }
@@ -108,10 +105,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
   ];
 
   const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
-
-  // Pojistka pro vykreslení: Vytvoříme si čistou lokální boolean proměnnou,
-  // která v sobě nese pravdivost stavu bez ohledu na datové typy.
-  const isSliderActive = showTranslations === true || (showTranslations as any) === "true";
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-white border border-gray-200 rounded-3xl p-8 sm:p-10 space-y-8 shadow-sm">
@@ -146,7 +139,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
       {/* DVOU-SLOUPCOVÝ LAYOUT */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
         
-        {/* LEVÝ PANEL: NAVIGACE (Stabilní minimální výška) */}
+        {/* LEVÝ PANEL: NAVIGACE */}
         <div className="md:col-span-4 flex flex-col gap-2 md:min-h-[380px]">
           <button
             onClick={() => setActiveTab("general")}
@@ -287,17 +280,17 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                   </div>
                 </div>
                 
-                {/* 100% POUŽITÍ NOVÉ UNIVERZÁLNÍ PROMĚNNÉ PRO VYKRESLENÍ */}
+                {/* SLIDER POUŽÍVÁ ČISTÝ BOOLEAN showTranslations */}
                 <button
                   type="button"
                   onClick={() => setShowTranslations(!showTranslations)}
                   className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-200 ease-in-out cursor-pointer shrink-0 relative ${
-                    isSliderActive ? "bg-green-500" : "bg-gray-200"
+                    showTranslations ? "bg-green-500" : "bg-gray-200"
                   }`}
                 >
                   <div 
                     className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
-                      isSliderActive ? "translate-x-5" : "translate-x-0"
+                      showTranslations ? "translate-x-5" : "translate-x-0"
                     }`} 
                   />
                 </button>
@@ -320,7 +313,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                     type="button"
                     onClick={() => setPdfWithTranslations(true)}
                     className={`flex items-center justify-center p-3 border rounded-xl text-xs font-medium transition cursor-pointer bg-white ${
-                      (pdfWithTranslations === true || (pdfWithTranslations as any) === "true" || pdfWithTranslations === undefined)
+                      pdfWithTranslations
                         ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
                         : "border-gray-200/70 text-gray-500 hover:bg-gray-50"
                     }`}
@@ -331,7 +324,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                     type="button"
                     onClick={() => setPdfWithTranslations(false)}
                     className={`flex items-center justify-center p-3 border rounded-xl text-xs font-medium transition cursor-pointer bg-white ${
-                      (pdfWithTranslations === false || (pdfWithTranslations as any) === "false")
+                      !pdfWithTranslations
                         ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
                         : "border-gray-200/70 text-gray-500 hover:bg-gray-50"
                     }`}
