@@ -83,6 +83,8 @@ async function loadUserSettings(userId: string) {
       throw error;
     }
 
+    console.log("SUROVÁ DATA PŘÍMO ZE SUPABASE:", data);
+
     return data; // Vrátíme data z DB pro synchronní zpracování níže
   } catch (err) {
     console.error("Chyba při načítání uživatelského nastavení:", err);
@@ -197,6 +199,13 @@ useEffect(() => {
       // 1. Nejdříve počkáme na načtení nastavení z DB
       const settings = await loadUserSettings(currentUser.id);
       if (settings) {
+        
+        console.log("KONTROLA HODNOTY V SETTINGS:", {
+    raw: settings.show_translations,
+    typ: typeof settings.show_translations,
+    jeToTrue: settings.show_translations === true
+  });
+
         if (settings.target_language) {
           setLanguage(settings.target_language as Language);
         }
