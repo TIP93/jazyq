@@ -162,13 +162,20 @@ const iconCircle =
   load();
 }, [language]);
 
-// Spustí se vždy, když se dohraje nový obsah z API, a vynutí zobrazení, pokud je v DB true
+// Spustí se vždy, když se dohraje nový obsah z API, a synchronizuje očíčka podle DB reference
 useEffect(() => {
-  if (content && dbShowTranslationsRef.current) {
-    setShowTranslations(true);
-    setShowExampleTranslation(true);
-    setShowAnswer(true);
-    setReadingFlipped(false); // čtení chceme nechat v cizím jazyce
+  if (content) {
+    if (dbShowTranslationsRef.current) {
+      setShowTranslations(true);
+      setShowExampleTranslation(true);
+      setShowAnswer(true);
+      setReadingFlipped(false);
+    } else {
+      setShowTranslations(false);
+      setShowExampleTranslation(false);
+      setShowAnswer(false);
+      setReadingFlipped(false);
+    }
   }
 }, [content]);
 
@@ -798,6 +805,7 @@ if (authLoading) {
     <button
       onClick={() => {
         const nextState = !showTranslations;
+        dbShowTranslationsRef.current = nextState;
         setShowTranslations(nextState);
         setShowAnswer(nextState);
         setShowExampleTranslation(nextState);
