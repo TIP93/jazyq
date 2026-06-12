@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Bell, Palette, Trash2, ArrowLeft, Check, Volume2, Target, RotateCcw, Sliders, Loader2 } from "lucide-react";
-import { saveUserSettings } from "@/app/actions/settings"; // Import nově vytvořené akce
+// 1. Změna: Importujeme klientský supabase klient místo Server Action
+import { supabase } from "@/lib/supabaseClient";
 
 interface SettingsPageProps {
   user: any;
@@ -40,30 +41,43 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
     }
   }, [user]);
 
-  // Handler pro bezpečné uložení do DB
+  // 2. Změna: Kompletně přepsaný handler pro přímé ukládání z klienta
   const handleSaveSettings = async () => {
-  setIsSaving(true);
-  setSaveError(null);
-
-  try {
-    const result = await saveUserSettings({
-      targetLanguage,
-      targetLevel,
-    });
-
-    if (result && result.success) {
-      // Teprve pokud databáze potvrdí true, odejdeme ze stránky
-      setView("learn");
-    } else {
-      // Zde odchytíš "Unauthorized" nebo SQL chyby (např. chybějící sloupce)
-      setSaveError(result?.error || "Nepodařilo se uložit nastavení.");
+    if (!user?.id) {
+      setSaveError("Uživatel není přihlášen.");
+      return;
     }
-  } catch (err) {
-    setSaveError("Došlo k neočekávané chybě na klientovi.");
-  } finally {
-    setIsSaving(false);
-  }
-};
+
+    setIsSaving(true);
+    setSaveError(null);
+
+    try {
+      // Zapíšeme nebo aktualizujeme data přímo v tabulce user_settings
+      const { error } = await supabase
+        .from("user_settings")
+        .upsert(
+          {
+            user_id: user.id,
+            target_language: targetLanguage,
+            target_level: targetLevel,
+          },
+          { onConflict: "user_id" }
+        );
+
+      if (error) {
+        setSaveError(error.message);
+      } else {
+        // Po úspěšném uložení tvrdě reloadneme okno, aby page.tsx 
+        // znovu načetla aktuální profil z DB, a přesměrujeme uživatele zpět.
+        setView("learn");
+        window.location.reload();
+      }
+    } catch (err) {
+      setSaveError("Došlo k neočekávané chybě při komunikaci s databází.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const languages = [
     { code: "en", label: "Angličtina", flag: "gb" },
@@ -233,7 +247,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             </div>
           )}
 
-          {/* OSTATNÍ SEKCE ZŮSTÁVAJÍ STEJNÉ... */}
           {activeTab === "notifications" && (
             <div className="space-y-4">
               <div className="flex items-center justify-between bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs">
