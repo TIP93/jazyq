@@ -14,25 +14,16 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
   // --- STAVY NASTAVENÍ ---
   const [activeTab, setActiveTab] = useState<"general" | "behavior" | "appearance" | "locale" | "danger">("general");
 
-  // Inicializujeme stavy přímo z props, pokud existují, jinak dáme fallbacky
   const [targetLanguage, setTargetLanguage] = useState(() => user?.user_settings?.target_language || "en");
   const [targetLevel, setTargetLevel] = useState(() => user?.user_settings?.target_level || "B1");
   const [appTheme, setAppTheme] = useState(() => user?.user_settings?.app_theme || "light");
-  
-  // Zobrazování překladů (očičko) je defaultně vypnuté (false)
   const [showTranslations, setShowTranslations] = useState(() => user?.user_settings?.show_translations ?? false);
-  
-  // Nastavení pro tisk PDF dokumentů
   const [pdfWithTranslations, setPdfWithTranslations] = useState(() => user?.user_settings?.pdf_with_translations ?? true);
-
-  // Stav pro lokalizaci rozhraní aplikace (App Language)
   const [appLocale, setAppLocale] = useState(() => user?.user_settings?.app_locale || "cs");
 
-  // Pomocné stavy pro UI
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  // Tento useEffect pojistí situaci, kdy se objekt `user` načte asynchronně až PO renderu
   useEffect(() => {
     if (user?.user_settings) {
       const settings = user.user_settings;
@@ -45,7 +36,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
     }
   }, [user]);
 
-  // Handler pro přímé ukládání z klienta
   const handleSaveSettings = async () => {
     if (!user?.id) {
       setSaveError("Uživatel není přihlášen.");
@@ -56,7 +46,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
     setSaveError(null);
 
     try {
-      // Zapíšeme nebo aktualizujeme všechna data v tabulce user_settings včetně app_locale
       const { error } = await supabase
         .from("user_settings")
         .upsert(
@@ -75,7 +64,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
       if (error) {
         setSaveError(error.message);
       } else {
-        // Po úspěšném uložení reloadneme okno, aby page.tsx znovu načetla aktuální profil z DB
         setView("learn");
         window.location.reload();
       }
@@ -193,16 +181,14 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           </button>
         </div>
 
-        {/* PRAVÝ PANEL: DYNAMICKÝ OBSAH (Zde přidáno min-h-[340px]) */}
-        <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 md:min-h-[340px] flex flex-col justify-start">
+        {/* PRAVÝ PANEL: DYNAMICKÝ OBSAH (Sjednocený čistý podklad) */}
+        <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 md:min-h-[340px] flex flex-col justify-start space-y-6">
           
           {/* SEKCE: VÝBĚR JAZYKA */}
           {activeTab === "general" && (
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-6 w-full">
               <div className="space-y-4">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-900">Výchozí jazyk a úroveň studovaného jazyka</h4>
-                </div>
+                <h4 className="text-sm font-medium text-gray-900">Výchozí jazyk a úroveň studovaného jazyka</h4>
                 
                 <div className="grid grid-cols-3 gap-2 w-full">
                   {languages.map((lang) => {
@@ -232,7 +218,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                   })}
                 </div>
 
-                <div className="py-2.5">
+                <div className="py-2">
                   <hr className="border-gray-100/70" />
                 </div>
 
@@ -261,10 +247,11 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
           {/* SEKCE: CHOVÁNÍ APLIKACE */}
           {activeTab === "behavior" && (
-            <div className="space-y-4 w-full">
-              <div className="flex items-center justify-between bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gray-50 text-gray-500 rounded-lg">
+            <div className="space-y-6 w-full">
+              {/* Překlady na řádku */}
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex gap-3">
+                  <div className="p-2 bg-gray-200/50 text-gray-600 rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
                     <EyeOff size={16} />
                   </div>
                   <div>
@@ -275,17 +262,20 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                 <button
                   type="button"
                   onClick={() => setShowTranslations(!showTranslations)}
-                  className={`w-12 h-6 flex items-center rounded-full p-1 transition-all duration-200 cursor-pointer ${
-                    showTranslations ? "bg-green-500 justify-end" : "bg-gray-200 justify-start"
+                  className={`w-12 h-6 flex items-center rounded-full p-1 transition-all duration-200 cursor-pointer shrink-0 ${
+                    showTranslations ? "bg-green-500 justify-end" : "bg-gray-200"
                   }`}
                 >
                   <div className="bg-white w-4 h-4 rounded-full shadow-md" />
                 </button>
               </div>
 
-              <div className="bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs space-y-3">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gray-50 text-gray-500 rounded-lg">
+              <hr className="border-gray-100/70" />
+
+              {/* Tisk materiálů */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-gray-200/50 text-gray-600 rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
                     <Printer size={16} />
                   </div>
                   <div>
@@ -293,7 +283,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                     <p className="text-xs text-gray-400 mt-0.5">Nastav si, zda chceš generovat pracovní listy rovnou s překladem, nebo nechat místo prázdné.</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3 pt-1">
+                <div className="grid grid-cols-2 gap-3 pl-12">
                   <button
                     type="button"
                     onClick={() => setPdfWithTranslations(true)}
@@ -324,29 +314,27 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           {/* SEKCE: BARVA APLIKACE */}
           {activeTab === "appearance" && (
             <div className="space-y-4 w-full">
-              <div className="bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs space-y-3">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-900">Vizuální motiv (Téma)</h4>
-                  <p className="text-xs text-gray-400 mt-0.5">Vyber si barevné rozhraní, které lahodí tvému oku.</p>
-                </div>
-                <div className="grid grid-cols-3 gap-2 pt-1">
-                  {[
-                    { code: "light", label: "Čistá bílá", color: "bg-white border-gray-200" },
-                    { code: "sepia", label: "Klidná sépie", color: "bg-[#f4ecd8] border-[#e4dc18]/20 text-[#5b4636]" },
-                    { code: "dark", label: "Temný režim", color: "bg-gray-900 border-gray-800 text-gray-100" },
-                  ].map((theme) => (
-                    <button
-                      key={theme.code}
-                      type="button"
-                      onClick={() => setAppTheme(theme.code)}
-                      className={`flex flex-col items-center justify-center p-4 border rounded-xl text-xs font-medium transition cursor-pointer ${theme.color} ${
-                        appTheme === theme.code ? "ring-2 ring-black ring-offset-2 font-semibold" : "opacity-85 hover:opacity-100"
-                      }`}
-                    >
-                      {theme.label}
-                    </button>
-                  ))}
-                </div>
+              <div>
+                <h4 className="text-sm font-medium text-gray-900">Vizuální motiv (Téma)</h4>
+                <p className="text-xs text-gray-400 mt-0.5">Vyber si barevné rozhraní, které lahodí tvému oku.</p>
+              </div>
+              <div className="grid grid-cols-3 gap-2 pt-1">
+                {[
+                  { code: "light", label: "Čistá bílá", color: "bg-white border-gray-200" },
+                  { code: "sepia", label: "Klidná sépie", color: "bg-[#f4ecd8] border-[#e4dc18]/20 text-[#5b4636]" },
+                  { code: "dark", label: "Temný režim", color: "bg-gray-900 border-gray-800 text-gray-100" },
+                ].map((theme) => (
+                  <button
+                    key={theme.code}
+                    type="button"
+                    onClick={() => setAppTheme(theme.code)}
+                    className={`flex flex-col items-center justify-center p-4 border rounded-xl text-xs font-medium transition cursor-pointer ${theme.color} ${
+                      appTheme === theme.code ? "ring-2 ring-black ring-offset-2 font-semibold" : "opacity-85 hover:opacity-100"
+                    }`}
+                  >
+                    {theme.label}
+                  </button>
+                ))}
               </div>
             </div>
           )}
@@ -354,51 +342,50 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           {/* SEKCE: APP LANGUAGE */}
           {activeTab === "locale" && (
             <div className="space-y-4 w-full">
-              <div className="bg-white border border-gray-200/60 rounded-2xl p-6 shadow-xs space-y-4">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-900">Jazyk aplikace – App Language</h4>
-                  <p className="text-xs text-gray-400 mt-0.5">Zvol si jazyk, ve kterém se bude zobrazovat samotné prostředí webu JAZYQ.</p>
-                </div>
+              <div>
+                <h4 className="text-sm font-medium text-gray-900">Jazyk aplikace – App Language</h4>
+                <p className="text-xs text-gray-400 mt-0.5">Zvol si jazyk, ve kterém se bude zobrazovat samotné prostředí webu JAZYQ.</p>
+              </div>
 
-                <div className="grid grid-cols-2 gap-2 w-full">
-                  <button
-                    type="button"
-                    onClick={() => setAppLocale("cs")}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 border text-sm rounded-xl transition cursor-pointer w-full ${
-                      appLocale === "cs"
-                        ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
-                        : "border-gray-200/70 text-gray-600 hover:border-gray-300 hover:bg-gray-50/50"
-                    }`}
-                  >
-                    <div className="w-5 h-3.5 relative shadow-3xs rounded-xs overflow-hidden shrink-0">
-                      <Image src="https://flagcdn.com/cz.svg" alt="Čeština" fill className="object-cover" />
-                    </div>
-                    <span>Čeština</span>
-                  </button>
+              <div className="grid grid-cols-2 gap-2 w-full">
+                <button
+                  type="button"
+                  onClick={() => setAppLocale("cs")}
+                  className={`flex items-center justify-center gap-2 px-4 py-2.5 border text-sm rounded-xl transition cursor-pointer w-full ${
+                    appLocale === "cs"
+                      ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
+                      : "border-gray-200/70 text-gray-600 hover:border-gray-300 hover:bg-gray-50/50"
+                  }`}
+                >
+                  <div className="w-5 h-3.5 relative shadow-3xs rounded-xs overflow-hidden shrink-0">
+                    <Image src="https://flagcdn.com/cz.svg" alt="Čeština" fill className="object-cover" />
+                  </div>
+                  <span>Čeština</span>
+                </button>
 
-                  <button
-                    type="button"
-                    onClick={() => setAppLocale("en")}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 border text-sm rounded-xl transition cursor-pointer w-full ${
-                      appLocale === "en"
-                        ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
-                        : "border-gray-200/70 text-gray-600 hover:border-gray-300 hover:bg-gray-50/50"
-                    }`}
-                  >
-                    <div className="w-5 h-3.5 relative shadow-3xs rounded-xs overflow-hidden shrink-0">
-                      <Image src="https://flagcdn.com/gb.svg" alt="Angličtina" fill className="object-cover" />
-                    </div>
-                    <span>English</span>
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setAppLocale("en")}
+                  className={`flex items-center justify-center gap-2 px-4 py-2.5 border text-sm rounded-xl transition cursor-pointer w-full ${
+                    appLocale === "en"
+                      ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
+                      : "border-gray-200/70 text-gray-600 hover:border-gray-300 hover:bg-gray-50/50"
+                  }`}
+                >
+                  <div className="w-5 h-3.5 relative shadow-3xs rounded-xs overflow-hidden shrink-0">
+                    <Image src="https://flagcdn.com/gb.svg" alt="Angličtina" fill className="object-cover" />
+                  </div>
+                  <span>English</span>
+                </button>
               </div>
             </div>
           )}
 
           {/* SEKCE: NEBEZPEČNÁ ZÓNA */}
           {activeTab === "danger" && (
-            <div className="space-y-4 w-full">
-              <div className="bg-white border border-red-100 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-6 w-full">
+              {/* Reset pokroku */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-0.5">
                   <h4 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
                     <RotateCcw size={15} className="text-amber-500" />
@@ -413,12 +400,15 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                 </button>
               </div>
 
-              <div className="bg-red-50/30 border border-red-100 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <hr className="border-gray-100" />
+
+              {/* Smazání účtu */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-0.5">
-                  <h4 className="text-sm font-semibold text-red-950 flex items-center gap-2">
+                  <h4 className="text-sm font-semibold text-red-600">
                     Trvalé odstranění účtu
                   </h4>
-                  <p className="text-xs text-red-900/60 leading-normal">
+                  <p className="text-xs text-gray-400 leading-normal">
                     Kompletně smaže tvůj uživatelský profil z databáze JAZYQ včetně všech statistik bez možnosti obnovy.
                   </p>
                 </div>
