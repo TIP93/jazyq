@@ -116,13 +116,13 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
       )}
 
       {/* DVOU-SLOUPCOVÝ LAYOUT */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
         
         {/* LEVÝ PANEL: NAVIGACE */}
-        <div className="md:col-span-4 flex flex-col gap-2">
+        <div className="md:col-span-4 flex flex-col gap-1.5 border-r border-gray-50 pr-4 md:h-full">
           <button
             onClick={() => setActiveTab("general")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all cursor-pointer ${
+            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
               activeTab === "general"
                 ? "bg-gray-900 text-white shadow-xs"
                 : "bg-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -134,7 +134,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
           <button
             onClick={() => setActiveTab("behavior")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all cursor-pointer ${
+            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
               activeTab === "behavior"
                 ? "bg-gray-900 text-white shadow-xs"
                 : "bg-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -146,7 +146,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
           <button
             onClick={() => setActiveTab("appearance")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all cursor-pointer ${
+            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
               activeTab === "appearance"
                 ? "bg-gray-900 text-white shadow-xs"
                 : "bg-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -158,7 +158,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
           <button
             onClick={() => setActiveTab("locale")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all cursor-pointer ${
+            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
               activeTab === "locale"
                 ? "bg-gray-900 text-white shadow-xs"
                 : "bg-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -170,7 +170,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
           <button
             onClick={() => setActiveTab("danger")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all cursor-pointer ${
+            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
               activeTab === "danger"
                 ? "bg-red-50 text-red-600 shadow-xs font-semibold"
                 : "bg-transparent text-gray-500 hover:bg-red-50/50 hover:text-red-600"
@@ -181,8 +181,8 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           </button>
         </div>
 
-        {/* PRAVÝ PANEL: DYNAMICKÝ OBSAH (Sjednocený čistý podklad) */}
-        <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 md:min-h-[340px] flex flex-col justify-start space-y-6">
+        {/* PRAVÝ PANEL: DYNAMICKÝ OBSAH (Zcela čistý bez omezujícího šedého boxu a skákání výšky) */}
+        <div className="md:col-span-8 flex flex-col justify-start space-y-6 pt-1">
           
           {/* SEKCE: VÝBĚR JAZYKA */}
           {activeTab === "general" && (
@@ -201,7 +201,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                         className={`flex items-center justify-start gap-3 px-4 py-2.5 border rounded-xl text-sm transition-all cursor-pointer bg-white font-medium w-full ${
                           isSelected
                             ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
-                            : "border-gray-200/70 text-gray-600 hover:border-gray-300 hover:bg-gray-50/50"
+                            : "border-gray-200/70 text-gray-600 hover:border-black hover:bg-gray-50/20"
                         }`}
                       >
                         <div className="w-5 h-3.5 relative shadow-3xs rounded-xs overflow-hidden shrink-0">
@@ -219,7 +219,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                 </div>
 
                 <div className="py-2">
-                  <hr className="border-gray-100/70" />
+                  <hr className="border-gray-100" />
                 </div>
 
                 <div className="grid grid-cols-6 gap-2 w-full">
@@ -233,7 +233,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                         className={`flex items-center justify-center py-2.5 px-3 border rounded-xl text-sm transition cursor-pointer bg-white font-semibold w-full ${
                           isSelected
                             ? "border-black bg-gray-50 text-gray-900 shadow-2xs"
-                            : "border-gray-200/70 text-gray-600 hover:bg-gray-50"
+                            : "border-gray-200/70 text-gray-600 hover:border-black hover:bg-gray-50/20"
                         }`}
                       >
                         {lvl}
@@ -248,11 +248,10 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           {/* SEKCE: CHOVÁNÍ APLIKACE */}
           {activeTab === "behavior" && (
             <div className="space-y-6 w-full">
-              {/* Překlady na řádku */}
               <div className="flex items-center justify-between gap-4">
-                <div className="flex gap-3">
-                  <div className="p-2 bg-gray-200/50 text-gray-600 rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
-                    <EyeOff size={16} />
+                <div className="flex gap-4">
+                  <div className="p-2 bg-gray-100 text-gray-600 rounded-xl h-10 w-10 flex items-center justify-center shrink-0">
+                    <EyeOff size={18} />
                   </div>
                   <div>
                     <h4 className="text-sm font-medium text-gray-900">Zobrazovat překlady okamžitě</h4>
@@ -270,27 +269,26 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                 </button>
               </div>
 
-              <hr className="border-gray-100/70" />
+              <hr className="border-gray-100" />
 
-              {/* Tisk materiálů */}
               <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="p-2 bg-gray-200/50 text-gray-600 rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
-                    <Printer size={16} />
+                <div className="flex items-start gap-4">
+                  <div className="p-2 bg-gray-100 text-gray-600 rounded-xl h-10 w-10 flex items-center justify-center shrink-0">
+                    <Printer size={18} />
                   </div>
                   <div>
                     <h4 className="text-sm font-medium text-gray-900">Výchozí styl pro tisk studijních materiálů (PDF)</h4>
-                    <p className="text-xs text-gray-400 mt-0.5">Nastav si, zda chceš generovat pracovní listy rovnou s překladem, nebo nechat místo prázdné.</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Nastav si, zda chceš generovat pracovní listy rovnou s překladem, nebo nekat místo prázdné.</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3 pl-12">
+                <div className="grid grid-cols-2 gap-3 pl-14">
                   <button
                     type="button"
                     onClick={() => setPdfWithTranslations(true)}
                     className={`flex items-center justify-center p-3 border rounded-xl text-xs font-medium transition cursor-pointer bg-white ${
                       pdfWithTranslations
                         ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
-                        : "border-gray-200/70 text-gray-500 hover:bg-gray-50"
+                        : "border-gray-200/70 text-gray-500 hover:border-black hover:bg-gray-50/20"
                     }`}
                   >
                     Tisknout s překlady
@@ -301,7 +299,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                     className={`flex items-center justify-center p-3 border rounded-xl text-xs font-medium transition cursor-pointer bg-white ${
                       !pdfWithTranslations
                         ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
-                        : "border-gray-200/70 text-gray-500 hover:bg-gray-50"
+                        : "border-gray-200/70 text-gray-500 hover:border-black hover:bg-gray-50/20"
                     }`}
                   >
                     Tisknout bez překladů
@@ -314,13 +312,18 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           {/* SEKCE: BARVA APLIKACE */}
           {activeTab === "appearance" && (
             <div className="space-y-4 w-full">
-              <div>
-                <h4 className="text-sm font-medium text-gray-900">Vizuální motiv (Téma)</h4>
-                <p className="text-xs text-gray-400 mt-0.5">Vyber si barevné rozhraní, které lahodí tvému oku.</p>
+              <div className="flex gap-4 items-start mb-2">
+                <div className="p-2 bg-gray-100 text-gray-600 rounded-xl h-10 w-10 flex items-center justify-center shrink-0">
+                  <Palette size={18} />
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900">Vizuální motiv (Téma)</h4>
+                  <p className="text-xs text-gray-400 mt-0.5">Vyber si barevné rozhraní, které lahodí tvému oku.</p>
+                </div>
               </div>
-              <div className="grid grid-cols-3 gap-2 pt-1">
+              <div className="grid grid-cols-3 gap-3 pl-14">
                 {[
-                  { code: "light", label: "Čistá bílá", color: "bg-white border-gray-200" },
+                  { code: "light", label: "Čistá bílá", color: "bg-white border-gray-200 text-gray-800" },
                   { code: "sepia", label: "Klidná sépie", color: "bg-[#f4ecd8] border-[#e4dc18]/20 text-[#5b4636]" },
                   { code: "dark", label: "Temný režim", color: "bg-gray-900 border-gray-800 text-gray-100" },
                 ].map((theme) => (
@@ -342,19 +345,24 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           {/* SEKCE: APP LANGUAGE */}
           {activeTab === "locale" && (
             <div className="space-y-4 w-full">
-              <div>
-                <h4 className="text-sm font-medium text-gray-900">Jazyk aplikace – App Language</h4>
-                <p className="text-xs text-gray-400 mt-0.5">Zvol si jazyk, ve kterém se bude zobrazovat samotné prostředí webu JAZYQ.</p>
+              <div className="flex gap-4 items-start mb-2">
+                <div className="p-2 bg-gray-100 text-gray-600 rounded-xl h-10 w-10 flex items-center justify-center shrink-0">
+                  <Languages size={18} />
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900">Jazyk aplikace – App Language</h4>
+                  <p className="text-xs text-gray-400 mt-0.5">Zvol si jazyk, ve kterém se bude zobrazovat samotné prostředí webu JAZYQ.</p>
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 w-full">
+              <div className="grid grid-cols-2 gap-3 pl-14 w-full">
                 <button
                   type="button"
                   onClick={() => setAppLocale("cs")}
                   className={`flex items-center justify-center gap-2 px-4 py-2.5 border text-sm rounded-xl transition cursor-pointer w-full ${
                     appLocale === "cs"
                       ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
-                      : "border-gray-200/70 text-gray-600 hover:border-gray-300 hover:bg-gray-50/50"
+                      : "border-gray-200/70 text-gray-600 hover:border-black hover:bg-gray-50/20"
                   }`}
                 >
                   <div className="w-5 h-3.5 relative shadow-3xs rounded-xs overflow-hidden shrink-0">
@@ -369,7 +377,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                   className={`flex items-center justify-center gap-2 px-4 py-2.5 border text-sm rounded-xl transition cursor-pointer w-full ${
                     appLocale === "en"
                       ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
-                      : "border-gray-200/70 text-gray-600 hover:border-gray-300 hover:bg-gray-50/50"
+                      : "border-gray-200/70 text-gray-600 hover:border-black hover:bg-gray-50/20"
                   }`}
                 >
                   <div className="w-5 h-3.5 relative shadow-3xs rounded-xs overflow-hidden shrink-0">
@@ -384,7 +392,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           {/* SEKCE: NEBEZPEČNÁ ZÓNA */}
           {activeTab === "danger" && (
             <div className="space-y-6 w-full">
-              {/* Reset pokroku */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-0.5">
                   <h4 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
@@ -402,7 +409,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
               <hr className="border-gray-100" />
 
-              {/* Smazání účtu */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-0.5">
                   <h4 className="text-sm font-semibold text-red-600">
