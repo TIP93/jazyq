@@ -155,10 +155,6 @@ useEffect(() => {
     const data = await res.json();
     setAllLevels(data);
 
-    const list = greetings[language] ?? greetings.en;
-    const random = list[Math.floor(Math.random() * list.length)];
-    setGreeting(random);
-
     // Pokud už máme z DB načteno, že uživatel chce překlady vidět, vynutíme to po stažení slovíčka
     if (dbShowTranslations === true) {
       setShowTranslations(true);
@@ -175,6 +171,12 @@ useEffect(() => {
 
   load();
 }, [language, dbShowTranslations]); // <--- Přidáno dbShowTranslations do závislostí
+
+useEffect(() => {
+  const list = greetings[language] ?? greetings.en;
+  const random = list[Math.floor(Math.random() * list.length)];
+  setGreeting(random);
+}, [language]); // <--- Reaguje POUZE na změnu jazyka
 
 async function signInWithGoogle() {
   await supabase.auth.signInWithOAuth({
@@ -790,7 +792,7 @@ if (authLoading) {
     <div className="h-4 w-[1px] bg-gray-300" />
 
     {/* Datum přesunuté doleva s tmavší šedou barvou */}
-    <span className="text-gray-700 font-medium capitalize">
+    <span className="text-gray-700 font-medium">
       {new Date().toLocaleDateString("cs-CZ", {
         weekday: "long",
         year: "numeric",
