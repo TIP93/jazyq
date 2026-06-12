@@ -12,15 +12,24 @@ interface SettingsPageProps {
 
 export default function SettingsPage({ user, setView }: SettingsPageProps) {
   // --- STAVY NASTAVENÍ ---
-   const [activeTab, setActiveTab] = useState<"general" | "behavior" | "appearance" | "locale" | "danger">("general");
+  const [activeTab, setActiveTab] = useState<"general" | "behavior" | "appearance" | "locale" | "danger">("general");
 
   const [targetLanguage, setTargetLanguage] = useState(() => user?.user_settings?.target_language || "en");
   const [targetLevel, setTargetLevel] = useState(() => user?.user_settings?.target_level || "B1");
   const [appTheme, setAppTheme] = useState(() => user?.user_settings?.app_theme || "light");
   
-  // Výchozí inicializace stavů
-  const [showTranslations, setShowTranslations] = useState<boolean>(false);
-  const [pdfWithTranslations, setPdfWithTranslations] = useState<boolean>(true);
+  // OPRAVA 1: Inicializuj stav přímo z dat, pokud už v objektu user existují
+  const [showTranslations, setShowTranslations] = useState<boolean>(() => {
+    const raw = user?.user_settings?.show_translations;
+    return raw === true || String(raw) === "true";
+  });
+
+  const [pdfWithTranslations, setPdfWithTranslations] = useState<boolean>(() => {
+    const raw = user?.user_settings?.pdf_with_translations;
+    if (raw === undefined || raw === null) return true;
+    return raw === true || String(raw) === "true";
+  });
+
   const [appLocale, setAppLocale] = useState(() => user?.user_settings?.app_locale || "cs");
 
   const [isSaving, setIsSaving] = useState(false);
@@ -29,7 +38,8 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
   // Získání syrové hodnoty přímo z objektu user pro textový výpis
   const dbValueRaw = user?.user_settings?.show_translations;
 
-  // NEPRŮSTŘELNÁ SYNCHRONIZACE: Sledujeme přímo vnořený objekt user_settings
+  // OPRAVA 2: Tento useEffect se spustí JEN, když se reálně změní ID uživatele (přihlášení/načtení)
+  // Nebude ti tak přepisovat stav pod rukama při klikání na slider nebo přepínání záložek.
   useEffect(() => {
     if (user?.user_settings) {
       const settings = user.user_settings;
@@ -39,14 +49,15 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
       if (settings.app_theme) setAppTheme(settings.app_theme);
       if (settings.app_locale) setAppLocale(settings.app_locale);
       
-      // Oprava: Natvrdo přepsat stav, jakmile dorazí data z DB
       const isTranslationsTrue = settings.show_translations === true || String(settings.show_translations) === "true";
       setShowTranslations(isTranslationsTrue);
 
       const isPdfTrue = settings.pdf_with_translations === true || String(settings.pdf_with_translations) === "true";
       setPdfWithTranslations(settings.pdf_with_translations !== undefined && settings.pdf_with_translations !== null ? isPdfTrue : true);
     }
-  }, [user, user?.user_settings]); // Přidána přesná závislost na změnu objektu nastavení
+  }, [user?.id]); // <--- ZMĚNA ZDE: Sledujeme pouze uživatelovo ID
+
+  // ... zbytek handleSaveSettings a HTML kódu zůstává úplně stejný
 
   const handleSaveSettings = async () => {
     if (!user?.id) {
