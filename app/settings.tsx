@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Bell, Palette, Trash2, ArrowLeft, Check, Sparkles, Volume2, Target, RotateCcw, Sliders } from "lucide-react";
+import { Bell, Palette, Trash2, ArrowLeft, Check, Volume2, Target, RotateCcw, Sliders, Loader2 } from "lucide-react";
+import { saveUserSettings } from "@/app/actions/settings"; // Import nově vytvořené akce
 
 interface SettingsPageProps {
   user: any;
@@ -13,27 +14,66 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
   // --- STAVY NASTAVENÍ ---
   const [activeTab, setActiveTab] = useState<"general" | "notifications" | "appearance" | "danger">("general");
   
-  // Výchozí nastavení aplikace (Angličtina + B1)
+  // Stavy pro jazyk a úroveň
   const [targetLanguage, setTargetLanguage] = useState("en");
   const [targetLevel, setTargetLevel] = useState("B1");
   
+  // Pomocné stavy pro UI
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
   const [dailyReminder, setDailyReminder] = useState(true);
   const [reminderTime, setReminderTime] = useState("08:00");
   const [appTheme, setAppTheme] = useState("light");
   const [autoPlayAudio, setAutoPlayAudio] = useState(true);
   const [dailyGoal, setDailyGoal] = useState("standard");
 
-  // Definice 6 jazyků (matice 3x2, čeština na konci) podle assetů z page.tsx
+  // Načtení již uložených dat z objektu user při openu stránky
+  useEffect(() => {
+    if (user?.user_settings) {
+      if (user.user_settings.target_language) {
+        setTargetLanguage(user.user_settings.target_language);
+      }
+      if (user.user_settings.target_level) {
+        setTargetLevel(user.user_settings.target_level);
+      }
+    }
+  }, [user]);
+
+  // Handler pro bezpečné uložení do DB
+  const handleSaveSettings = async () => {
+  setIsSaving(true);
+  setSaveError(null);
+
+  try {
+    const result = await saveUserSettings({
+      targetLanguage,
+      targetLevel,
+    });
+
+    if (result && result.success) {
+      // Teprve pokud databáze potvrdí true, odejdeme ze stránky
+      setView("learn");
+    } else {
+      // Zde odchytíš "Unauthorized" nebo SQL chyby (např. chybějící sloupce)
+      setSaveError(result?.error || "Nepodařilo se uložit nastavení.");
+    }
+  } catch (err) {
+    setSaveError("Došlo k neočekávané chybě na klientovi.");
+  } finally {
+    setIsSaving(false);
+  }
+};
+
   const languages = [
     { code: "en", label: "Angličtina", flag: "gb" },
     { code: "de", label: "Němčina", flag: "de" },
     { code: "es", label: "Španělština", flag: "es" },
     { code: "fr", label: "Francouzština", flag: "fr" },
     { code: "it", label: "Italština", flag: "it" },
-    { code: "cs", label: "Čeština", flag: "cz" }, // Výhledově pro cizince
+    { code: "cs", label: "Čeština", flag: "cz" },
   ];
 
-  // Škála 6 úrovní
   const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
   return (
@@ -59,6 +99,13 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
         </div>
       </div>
 
+      {/* CHYBOVÁ HLÁŠKA */}
+      {saveError && (
+        <div className="p-4 bg-red-50 border border-red-100 text-red-800 text-sm rounded-2xl">
+          {saveError}
+        </div>
+      )}
+
       {/* DVOU-SLOUPCOVÝ LAYOUT */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
         
@@ -73,7 +120,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             }`}
           >
             <Sliders size={18} />
-            Základní nastavení
+            Výběr jazyka
           </button>
 
           <button
@@ -119,14 +166,12 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           {/* SEKCE: ZÁKLADNÍ NASTAVENÍ */}
           {activeTab === "general" && (
             <div className="space-y-6">
-              
-              {/* Nadpis spojeného bloku */}
               <div>
                 <h4 className="text-sm font-medium text-gray-900">Výchozí jazyk a úroveň</h4>
                 <p className="text-xs text-gray-400 mt-0.5">Tuto kombinaci uvidíš jako první při každé návštěvě aplikace JAZYQ.</p>
               </div>
 
-              {/* 1. MATICE VLAJEK (3 na řádku, 2 řádky celkem) */}
+              {/* 1. MATICE VLAJEK */}
               <div className="space-y-2">
                 <div className="grid grid-cols-3 gap-3">
                   {languages.map((lang) => (
@@ -161,7 +206,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
               <hr className="border-gray-100" />
 
-              {/* 2. MATICE ÚROVNÍ (6 na jednom řádku, bez popisků) */}
+              {/* 2. MATICE ÚROVNÍ */}
               <div className="space-y-2">
                 <div className="grid grid-cols-6 gap-2">
                   {levels.map((lvl) => (
@@ -174,9 +219,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                           : "border-gray-100 text-gray-700 hover:bg-gray-50"
                       }`}
                     >
-                      <span className="text-sm font-bold">
-                        {lvl}
-                      </span>
+                      <span className="text-sm font-bold">{lvl}</span>
                       
                       {targetLevel === lvl && (
                         <div className="absolute -top-1 -right-1 bg-black text-white rounded-full p-0.5 shadow-2xs">
@@ -187,11 +230,10 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                   ))}
                 </div>
               </div>
-
             </div>
           )}
 
-          {/* SEKCE: UPOZORNĚNÍ A CÍLE */}
+          {/* OSTATNÍ SEKCE ZŮSTÁVAJÍ STEJNÉ... */}
           {activeTab === "notifications" && (
             <div className="space-y-4">
               <div className="flex items-center justify-between bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs">
@@ -278,7 +320,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             </div>
           )}
 
-          {/* SEKCE: BARVA APLIKACE */}
           {activeTab === "appearance" && (
             <div className="space-y-4">
               <div className="bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs space-y-3">
@@ -307,7 +348,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             </div>
           )}
 
-          {/* SEKCE: ZRUŠIT ÚČET */}
           {activeTab === "danger" && (
             <div className="space-y-4">
               <div className="bg-white border border-red-100 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -342,16 +382,23 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           )}
 
         </div>
-
       </div>
 
-      {/* SPODNÍ TLAČÍTKO */}
+      {/* SPODNÍ TLAČÍTKO - SOUČÁST UKLÁDÁNÍ */}
       <div className="pt-4 border-t border-gray-100 flex justify-center">
         <button
-          onClick={() => setView("learn")}
-          className="w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-2xl hover:bg-gray-50 hover:text-gray-900 active:scale-[0.98] transition-all shadow-xs cursor-pointer"
+          onClick={handleSaveSettings}
+          disabled={isSaving}
+          className="w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-2xl hover:bg-gray-50 hover:text-gray-900 active:scale-[0.98] transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Uložit a pokračovat ve studiu
+          {isSaving ? (
+            <>
+              <Loader2 size={16} className="animate-spin" />
+              Ukládám...
+            </>
+          ) : (
+            "Uložit a pokračovat ve studiu"
+          )}
         </button>
       </div>
 
