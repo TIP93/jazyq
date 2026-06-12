@@ -198,7 +198,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
         </div>
 
         {/* PRAVÝ PANEL: DYNAMICKÝ OBSAH (Pevná minimální výška zabraňuje skákání layoutu) */}
-        <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 flex flex-col justify-start space-y-6 md:min-h-[380px]">
+        <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 flex flex-col justify-start space-y-6">
           
           {/* SEKCE: VÝBĚR JAZYKA */}
           {activeTab === "general" && (
