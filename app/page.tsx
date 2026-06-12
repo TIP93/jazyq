@@ -66,6 +66,7 @@ const [allLevels, setAllLevels] = useState<any>(null);
  
 const [language, setLanguage] = useState<Language>("en");
 const [levelIndex, setLevelIndex] = useState(2); // Index 2 odpovídá B1
+const [authLoading, setAuthLoading] = useState(true);
 
 // Nová opravená funkce se správnými názvy sloupců
 // Nová opravená funkce se správnými názvy sloupců
@@ -177,7 +178,7 @@ useEffect(() => {
       const currentUser = session.user;
       setUser(currentUser);
       
-      // Načteme nastavení z DB hned při přihlášení
+      // 1. Nejdříve počkáme na načtení nastavení z DB
       const settings = await loadUserSettings(currentUser.id);
       if (settings) {
         if (settings.target_language) {
@@ -210,12 +211,17 @@ useEffect(() => {
         }
       } catch (error) {
         console.error("Chyba při zápisu přístupu nebo streaku:", error);
+      } finally {
+        // Teprve až je VŠE nastaveno, vypneme loading state
+        setAuthLoading(false);
       }
 
     } else {
+      // Uživatel není přihlášen, nastavíme defaulty a vypneme loading
       setUser(null);
       setLanguage("en");
-      setLevelIndex(2); // B1
+      setLevelIndex(2);
+      setAuthLoading(false);
     }
   });
 
@@ -286,6 +292,21 @@ const signInWithSeznam = () => {
 useEffect(() => {
   setView("learn");
 }, [language, levelIndex]);
+
+if (authLoading) {
+  return (
+    <div className="min-h-screen bg-[#F6F7FB] flex items-center justify-center text-black font-[Poppins]">
+      <div className="text-center space-y-3">
+        <h1 className="text-4xl font-light tracking-[0.25em] animate-pulse">
+          JAZYQ
+        </h1>
+        <p className="text-xs text-gray-400 tracking-wider">
+          Načítám tvou denní pětiminutovku...
+        </p>
+      </div>
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen bg-[#F6F7FB] flex text-black font-[Poppins]">
