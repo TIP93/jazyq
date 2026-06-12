@@ -68,28 +68,23 @@ const [language, setLanguage] = useState<Language>("en");
 const [levelIndex, setLevelIndex] = useState(2); // Index 2 odpovídá B1
 
 // Nová opravená funkce se správnými názvy sloupců
+// Nová opravená funkce se správnými názvy sloupců
 async function loadUserSettings(userId: string) {
   try {
     const { data, error } = await supabase
       .from("user_settings")
-      .select("target_language, target_level") // Změna názvů sloupců zde
+      .select("target_language, target_level")
       .eq("user_id", userId)
       .single();
 
-    // Pokud nastavení neexistuje (PGRST116), tiše ignorujeme a zůstane default (en + B1)
     if (error && error.code !== "PGRST116") {
       throw error;
     }
 
-    if (data) {
-      if (data.target_language) setLanguage(data.target_language as Language);
-      if (data.target_level) {
-        const idx = levels.indexOf(data.target_level);
-        if (idx !== -1) setLevelIndex(idx);
-      }
-    }
+    return data; // Vrátíme data z DB pro synchronní zpracování níže
   } catch (err) {
     console.error("Chyba při načítání uživatelského nastavení:", err);
+    return null;
   }
 }
 
@@ -182,47 +177,42 @@ useEffect(() => {
       const currentUser = session.user;
       setUser(currentUser);
       
-      // --- TADY: Načteme nastavení z DB hned při přihlášení ---
-      await loadUserSettings(currentUser.id);
+      // Načteme nastavení z DB hned při přihlášení
+      const settings = await loadUserSettings(currentUser.id);
+      if (settings) {
+        if (settings.target_language) {
+          setLanguage(settings.target_language as Language);
+        }
+        if (settings.target_level) {
+          const idx = levels.indexOf(settings.target_level);
+          if (idx !== -1) setLevelIndex(idx);
+        }
+      }
       
       try {
-  const todayDate = new Date().toISOString().split("T")[0];
-  
-  // Vytvoříme si unikátní klíč pro uživatele a dnešní den
-  const logKey = `${currentUser.id}-${todayDate}`;
+        const todayDate = new Date().toISOString().split("T")[0];
+        const logKey = `${currentUser.id}-${todayDate}`;
 
-  // Pokud už tento klíč v této relaci existuje, zápis přeskočíme, ale streak data pro jistotu načteme
-  if (hasLoggedToday.current === logKey) {
-    console.log("Dnešní přístup pro tohoto uživatele již byl v této relaci zapsán. Pouze aktualizuji streak data.");
-    fetchStreakData(currentUser.id);
-  } else {
-    // Pokud ještě zapsáno nebylo, provedeme upsert
-    console.log("Zapisuji dnešní přístup pro uživatele:", currentUser.id);
-    
-    const { error: upsertError } = await supabase
-      .from("user_logs")
-      .upsert(
-        { user_id: currentUser.id, log_date: todayDate },
-        { onConflict: "user_id,log_date" }
-      );
+        if (hasLoggedToday.current === logKey) {
+          fetchStreakData(currentUser.id);
+        } else {
+          const { error: upsertError } = await supabase
+            .from("user_logs")
+            .upsert(
+              { user_id: currentUser.id, log_date: todayDate },
+              { onConflict: "user_id,log_date" }
+            );
 
-    if (upsertError) {
-      throw upsertError;
-    }
+          if (upsertError) throw upsertError;
 
-    // Označíme si, že pro tohoto uživatele a dnešní den máme hotovo
-    hasLoggedToday.current = logKey;
-    fetchStreakData(currentUser.id);
-  }
-
-} catch (error) {
-  console.error("Chyba při zápisu přístupu nebo streaku:", error);
-}
-
-
+          hasLoggedToday.current = logKey;
+          fetchStreakData(currentUser.id);
+        }
+      } catch (error) {
+        console.error("Chyba při zápisu přístupu nebo streaku:", error);
+      }
 
     } else {
-      // --- TADY: Uživatel není přihlášený -> vrátíme bezpečný default en + B1 ---
       setUser(null);
       setLanguage("en");
       setLevelIndex(2); // B1
@@ -1000,7 +990,16 @@ useEffect(() => {
 
 {/* VYKRESLENÍ STRÁNKY NASTAVENÍ */}
 {view === "settings" && (
-  <SettingsPage setView={setView} user={user} />
+  <SettingsPage 
+    setView={setView} 
+    user={{
+      ...user,
+      user_settings: {
+        target_language: language,
+        target_level: levels[levelIndex]
+      }
+    }} 
+  />
 )}
 
   {/* ========================================================= */}
