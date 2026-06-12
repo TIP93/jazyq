@@ -793,13 +793,16 @@ if (authLoading) {
 
     {/* Datum přesunuté doleva s tmavší šedou barvou */}
     <span className="text-gray-700 font-medium">
-      {new Date().toLocaleDateString("cs-CZ", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })}
-    </span>
+  {(() => {
+    const dateStr = new Date().toLocaleDateString("cs-CZ", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+    return dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+  })()}
+</span>
 
   </div>
 
