@@ -184,74 +184,116 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
         <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 space-y-6">
           
           {/* SEKCE: ZÁKLADNÍ NASTAVENÍ */}
-          {activeTab === "general" && (
-            <div className="space-y-6">
-              <div>
-                <h4 className="text-sm font-medium text-gray-900">Výchozí jazyk a úroveň</h4>
-                <p className="text-xs text-gray-400 mt-0.5">Tuto kombinaci uvidíš jako první při každé návštěvě aplikace JAZYQ.</p>
-              </div>
-
-              {/* 1. MATICE VLAJEK */}
-              <div className="space-y-2">
-                <div className="grid grid-cols-3 gap-3">
-                  {languages.map((lang) => (
-                    <button
-                      key={lang.code}
-                      onClick={() => setTargetLanguage(lang.code)}
-                      className={`flex flex-col items-center justify-center p-3.5 border rounded-xl transition-all cursor-pointer relative group bg-white ${
-                        targetLanguage === lang.code
-                          ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
-                          : "border-gray-100 text-gray-500 hover:border-gray-300 hover:bg-gray-50/50"
-                      }`}
-                    >
-                      <div className="w-9 h-6 relative mb-2 shadow-3xs rounded-xs overflow-hidden filter group-hover:scale-105 transition-transform">
-                        <Image
-                          src={`https://flagcdn.com/${lang.flag}.svg`}
-                          alt={lang.label}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <span className="text-xs tracking-tight truncate w-full text-center">{lang.label}</span>
-                      
-                      {targetLanguage === lang.code && (
-                        <div className="absolute top-2 right-2 bg-black text-white rounded-full p-0.5">
-                          <Check size={8} className="stroke-[3.5px]" />
-                        </div>
-                      )}
-                    </button>
-                  ))}
+{activeTab === "general" && (
+  <div className="space-y-6">
+    
+    {/* 1. STUDOVANÝ JAZYK */}
+    <div className="space-y-3">
+      <div>
+        <h4 className="text-sm font-medium text-gray-900">Chci se učit</h4>
+        <p className="text-xs text-gray-400 mt-0.5">Vyber si cizí jazyk, ve kterém chceš procvičovat své fráze.</p>
+      </div>
+      
+      <div className="flex flex-wrap gap-2">
+        {languages
+          .filter((lang) => lang.code !== "cs") // Češtinu dáváme pryč z hlavní nabídky
+          .map((lang) => {
+            const isSelected = targetLanguage === lang.code;
+            return (
+              <button
+                key={lang.code}
+                onClick={() => setTargetLanguage(lang.code)}
+                className={`flex items-center gap-2.5 px-4 py-2 border rounded-xl text-sm transition-all cursor-pointer bg-white font-medium ${
+                  isSelected
+                    ? "border-black bg-gray-50 text-gray-900 shadow-2xs"
+                    : "border-gray-200/70 text-gray-600 hover:border-gray-300 hover:bg-gray-50/50"
+                }`}
+              >
+                <div className="w-5 h-3.5 relative shadow-3xs rounded-xs overflow-hidden shrink-0">
+                  <Image
+                    src={`https://flagcdn.com/${lang.flag}.svg`}
+                    alt={lang.label}
+                    fill
+                    className="object-cover"
+                  />
                 </div>
-              </div>
+                <span>{lang.label}</span>
+                {isSelected && <div className="w-1.5 h-1.5 bg-black rounded-full ml-0.5" />}
+              </button>
+            );
+          })}
+      </div>
+    </div>
 
-              <hr className="border-gray-100" />
+    {/* 2. ÚROVEŇ POKROČILOSTI */}
+    <div className="space-y-3 pt-2">
+      <div>
+        <h4 className="text-sm font-medium text-gray-900">Úroveň náročnosti</h4>
+        <p className="text-xs text-gray-400 mt-0.5">Výchozí úroveň gramatiky a slovní zásoby.</p>
+      </div>
+      
+      <div className="flex flex-wrap gap-2">
+        {levels.map((lvl) => {
+          const isSelected = targetLevel === lvl;
+          return (
+            <button
+              key={lvl}
+              onClick={() => setTargetLevel(lvl)}
+              className={`min-w-[54px] flex items-center justify-center py-2 px-3 border rounded-xl text-sm transition cursor-pointer bg-white font-semibold ${
+                isSelected
+                  ? "border-black bg-gray-50 text-gray-900 shadow-2xs"
+                  : "border-gray-200/70 text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              {lvl}
+            </button>
+          );
+        })}
+      </div>
+    </div>
 
-              {/* 2. MATICE ÚROVNÍ */}
-              <div className="space-y-2">
-                <div className="grid grid-cols-6 gap-2">
-                  {levels.map((lvl) => (
-                    <button
-                      key={lvl}
-                      onClick={() => setTargetLevel(lvl)}
-                      className={`flex items-center justify-center py-3 border rounded-xl text-center transition cursor-pointer relative bg-white ${
-                        targetLevel === lvl
-                          ? "border-black bg-gray-50 text-gray-900 font-bold shadow-2xs"
-                          : "border-gray-100 text-gray-700 hover:bg-gray-50"
-                      }`}
-                    >
-                      <span className="text-sm font-bold">{lvl}</span>
-                      
-                      {targetLevel === lvl && (
-                        <div className="absolute -top-1 -right-1 bg-black text-white rounded-full p-0.5 shadow-2xs">
-                          <Check size={6} className="stroke-[3.5px]" />
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+    <hr className="border-gray-100 my-2" />
+
+    {/* 3. JAZYK WEBU (LOKALIZACE) */}
+    <div className="space-y-3 pt-2">
+      <div>
+        <h4 className="text-sm font-medium text-gray-900">Jazyk aplikace (Interface)</h4>
+        <p className="text-xs text-gray-400 mt-0.5">V jakém jazyce chceš mít zobrazené ovládací prvky a menu webu.</p>
+      </div>
+
+      <div className="flex gap-2">
+        {/* Čeština */}
+        <button
+          onClick={() => {
+            // Zde případně nastavíš stav pro jazyk lokalizace, pokud ho zavedeme do DB.
+            // Pro teď můžeme simulovat aktivní/neaktivní stav.
+          }}
+          className="flex items-center gap-2.5 px-4 py-2 border border-black bg-gray-50 text-gray-900 text-sm font-medium rounded-xl shadow-2xs cursor-pointer"
+        >
+          <div className="w-5 h-3.5 relative shadow-3xs rounded-xs overflow-hidden shrink-0">
+            <Image src="https://flagcdn.com/cz.svg" alt="Čeština" fill className="object-cover" />
+          </div>
+          <span>Čeština</span>
+          <div className="w-1.5 h-1.5 bg-black rounded-full ml-0.5" />
+        </button>
+
+        {/* Angličtina */}
+        <button
+          onClick={() => {
+            // Logika pro přepnutí rozhraní do EN
+          }}
+          className="flex items-center gap-2.5 px-4 py-2 border border-gray-200/70 text-gray-600 text-sm font-medium rounded-xl hover:border-gray-300 hover:bg-gray-50/50 cursor-pointer"
+        >
+          <div className="w-5 h-3.5 relative shadow-3xs rounded-xs overflow-hidden shrink-0">
+            <Image src="https://flagcdn.com/gb.svg" alt="Angličtina" fill className="object-cover" />
+          </div>
+          <span>English</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+)}
 
           {/* SEKCE: CHOVÁNÍ APLIKACE */}
           {activeTab === "behavior" && (
