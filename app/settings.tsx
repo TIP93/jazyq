@@ -25,7 +25,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
   // Nastavení pro tisk PDF dokumentů
   const [pdfWithTranslations, setPdfWithTranslations] = useState(() => user?.user_settings?.pdf_with_translations ?? true);
 
-  // Nový stav pro lokalizaci rozhraní aplikace (vyřeší chybu ts(2304))
+  // Nový stav pro lokalizaci rozhraní aplikace
   const [appLocale, setAppLocale] = useState(() => user?.user_settings?.app_locale || "cs");
 
   // Pomocné stavy pro UI
@@ -198,7 +198,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                   <h4 className="text-sm font-medium text-gray-900">Výchozí jazyk a úroveň</h4>
                 </div>
                 
-                {/* Jazyky: Zarovnané doleva (justify-start), vlajky vytvoří tabulku */}
+                {/* Jazyky: Zarovnané doleva, vlajky vytvoří tabulku */}
                 <div className="grid grid-cols-3 gap-2 w-full">
                   {languages.map((lang) => {
                     const isSelected = targetLanguage === lang.code;
