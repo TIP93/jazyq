@@ -65,12 +65,12 @@ const [allLevels, setAllLevels] = useState<any>(null);
 const [language, setLanguage] = useState<Language>("en");
 const [levelIndex, setLevelIndex] = useState(2); // Index 2 odpovídá B1
 
-// Nová funkce pro bezpečné načtení nastavení přihlášeného uživatele
+// Nová opravená funkce se správnými názvy sloupců
 async function loadUserSettings(userId: string) {
   try {
     const { data, error } = await supabase
       .from("user_settings")
-      .select("language, level")
+      .select("target_language, target_level") // Změna názvů sloupců zde
       .eq("user_id", userId)
       .single();
 
@@ -80,9 +80,9 @@ async function loadUserSettings(userId: string) {
     }
 
     if (data) {
-      if (data.language) setLanguage(data.language as Language);
-      if (data.level) {
-        const idx = levels.indexOf(data.level);
+      if (data.target_language) setLanguage(data.target_language as Language);
+      if (data.target_level) {
+        const idx = levels.indexOf(data.target_level);
         if (idx !== -1) setLevelIndex(idx);
       }
     }
