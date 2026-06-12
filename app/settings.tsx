@@ -130,7 +130,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
       {/* DVOU-SLOUPCOVÝ LAYOUT */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
         
-        {/* LEVÝ PANEL: NAVIGACE (Položky upraveny na 5 záložek) */}
+        {/* LEVÝ PANEL: NAVIGACE */}
         <div className="md:col-span-4 flex flex-col gap-2">
           <button
             onClick={() => setActiveTab("general")}
@@ -193,12 +193,12 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           </button>
         </div>
 
-        {/* PRAVÝ PANEL: DYNAMICKÝ OBSAH */}
-        <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 space-y-6">
+        {/* PRAVÝ PANEL: DYNAMICKÝ OBSAH (Zde přidáno min-h-[340px]) */}
+        <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 md:min-h-[340px] flex flex-col justify-start">
           
-          {/* SEKCE: VÝBĚR JAZYKA (Nyní je čistá a přehledná bez App Language) */}
+          {/* SEKCE: VÝBĚR JAZYKA */}
           {activeTab === "general" && (
-            <div className="space-y-6">
+            <div className="space-y-6 animate-fade-in">
               <div className="space-y-4">
                 <div>
                   <h4 className="text-sm font-medium text-gray-900">Výchozí jazyk a úroveň studovaného jazyka</h4>
@@ -261,7 +261,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
           {/* SEKCE: CHOVÁNÍ APLIKACE */}
           {activeTab === "behavior" && (
-            <div className="space-y-4">
+            <div className="space-y-4 w-full">
               <div className="flex items-center justify-between bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-gray-50 text-gray-500 rounded-lg">
@@ -323,7 +323,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
           {/* SEKCE: BARVA APLIKACE */}
           {activeTab === "appearance" && (
-            <div className="space-y-4">
+            <div className="space-y-4 w-full">
               <div className="bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs space-y-3">
                 <div>
                   <h4 className="text-sm font-medium text-gray-900">Vizuální motiv (Téma)</h4>
@@ -351,9 +351,9 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             </div>
           )}
 
-          {/* SEKCE: APP LANGUAGE (Nově přesunutý blok sem) */}
+          {/* SEKCE: APP LANGUAGE */}
           {activeTab === "locale" && (
-            <div className="space-y-4">
+            <div className="space-y-4 w-full">
               <div className="bg-white border border-gray-200/60 rounded-2xl p-6 shadow-xs space-y-4">
                 <div>
                   <h4 className="text-sm font-medium text-gray-900">Jazyk aplikace – App Language</h4>
@@ -361,7 +361,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 w-full">
-                  {/* Čeština */}
                   <button
                     type="button"
                     onClick={() => setAppLocale("cs")}
@@ -377,7 +376,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                     <span>Čeština</span>
                   </button>
 
-                  {/* Angličtina */}
                   <button
                     type="button"
                     onClick={() => setAppLocale("en")}
@@ -399,7 +397,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
           {/* SEKCE: NEBEZPEČNÁ ZÓNA */}
           {activeTab === "danger" && (
-            <div className="space-y-4">
+            <div className="space-y-4 w-full">
               <div className="bg-white border border-red-100 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-0.5">
                   <h4 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
@@ -434,7 +432,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
         </div>
       </div>
 
-      {/* SPODNÍ TLAČÍTKO - SOUČÁST UKLÁDÁNÍ */}
+      {/* SPODNÍ TLAČÍTKO */}
       <div className="pt-4 border-t border-gray-100 flex justify-center">
         <button
           onClick={handleSaveSettings}
