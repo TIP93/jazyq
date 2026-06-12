@@ -70,21 +70,19 @@ const [levelIndex, setLevelIndex] = useState(2); // Index 2 odpovídá B1
 const [authLoading, setAuthLoading] = useState(true);
 
 // Nová opravená funkce se správnými názvy sloupců
-// Nová opravená funkce se správnými názvy sloupců
 async function loadUserSettings(userId: string) {
   try {
     const { data, error } = await supabase
       .from("user_settings")
-      .select("target_language, target_level, show_translations")
+      .select("*") // <--- Změna: Načte úplně všechny sloupce (včetně motivu, pdf i show_translations)
       .eq("user_id", userId)
       .single();
 
     if (error && error.code !== "PGRST116") {
       throw error;
     }
-
    
-    return data; // Vrátíme data z DB pro synchronní zpracování níže
+    return data; 
   } catch (err) {
     console.error("Chyba při načítání uživatelského nastavení:", err);
     return null;
