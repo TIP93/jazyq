@@ -83,8 +83,7 @@ async function loadUserSettings(userId: string) {
       throw error;
     }
 
-    console.log("SUROVÁ DATA PŘÍMO ZE SUPABASE:", data);
-
+   
     return data; // Vrátíme data z DB pro synchronní zpracování níže
   } catch (err) {
     console.error("Chyba při načítání uživatelského nastavení:", err);
@@ -186,8 +185,6 @@ async function signInWithGoogle() {
   });
 }
 
-console.log("AKTUÁLNÍ NASTAVENÍ Z DB V KOMPONENTĚ:", dbShowTranslations);
-
 useEffect(() => {
   const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
     console.log("Auth event:", event, "Session:", session);
@@ -199,7 +196,7 @@ useEffect(() => {
       // 1. Nejdříve počkáme na načtení nastavení z DB
       const settings = await loadUserSettings(currentUser.id);
       if (settings) {
-        
+
         console.log("KONTROLA HODNOTY V SETTINGS:", {
     raw: settings.show_translations,
     typ: typeof settings.show_translations,
@@ -215,7 +212,7 @@ useEffect(() => {
         }
 
         // OPRAVA ZDE: Zápis přímo do React stavu místo nefunkční reference
-        if (settings.show_translations === true) {
+        if (settings.show_translations === true || settings.show_translations === "true") {
           setDbShowTranslations(true); 
           setShowTranslations(true);
           setShowExampleTranslation(true);
