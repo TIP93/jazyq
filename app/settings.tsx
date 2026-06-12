@@ -278,17 +278,16 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                   </div>
                 </div>
                 
-                {/* TLAČÍTKO SLIDERU (Opravené Tailwind podmínky) */}
+                {/* 100% SPOLEHLIVÝ INLINE STYLE PRO POZADÍ SLIDERU */}
                 <button
                   type="button"
                   onClick={() => setShowTranslations(!showTranslations)}
-                  className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-200 ease-in-out cursor-pointer shrink-0 relative ${
-                    showTranslations === true ? "bg-green-500" : "bg-gray-200"
-                  }`}
+                  style={{ backgroundColor: showTranslations ? "#22c55e" : "#e5e7eb" }}
+                  className="w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-200 ease-in-out cursor-pointer shrink-0 relative"
                 >
                   <div 
                     className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
-                      showTranslations === true ? "translate-x-5" : "translate-x-0"
+                      showTranslations ? "translate-x-5" : "translate-x-0"
                     }`} 
                   />
                 </button>
@@ -302,7 +301,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                     <Printer size={16} />
                   </div>
                   <div>
-                    <h4 className="text-sm font-medium text-gray-900">Výchozí styl pro tisk studijních materiaalů (PDF)</h4>
+                    <h4 className="text-sm font-medium text-gray-900">Výchozí styl pro tisk studijních materiálů (PDF)</h4>
                     <p className="text-xs text-gray-400 mt-0.5">Nastav si, zda chceš generovat pracovní listy rovnou s překladem, nebo nechat místo prázdné.</p>
                   </div>
                 </div>
