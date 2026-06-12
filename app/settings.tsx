@@ -18,7 +18,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
   const [targetLevel, setTargetLevel] = useState(() => user?.user_settings?.target_level || "B1");
   const [appTheme, setAppTheme] = useState(() => user?.user_settings?.app_theme || "light");
   
-  // Bezpečný převod z DB (přijímá boolean i string "true")
+  // Bezpečný převod z DB při inicializaci (přijímá boolean i string "true")
   const [showTranslations, setShowTranslations] = useState(() => {
     const rawVal = user?.user_settings?.show_translations;
     return rawVal === true || rawVal === "true";
@@ -44,6 +44,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
       if (settings.app_locale) setAppLocale(settings.app_locale);
       
       if (settings.show_translations !== undefined) {
+        // Tady striktně převádíme textové "true" na reálný JS boolean true
         setShowTranslations(settings.show_translations === true || settings.show_translations === "true");
       }
       if (settings.pdf_with_translations !== undefined) {
@@ -70,7 +71,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             target_language: targetLanguage,
             target_level: targetLevel,
             app_theme: appTheme,
-            show_translations: showTranslations, // Uloží se již čistý boolean
+            show_translations: showTranslations, // Uloží se již jako čistý boolean
             pdf_with_translations: pdfWithTranslations,
             app_locale: appLocale,
           },
@@ -100,6 +101,10 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
   ];
 
   const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
+
+  // Pojistka pro vykreslení: Vytvoříme si čistou lokální boolean proměnnou,
+  // která v sobě nese pravdivost stavu bez ohledu na datové typy.
+  const isSliderActive = showTranslations === true || (showTranslations as any) === "true";
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-white border border-gray-200 rounded-3xl p-8 sm:p-10 space-y-8 shadow-sm">
@@ -275,17 +280,17 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                   </div>
                 </div>
                 
-                {/* 100% SPOLEHLIVÝ OPRAVENÝ SLIDER */}
+                {/* 100% POUŽITÍ NOVÉ UNIVERZÁLNÍ PROMĚNNÉ PRO VYKRESLENÍ */}
                 <button
                   type="button"
                   onClick={() => setShowTranslations(!showTranslations)}
                   className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-200 ease-in-out cursor-pointer shrink-0 relative ${
-                    showTranslations ? "bg-green-500" : "bg-gray-200"
+                    isSliderActive ? "bg-green-500" : "bg-gray-200"
                   }`}
                 >
                   <div 
                     className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
-                      showTranslations ? "translate-x-5" : "translate-x-0"
+                      isSliderActive ? "translate-x-5" : "translate-x-0"
                     }`} 
                   />
                 </button>
@@ -308,7 +313,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                     type="button"
                     onClick={() => setPdfWithTranslations(true)}
                     className={`flex items-center justify-center p-3 border rounded-xl text-xs font-medium transition cursor-pointer bg-white ${
-                      pdfWithTranslations
+                      (pdfWithTranslations === true || (pdfWithTranslations as any) === "true" || pdfWithTranslations === undefined)
                         ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
                         : "border-gray-200/70 text-gray-500 hover:bg-gray-50"
                     }`}
@@ -319,7 +324,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                     type="button"
                     onClick={() => setPdfWithTranslations(false)}
                     className={`flex items-center justify-center p-3 border rounded-xl text-xs font-medium transition cursor-pointer bg-white ${
-                      !pdfWithTranslations
+                      (pdfWithTranslations === false || (pdfWithTranslations as any) === "false")
                         ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
                         : "border-gray-200/70 text-gray-500 hover:bg-gray-50"
                     }`}
