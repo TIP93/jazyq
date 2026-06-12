@@ -29,17 +29,22 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
   const [autoPlayAudio, setAutoPlayAudio] = useState(true);
   const [dailyGoal, setDailyGoal] = useState("standard");
 
-  // Načtení již uložených dat z objektu user při openu stránky
-  useEffect(() => {
-    if (user?.user_settings) {
-      if (user.user_settings.target_language) {
-        setTargetLanguage(user.user_settings.target_language);
-      }
-      if (user.user_settings.target_level) {
-        setTargetLevel(user.user_settings.target_level);
-      }
-    }
-  }, [user]);
+ // Načtení kompletních uložených dat z objektu user při otevření stránky
+useEffect(() => {
+  if (user?.user_settings) {
+    const settings = user.user_settings;
+    
+    if (settings.target_language) setTargetLanguage(settings.target_language);
+    if (settings.target_level) setTargetLevel(settings.target_level);
+    
+    // Načtení nových polí (s ošetřením undefined stavů)
+    if (settings.daily_reminder !== undefined) setDailyReminder(settings.daily_reminder);
+    if (settings.reminder_time) setReminderTime(settings.reminder_time);
+    if (settings.app_theme) setAppTheme(settings.app_theme);
+    if (settings.auto_play_audio !== undefined) setAutoPlayAudio(settings.auto_play_audio);
+    if (settings.daily_goal) setDailyGoal(settings.daily_goal);
+  }
+}, [user]);
 
   // 2. Změna: Kompletně přepsaný handler pro přímé ukládání z klienta
   const handleSaveSettings = async () => {
@@ -53,7 +58,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
     const sessionRes = await supabase.auth.getSession();
     console.log("2. Reálné ID z aktivní Supabase session:", sessionRes.data.session?.user?.id);
     // ----------------------------------
-    
+
     setIsSaving(true);
     setSaveError(null);
 
