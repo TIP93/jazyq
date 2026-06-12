@@ -197,8 +197,8 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           </button>
         </div>
 
-        {/* PRAVÝ PANEL: DYNAMICKÝ OBSAH (Pevná minimální výška zabraňuje skákání layoutu) */}
-        <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 flex flex-col justify-start space-y-6">
+        {/* PRAVÝ PANEL: DYNAMICKÝ OBSAH */}
+        <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 flex flex-col justify-start space-y-6 md:min-h-[380px]">
           
           {/* SEKCE: VÝBĚR JAZYKA */}
           {activeTab === "general" && (
@@ -274,14 +274,20 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                     <p className="text-xs text-gray-400 mt-0.5">Pokud zapneš, všechny překlady se budou zobrazovat automaticky.</p>
                   </div>
                 </div>
+                
+                {/* 100% SPOLEHLIVÝ OPRAVENÝ SLIDER */}
                 <button
                   type="button"
                   onClick={() => setShowTranslations(!showTranslations)}
-                  className={`w-12 h-6 flex items-center rounded-full p-1 transition-all duration-200 cursor-pointer shrink-0 ${
-                    showTranslations ? "bg-green-500 justify-end" : "bg-gray-200"
+                  className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-200 ease-in-out cursor-pointer shrink-0 relative ${
+                    showTranslations ? "bg-green-500" : "bg-gray-200"
                   }`}
                 >
-                  <div className="bg-white w-4 h-4 rounded-full shadow-md" />
+                  <div 
+                    className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
+                      showTranslations ? "translate-x-5" : "translate-x-0"
+                    }`} 
+                  />
                 </button>
               </div>
 
