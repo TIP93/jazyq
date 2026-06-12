@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image"; 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import StreakPage from "./streak";
 import SettingsPage from "./settings";
 import { Roboto } from "next/font/google"; // Tady je velké R, protože importuješ funkci/typ
@@ -56,6 +56,8 @@ export default function Home() {
 const [readingFlipped, setReadingFlipped] = useState(false);
 const [showExampleTranslation, setShowExampleTranslation] = useState(false);
 const [showTranslations, setShowTranslations] = useState(false);
+
+const hasLoggedToday = useRef<string | null>(null);
 
 const isGrammarVisible = showTranslations || showAnswer;
 
@@ -184,25 +186,41 @@ useEffect(() => {
       await loadUserSettings(currentUser.id);
       
       try {
-        console.log("Zapisuji dnešní přístup pro uživatele:", currentUser.id);
-        const todayDate = new Date().toISOString().split("T")[0];
+  const todayDate = new Date().toISOString().split("T")[0];
+  
+  // Vytvoříme si unikátní klíč pro uživatele a dnešní den
+  const logKey = `${currentUser.id}-${todayDate}`;
 
-        const { error: upsertError } = await supabase
-          .from("user_logs")
-          .upsert(
-            { user_id: currentUser.id, log_date: todayDate },
-            { onConflict: "user_id,log_date" }
-          );
+  // Pokud už tento klíč v této relaci existuje, zápis přeskočíme, ale streak data pro jistotu načteme
+  if (hasLoggedToday.current === logKey) {
+    console.log("Dnešní přístup pro tohoto uživatele již byl v této relaci zapsán. Pouze aktualizuji streak data.");
+    fetchStreakData(currentUser.id);
+  } else {
+    // Pokud ještě zapsáno nebylo, provedeme upsert
+    console.log("Zapisuji dnešní přístup pro uživatele:", currentUser.id);
+    
+    const { error: upsertError } = await supabase
+      .from("user_logs")
+      .upsert(
+        { user_id: currentUser.id, log_date: todayDate },
+        { onConflict: "user_id,log_date" }
+      );
 
-        if (upsertError) {
-          throw upsertError;
-        }
+    if (upsertError) {
+      throw upsertError;
+    }
 
-        fetchStreakData(currentUser.id);
+    // Označíme si, že pro tohoto uživatele a dnešní den máme hotovo
+    hasLoggedToday.current = logKey;
+    fetchStreakData(currentUser.id);
+  }
 
-      } catch (error) {
-        console.error("Chyba při zápisu přístupu nebo streaku:", error);
-      }
+} catch (error) {
+  console.error("Chyba při zápisu přístupu nebo streaku:", error);
+}
+
+
+
     } else {
       // --- TADY: Uživatel není přihlášený -> vrátíme bezpečný default en + B1 ---
       setUser(null);
