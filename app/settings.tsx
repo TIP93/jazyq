@@ -118,8 +118,8 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
       {/* DVOU-SLOUPCOVÝ LAYOUT */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
         
-        {/* LEVÝ PANEL: NAVIGACE */}
-        <div className="md:col-span-4 flex flex-col gap-2">
+        {/* LEVÝ PANEL: NAVIGACE (Pevná výška na desktopu, aby lícovala s pravým panelem) */}
+        <div className="md:col-span-4 flex flex-col gap-2 md:min-h-[380px]">
           <button
             onClick={() => setActiveTab("general")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all cursor-pointer ${
@@ -181,8 +181,8 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           </button>
         </div>
 
-        {/* PRAVÝ PANEL: DYNAMICKÝ OBSAH (Výška přesně podle obsahu, bez zbytečného prázdného místa) */}
-        <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 flex flex-col justify-start space-y-6">
+        {/* PRAVÝ PANEL: DYNAMICKÝ OBSAH (Zde je přidána stabilní md:min-h-[380px] výška) */}
+        <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 flex flex-col justify-start space-y-6 md:min-h-[380px]">
           
           {/* SEKCE: VÝBĚR JAZYKA */}
           {activeTab === "general" && (
@@ -277,8 +277,8 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                     <Printer size={16} />
                   </div>
                   <div>
-                    <h4 className="text-sm font-medium text-gray-900">Výchozí styl pro tisk studijních materiaalů (PDF)</h4>
-                    <p className="text-xs text-gray-400 mt-0.5">Nastav si, zda chceš generovat pracovní listy rovnou s překladem, nebo nechat místo prázdné.</p>
+                    <h4 className="text-sm font-medium text-gray-900">Výchozí styl pro tisk studijních materiálů (PDF)</h4>
+                    <p className="text-xs text-gray-400 mt-0.5">Nastav si, zda chceš generovat pracovní listy rovnou s překladem, nebo nekat místo prázdné.</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 pl-12">
