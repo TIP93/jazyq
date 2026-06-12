@@ -50,7 +50,7 @@ const languages = [
 ];
 
 export default function Home() {
-  const [language, setLanguage] = useState<Language>("en");
+
 
   const [showAnswer, setShowAnswer] = useState(false);
 const [readingFlipped, setReadingFlipped] = useState(false);
@@ -62,7 +62,35 @@ const isGrammarVisible = showTranslations || showAnswer;
 const [allLevels, setAllLevels] = useState<any>(null);
  const [greeting, setGreeting] = useState("");
  
-const [levelIndex, setLevelIndex] = useState(2);
+const [language, setLanguage] = useState<Language>("en");
+const [levelIndex, setLevelIndex] = useState(2); // Index 2 odpovídá B1
+
+// Nová funkce pro bezpečné načtení nastavení přihlášeného uživatele
+async function loadUserSettings(userId: string) {
+  try {
+    const { data, error } = await supabase
+      .from("user_settings")
+      .select("language, level")
+      .eq("user_id", userId)
+      .single();
+
+    // Pokud nastavení neexistuje (PGRST116), tiše ignorujeme a zůstane default (en + B1)
+    if (error && error.code !== "PGRST116") {
+      throw error;
+    }
+
+    if (data) {
+      if (data.language) setLanguage(data.language as Language);
+      if (data.level) {
+        const idx = levels.indexOf(data.level);
+        if (idx !== -1) setLevelIndex(idx);
+      }
+    }
+  } catch (err) {
+    console.error("Chyba při načítání uživatelského nastavení:", err);
+  }
+}
+
 const level = levels[levelIndex] ?? "A1";
 const content = allLevels?.levels?.[level];
 const isReady = !!allLevels?.levels;
@@ -145,13 +173,15 @@ async function signInWithGoogle() {
 }
 
 useEffect(() => {
-  // Nasloucháme na změnu auth stavu (přihlášení, odhlášení, inicializace tokenu)
   const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
     console.log("Auth event:", event, "Session:", session);
     
     if (session?.user) {
       const currentUser = session.user;
       setUser(currentUser);
+      
+      // --- TADY: Načteme nastavení z DB hned při přihlášení ---
+      await loadUserSettings(currentUser.id);
       
       try {
         console.log("Zapisuji dnešní přístup pro uživatele:", currentUser.id);
@@ -168,19 +198,19 @@ useEffect(() => {
           throw upsertError;
         }
 
-        // Teprve po úspěšném zápisu zavoláme kalkulačku pro výpočet streaků
         fetchStreakData(currentUser.id);
 
       } catch (error) {
         console.error("Chyba při zápisu přístupu nebo streaku:", error);
       }
     } else {
-      // Uživatel není přihlášený
+      // --- TADY: Uživatel není přihlášený -> vrátíme bezpečný default en + B1 ---
       setUser(null);
+      setLanguage("en");
+      setLevelIndex(2); // B1
     }
   });
 
-  // Uklidíme subscription při unmountu komponenty
   return () => {
     subscription.unsubscribe();
   };
@@ -330,10 +360,12 @@ useEffect(() => {
             />
 
             <div className="flex justify-between text-xs text-gray-500">
-              {levels.map((l) => (
-                <span key={l}>{l}</span>
-              ))}
-            </div>
+  {levels.map((l) => (
+    <span key={l} className={levels[levelIndex] === l ? "font-bold text-black" : ""}>
+      {l}
+    </span>
+  ))}
+</div>
 
           </div>
 
@@ -673,7 +705,7 @@ useEffect(() => {
   <div className="flex items-center gap-4">
 
     <div className="flex items-center gap-3">
-      <span className={`fi fi-${languages.find(l => l.code === language)?.flag} rounded-sm shadow-sm`} />
+      <span className={`fi fi-${languages.find(l => l.code === language)?.flag || "gb"} text-xl rounded-sm shadow-sm`} />
 
       <span className="font-semibold text-black">
         {level}
