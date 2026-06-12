@@ -148,7 +148,7 @@ const iconCircle =
   }
 }
 
- useEffect(() => {
+useEffect(() => {
   async function load() {
     const res = await fetch(`/api/daily?lang=${language}`);
     const data = await res.json();
@@ -157,14 +157,8 @@ const iconCircle =
     const list = greetings[language] ?? greetings.en;
     const random = list[Math.floor(Math.random() * list.length)];
     setGreeting(random);
-  }
 
-  load();
-}, [language]);
-
-// Spustí se vždy, když se dohraje nový obsah z API, a synchronizuje očíčka podle DB reference
-useEffect(() => {
-  if (content) {
+    // Synchronizace očíček OKAMŽITĚ po úspěšném stažení nových dat
     if (dbShowTranslationsRef.current) {
       setShowTranslations(true);
       setShowExampleTranslation(true);
@@ -177,7 +171,9 @@ useEffect(() => {
       setReadingFlipped(false);
     }
   }
-}, [content]);
+
+  load();
+}, [language]);
 
 async function signInWithGoogle() {
   await supabase.auth.signInWithOAuth({
@@ -206,7 +202,7 @@ useEffect(() => {
           const idx = levels.indexOf(settings.target_level);
           if (idx !== -1) setLevelIndex(idx);
         }
-        if (settings.show_translations === true) {
+      if (settings.show_translations === true) {
   dbShowTranslationsRef.current = true; 
   setShowTranslations(true);
   setShowExampleTranslation(true);
@@ -214,6 +210,10 @@ useEffect(() => {
   setReadingFlipped(false);
 } else {
   dbShowTranslationsRef.current = false;
+  setShowTranslations(false);
+  setShowExampleTranslation(false);
+  setShowAnswer(false);
+  setReadingFlipped(false);
 }
       }
       
