@@ -56,6 +56,7 @@ export default function Home() {
 const [readingFlipped, setReadingFlipped] = useState(false);
 const [showExampleTranslation, setShowExampleTranslation] = useState(false);
 const [showTranslations, setShowTranslations] = useState(false);
+const dbShowTranslationsRef = useRef<boolean>(false);
 
 const hasLoggedToday = useRef<string | null>(null);
 
@@ -161,6 +162,16 @@ const iconCircle =
   load();
 }, [language]);
 
+// Spustí se vždy, když se dohraje nový obsah z API, a vynutí zobrazení, pokud je v DB true
+useEffect(() => {
+  if (content && dbShowTranslationsRef.current) {
+    setShowTranslations(true);
+    setShowExampleTranslation(true);
+    setShowAnswer(true);
+    setReadingFlipped(false); // čtení chceme nechat v cizím jazyce
+  }
+}, [content]);
+
 async function signInWithGoogle() {
   await supabase.auth.signInWithOAuth({
     provider: "google",
@@ -189,10 +200,13 @@ useEffect(() => {
           if (idx !== -1) setLevelIndex(idx);
         }
         if (settings.show_translations === true) {
+  dbShowTranslationsRef.current = true; 
   setShowTranslations(true);
   setShowExampleTranslation(true);
   setShowAnswer(true);
-  setReadingFlipped(false); // Čtení zůstane skryté
+  setReadingFlipped(false);
+} else {
+  dbShowTranslationsRef.current = false;
 }
       }
       
@@ -223,16 +237,16 @@ useEffect(() => {
       }
 
     } else {
-      // Uživatel není přihlášen, nastavíme defaulty a vypneme loading
-      setUser(null);
-      setLanguage("en");
-      setShowTranslations(false);
-      setShowExampleTranslation(false);
-      setShowAnswer(false);
-      setReadingFlipped(false);
-      setLevelIndex(2);
-      setAuthLoading(false);
-    }
+  setUser(null);
+  setLanguage("en");
+  dbShowTranslationsRef.current = false; 
+  setShowTranslations(false);       
+  setShowExampleTranslation(false);    
+  setShowAnswer(false);               
+  setReadingFlipped(false);            
+  setLevelIndex(2);
+  setAuthLoading(false);
+}
   });
 
   return () => {
