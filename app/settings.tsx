@@ -191,41 +191,41 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
     <div className="space-y-4">
       <div>
         <h4 className="text-sm font-medium text-gray-900">Výchozí jazyk a úroveň</h4>
-        <p className="text-xs text-gray-400 mt-0.5">Tuto kombinaci uvidíš jako první při každé návštěvě aplikace JAZYQ.</p>
       </div>
       
-      {/* Jazyky roztažené na 100 % šířky (5 sloupců) */}
-      <div className="grid grid-cols-5 gap-2 w-full">
-        {languages
-          .filter((lang) => lang.code !== "cs") // Češtinu dáváme pryč z hlavní nabídky
-          .map((lang) => {
-            const isSelected = targetLanguage === lang.code;
-            return (
-              <button
-                key={lang.code}
-                onClick={() => setTargetLanguage(lang.code)}
-                className={`flex items-center justify-center gap-2 px-3 py-2.5 border rounded-xl text-sm transition-all cursor-pointer bg-white font-medium w-full ${
-                  isSelected
-                    ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
-                    : "border-gray-200/70 text-gray-600 hover:border-gray-300 hover:bg-gray-50/50"
-                }`}
-              >
-                <div className="w-5 h-3.5 relative shadow-3xs rounded-xs overflow-hidden shrink-0">
-                  <Image
-                    src={`https://flagcdn.com/${lang.flag}.svg`}
-                    alt={lang.label}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <span className="truncate">{lang.label}</span>
-              </button>
-            );
-          })}
+      {/* Jazyky: 3 sloupce na řádek, celkem 2 řádky pro 6 jazyků */}
+      <div className="grid grid-cols-3 gap-2 w-full">
+        {languages.map((lang) => {
+          const isSelected = targetLanguage === lang.code;
+          return (
+            <button
+              key={lang.code}
+              onClick={() => setTargetLanguage(lang.code)}
+              className={`flex items-center justify-center gap-2 px-3 py-2.5 border rounded-xl text-sm transition-all cursor-pointer bg-white font-medium w-full ${
+                isSelected
+                  ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
+                  : "border-gray-200/70 text-gray-600 hover:border-gray-300 hover:bg-gray-50/50"
+              }`}
+            >
+              <div className="w-5 h-3.5 relative shadow-3xs rounded-xs overflow-hidden shrink-0">
+                <Image
+                  src={`https://flagcdn.com/${lang.flag}.svg`}
+                  alt={lang.label}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <span className="truncate">{lang.label}</span>
+            </button>
+          );
+        })}
       </div>
 
+      {/* Jemná dělicí linka mezi jazyky a úrovněmi */}
+      <hr className="border-gray-100/70 my-1" />
+
       {/* Úrovně roztažené na 100 % šířky (6 sloupců) */}
-      <div className="grid grid-cols-6 gap-2 w-full pt-1">
+      <div className="grid grid-cols-6 gap-2 w-full">
         {levels.map((lvl) => {
           const isSelected = targetLevel === lvl;
           return (
