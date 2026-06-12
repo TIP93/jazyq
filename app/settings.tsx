@@ -13,21 +13,36 @@ interface SettingsPageProps {
 
 export default function SettingsPage({ user, setView }: SettingsPageProps) {
   // --- STAVY NASTAVENÍ ---
-  const [activeTab, setActiveTab] = useState<"general" | "notifications" | "appearance" | "danger">("general");
-  
-  // Stavy pro jazyk a úroveň
-  const [targetLanguage, setTargetLanguage] = useState("en");
-  const [targetLevel, setTargetLevel] = useState("B1");
-  
-  // Pomocné stavy pro UI
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
+ // --- STAVY NASTAVENÍ ---
+const [activeTab, setActiveTab] = useState<"general" | "notifications" | "appearance" | "danger" >("general");
 
-  const [dailyReminder, setDailyReminder] = useState(true);
-  const [reminderTime, setReminderTime] = useState("08:00");
-  const [appTheme, setAppTheme] = useState("light");
-  const [autoPlayAudio, setAutoPlayAudio] = useState(true);
-  const [dailyGoal, setDailyGoal] = useState("standard");
+// Inicializujeme stavy přímo z props, pokud existují, jinak dáme fallback "en" / "B1"
+const [targetLanguage, setTargetLanguage] = useState(() => user?.user_settings?.target_language || "en");
+const [targetLevel, setTargetLevel] = useState(() => user?.user_settings?.target_level || "B1");
+
+// Pomocné stavy pro UI
+const [isSaving, setIsSaving] = useState(false);
+const [saveError, setSaveError] = useState<string | null>(null);
+
+const [dailyReminder, setDailyReminder] = useState(() => user?.user_settings?.daily_reminder ?? true);
+const [reminderTime, setReminderTime] = useState(() => user?.user_settings?.reminder_time || "08:00");
+const [appTheme, setAppTheme] = useState(() => user?.user_settings?.app_theme || "light");
+const [autoPlayAudio, setAutoPlayAudio] = useState(() => user?.user_settings?.auto_play_audio ?? true);
+const [dailyGoal, setDailyGoal] = useState(() => user?.user_settings?.daily_goal || "standard");
+
+// Tento useEffect pojistí situaci, kdy se objekt `user` načte asynchronně až PO renderu
+useEffect(() => {
+  if (user?.user_settings) {
+    const settings = user.user_settings;
+    if (settings.target_language) setTargetLanguage(settings.target_language);
+    if (settings.target_level) setTargetLevel(settings.target_level);
+    if (settings.daily_reminder !== undefined) setDailyReminder(settings.daily_reminder);
+    if (settings.reminder_time) setReminderTime(settings.reminder_time);
+    if (settings.app_theme) setAppTheme(settings.app_theme);
+    if (settings.auto_play_audio !== undefined) setAutoPlayAudio(settings.auto_play_audio);
+    if (settings.daily_goal) setDailyGoal(settings.daily_goal);
+  }
+}, [user]);
 
  // Načtení kompletních uložených dat z objektu user při otevření stránky
 useEffect(() => {
