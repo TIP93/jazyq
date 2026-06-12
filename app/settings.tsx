@@ -12,30 +12,24 @@ interface SettingsPageProps {
 
 export default function SettingsPage({ user, setView }: SettingsPageProps) {
   // --- STAVY NASTAVENÍ ---
-  const [activeTab, setActiveTab] = useState<"general" | "behavior" | "appearance" | "locale" | "danger">("general");
+   const [activeTab, setActiveTab] = useState<"general" | "behavior" | "appearance" | "locale" | "danger">("general");
 
   const [targetLanguage, setTargetLanguage] = useState(() => user?.user_settings?.target_language || "en");
   const [targetLevel, setTargetLevel] = useState(() => user?.user_settings?.target_level || "B1");
   const [appTheme, setAppTheme] = useState(() => user?.user_settings?.app_theme || "light");
   
-  // Bezpečný převod na čistý boolean
-  const [showTranslations, setShowTranslations] = useState<boolean>(() => {
-    const rawVal = user?.user_settings?.show_translations;
-    return rawVal === true || String(rawVal) === "true";
-  });
-  
-  const [pdfWithTranslations, setPdfWithTranslations] = useState<boolean>(() => {
-    const rawVal = user?.user_settings?.pdf_with_translations;
-    if (rawVal === undefined || rawVal === null) return true;
-    return rawVal === true || String(rawVal) === "true";
-  });
-  
+  // Výchozí inicializace stavů
+  const [showTranslations, setShowTranslations] = useState<boolean>(false);
+  const [pdfWithTranslations, setPdfWithTranslations] = useState<boolean>(true);
   const [appLocale, setAppLocale] = useState(() => user?.user_settings?.app_locale || "cs");
 
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  // Synchronizace stavů z DB
+  // Získání syrové hodnoty přímo z objektu user pro textový výpis
+  const dbValueRaw = user?.user_settings?.show_translations;
+
+  // NEPRŮSTŘELNÁ SYNCHRONIZACE: Sledujeme přímo vnořený objekt user_settings
   useEffect(() => {
     if (user?.user_settings) {
       const settings = user.user_settings;
@@ -45,15 +39,14 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
       if (settings.app_theme) setAppTheme(settings.app_theme);
       if (settings.app_locale) setAppLocale(settings.app_locale);
       
-      if (settings.show_translations !== undefined && settings.show_translations !== null) {
-        setShowTranslations(settings.show_translations === true || String(settings.show_translations) === "true");
-      }
+      // Oprava: Natvrdo přepsat stav, jakmile dorazí data z DB
+      const isTranslationsTrue = settings.show_translations === true || String(settings.show_translations) === "true";
+      setShowTranslations(isTranslationsTrue);
 
-      if (settings.pdf_with_translations !== undefined && settings.pdf_with_translations !== null) {
-        setPdfWithTranslations(settings.pdf_with_translations === true || String(settings.pdf_with_translations) === "true");
-      }
+      const isPdfTrue = settings.pdf_with_translations === true || String(settings.pdf_with_translations) === "true";
+      setPdfWithTranslations(settings.pdf_with_translations !== undefined && settings.pdf_with_translations !== null ? isPdfTrue : true);
     }
-  }, [user]);
+  }, [user, user?.user_settings]); // Přidána přesná závislost na změnu objektu nastavení
 
   const handleSaveSettings = async () => {
     if (!user?.id) {
@@ -265,77 +258,80 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           )}
 
           {/* SEKCE: CHOVÁNÍ APLIKACE */}
-{activeTab === "behavior" && (
-  <div className="space-y-6 w-full">
-    <div className="flex items-center justify-between gap-4">
-      <div className="flex gap-3">
-        <div className="p-2 bg-gray-200/50 text-gray-600 rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
-          <EyeOff size={16} />
-        </div>
-        <div>
-          <h4 className="text-sm font-medium text-gray-900">Zobrazovat překlady okamžitě</h4>
-          <p className="text-xs text-gray-400 mt-0.5">Pokud zapneš, všechny překlady se budou zobrazovat automaticky.</p>
-        </div>
-      </div>
-      
-      {/* POUŽITÍ STEJNÉ LOGIKY JAKO U VÝBĚRU JAZYKŮ */}
-      {/* Pokud je showTranslations true, natvrdo aplikujeme bg-green-500 a posuneme kolečko */}
-      <button
-        type="button"
-        onClick={() => setShowTranslations(!showTranslations)}
-        className={`w-11 h-6 flex items-center rounded-full p-1 transition-all duration-200 cursor-pointer shrink-0 relative ${
-          showTranslations
-            ? "bg-green-500 border-green-600"
-            : "bg-gray-200 border-transparent"
-        }`}
-      >
-        <div 
-          className={`bg-white w-4 h-4 rounded-full shadow-sm transition-all duration-200 ${
-            showTranslations ? "translate-x-5" : "translate-x-0"
-          }`} 
-        />
-      </button>
-    </div>
+          {activeTab === "behavior" && (
+            <div className="space-y-6 w-full">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex gap-3">
+                  <div className="p-2 bg-gray-200/50 text-gray-600 rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
+                    <EyeOff size={16} />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-900">Zobrazovat překlady okamžitě</h4>
+                    <p className="text-xs text-gray-400 mt-0.5">Pokud zapneš, všechny překlady se budou zobrazovat automaticky.</p>
+                  </div>
+                </div>
+                
+                {/* OBLAST SE SLIDEREM A NATVRDO VYPSANÝM STAVEM PRO KONTROLU */}
+                <div className="flex items-center gap-3 shrink-0">
+                  <span className="text-xs font-mono px-2 py-1 bg-gray-200 text-gray-700 rounded-md">
+                    DB: {dbValueRaw === undefined ? "loading" : String(dbValueRaw)}
+                  </span>
 
-    <hr className="border-gray-100/70" />
+                  <button
+                    type="button"
+                    onClick={() => setShowTranslations(!showTranslations)}
+                    className={`w-11 h-6 flex items-center rounded-full p-1 transition-all duration-200 cursor-pointer relative ${
+                      showTranslations ? "bg-green-500" : "bg-gray-300"
+                    }`}
+                  >
+                    <div 
+                      className={`bg-white w-4 h-4 rounded-full shadow-md transition-all duration-200 ${
+                        showTranslations ? "translate-x-5" : "translate-x-0"
+                      }`} 
+                    />
+                  </button>
+                </div>
+              </div>
 
-    <div className="space-y-4">
-      <div className="flex items-start gap-3">
-        <div className="p-2 bg-gray-200/50 text-gray-600 rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
-          <Printer size={16} />
-        </div>
-        <div>
-          <h4 className="text-sm font-medium text-gray-900">Výchozí styl pro tisk studijních materiálů (PDF)</h4>
-          <p className="text-xs text-gray-400 mt-0.5">Nastav si, zda chceš generovat pracovní listy rovnou s překladem, nebo nechat místo prázdné.</p>
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-3 pl-12">
-        <button
-          type="button"
-          onClick={() => setPdfWithTranslations(true)}
-          className={`flex items-center justify-center p-3 border rounded-xl text-xs font-medium transition cursor-pointer bg-white ${
-            pdfWithTranslations === true
-              ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
-              : "border-gray-200/70 text-gray-500 hover:bg-gray-50"
-          }`}
-        >
-          Tisknout s překlady
-        </button>
-        <button
-          type="button"
-          onClick={() => setPdfWithTranslations(false)}
-          className={`flex items-center justify-center p-3 border rounded-xl text-xs font-medium transition cursor-pointer bg-white ${
-            pdfWithTranslations === false
-              ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
-              : "border-gray-200/70 text-gray-500 hover:bg-gray-50"
-          }`}
-        >
-          Tisknout bez překladů
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+              <hr className="border-gray-100/70" />
+
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-gray-200/50 text-gray-600 rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
+                    <Printer size={16} />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-900">Výchozí styl pro tisk studijních materiálů (PDF)</h4>
+                    <p className="text-xs text-gray-400 mt-0.5">Nastav si, zda chceš generovat pracovní listy rovnou s překladem, nebo nechat místo prázdné.</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 pl-12">
+                  <button
+                    type="button"
+                    onClick={() => setPdfWithTranslations(true)}
+                    className={`flex items-center justify-center p-3 border rounded-xl text-xs font-medium transition cursor-pointer bg-white ${
+                      pdfWithTranslations === true
+                        ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
+                        : "border-gray-200/70 text-gray-500 hover:bg-gray-50"
+                    }`}
+                  >
+                    Tisknout s překlady
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPdfWithTranslations(false)}
+                    className={`flex items-center justify-center p-3 border rounded-xl text-xs font-medium transition cursor-pointer bg-white ${
+                      pdfWithTranslations === false
+                        ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
+                        : "border-gray-200/70 text-gray-500 hover:bg-gray-50"
+                    }`}
+                  >
+                    Tisknout bez překladů
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* SEKCE: BARVA APLIKACE */}
           {activeTab === "appearance" && (
@@ -456,7 +452,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           {isSaving ? (
             <>
               <Loader2 size={16} className="animate-spin" />
-              Ukládám...
+              Uklám...
             </>
           ) : (
             "Uložit a pokračovat ve studiu"
