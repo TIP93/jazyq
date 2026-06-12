@@ -48,6 +48,12 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
       return;
     }
 
+    // --- TADY PŘIDEJ TYTO DVA ŘÁDKY ---
+    console.log("1. Hodnota user.id z props:", user.id);
+    const sessionRes = await supabase.auth.getSession();
+    console.log("2. Reálné ID z aktivní Supabase session:", sessionRes.data.session?.user?.id);
+    // ----------------------------------
+    
     setIsSaving(true);
     setSaveError(null);
 
