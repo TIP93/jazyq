@@ -56,7 +56,7 @@ export default function Home() {
 const [readingFlipped, setReadingFlipped] = useState(false);
 const [showExampleTranslation, setShowExampleTranslation] = useState(false);
 const [showTranslations, setShowTranslations] = useState(false);
-const dbShowTranslationsRef = useRef<boolean>(false);
+const [dbShowTranslations, setDbShowTranslations] = useState<boolean | null>(null);
 
 const hasLoggedToday = useRef<string | null>(null);
 
@@ -158,13 +158,13 @@ useEffect(() => {
     const random = list[Math.floor(Math.random() * list.length)];
     setGreeting(random);
 
-    // Synchronizace očíček OKAMŽITĚ po úspěšném stažení nových dat
-    if (dbShowTranslationsRef.current) {
+    // Pokud už máme z DB načteno, že uživatel chce překlady vidět, vynutíme to po stažení slovíčka
+    if (dbShowTranslations === true) {
       setShowTranslations(true);
       setShowExampleTranslation(true);
       setShowAnswer(true);
       setReadingFlipped(false);
-    } else {
+    } else if (dbShowTranslations === false) {
       setShowTranslations(false);
       setShowExampleTranslation(false);
       setShowAnswer(false);
@@ -173,7 +173,7 @@ useEffect(() => {
   }
 
   load();
-}, [language]);
+}, [language, dbShowTranslations]); // <--- Přidáno dbShowTranslations do závislostí
 
 async function signInWithGoogle() {
   await supabase.auth.signInWithOAuth({
@@ -183,6 +183,8 @@ async function signInWithGoogle() {
     },
   });
 }
+
+console.log("AKTUÁLNÍ NASTAVENÍ Z DB V KOMPONENTĚ:", dbShowTranslations);
 
 useEffect(() => {
   const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -202,19 +204,21 @@ useEffect(() => {
           const idx = levels.indexOf(settings.target_level);
           if (idx !== -1) setLevelIndex(idx);
         }
-      if (settings.show_translations === true) {
-  dbShowTranslationsRef.current = true; 
-  setShowTranslations(true);
-  setShowExampleTranslation(true);
-  setShowAnswer(true);
-  setReadingFlipped(false);
-} else {
-  dbShowTranslationsRef.current = false;
-  setShowTranslations(false);
-  setShowExampleTranslation(false);
-  setShowAnswer(false);
-  setReadingFlipped(false);
-}
+
+        // OPRAVA ZDE: Zápis přímo do React stavu místo nefunkční reference
+        if (settings.show_translations === true) {
+          setDbShowTranslations(true); 
+          setShowTranslations(true);
+          setShowExampleTranslation(true);
+          setShowAnswer(true);
+          setReadingFlipped(false);
+        } else {
+          setDbShowTranslations(false);
+          setShowTranslations(false);
+          setShowExampleTranslation(false);
+          setShowAnswer(false);
+          setReadingFlipped(false);
+        }
       }
       
       try {
@@ -244,16 +248,16 @@ useEffect(() => {
       }
 
     } else {
-  setUser(null);
-  setLanguage("en");
-  dbShowTranslationsRef.current = false; 
-  setShowTranslations(false);       
-  setShowExampleTranslation(false);    
-  setShowAnswer(false);               
-  setReadingFlipped(false);            
-  setLevelIndex(2);
-  setAuthLoading(false);
-}
+      setUser(null);
+      setLanguage("en");
+      setDbShowTranslations(false);
+      setShowTranslations(false);       
+      setShowExampleTranslation(false);    
+      setShowAnswer(false);               
+      setReadingFlipped(false);            
+      setLevelIndex(2);
+      setAuthLoading(false);
+    }
   });
 
   return () => {
@@ -802,26 +806,26 @@ if (authLoading) {
       <Printer size={18} />
     </button>
 
-    <button
-      onClick={() => {
-        const nextState = !showTranslations;
-        dbShowTranslationsRef.current = nextState;
-        setShowTranslations(nextState);
-        setShowAnswer(nextState);
-        setShowExampleTranslation(nextState);
-        setReadingFlipped(nextState);
-      }}
-      className={`
-        p-2.5 rounded-xl border transition-all duration-200
-        ${
-          showTranslations
-            ? "bg-black border-black text-white hover:bg-gray-800"
-            : "bg-white border-gray-200 text-gray-500 hover:text-black hover:border-gray-300 hover:bg-gray-50 shadow-sm"
-        }
-      `}
-    >
-      {showTranslations ? <EyeOff size={18} /> : <Eye size={18} />}
-    </button>
+   <button
+  onClick={() => {
+    const nextState = !showTranslations;
+    setDbShowTranslations(nextState);
+    setShowTranslations(nextState);
+    setShowAnswer(nextState);
+    setShowExampleTranslation(nextState);
+    setReadingFlipped(nextState);
+  }}
+  className={`
+    p-2.5 rounded-xl border transition-all duration-200
+    ${
+      showTranslations
+        ? "bg-black border-black text-white hover:bg-gray-800"
+        : "bg-white border-gray-200 text-gray-500 hover:text-black hover:border-gray-300 hover:bg-gray-50 shadow-sm"
+    }
+  `}
+>
+  {showTranslations ? <EyeOff size={18} /> : <Eye size={18} />}
+</button>
 
   </div>
 
