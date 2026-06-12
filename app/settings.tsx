@@ -187,14 +187,15 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 {activeTab === "general" && (
   <div className="space-y-6">
     
-    {/* 1. STUDOVANÝ JAZYK */}
-    <div className="space-y-3">
+    {/* 1. VÝCHOZÍ JAZYK A ÚROVEŇ */}
+    <div className="space-y-4">
       <div>
-        <h4 className="text-sm font-medium text-gray-900">Chci se učit</h4>
-        <p className="text-xs text-gray-400 mt-0.5">Vyber si cizí jazyk, ve kterém chceš procvičovat své fráze.</p>
+        <h4 className="text-sm font-medium text-gray-900">Výchozí jazyk a úroveň</h4>
+        <p className="text-xs text-gray-400 mt-0.5">Tuto kombinaci uvidíš jako první při každé návštěvě aplikace JAZYQ.</p>
       </div>
       
-      <div className="flex flex-wrap gap-2">
+      {/* Jazyky roztažené na 100 % šířky (5 sloupců) */}
+      <div className="grid grid-cols-5 gap-2 w-full">
         {languages
           .filter((lang) => lang.code !== "cs") // Češtinu dáváme pryč z hlavní nabídky
           .map((lang) => {
@@ -203,9 +204,9 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
               <button
                 key={lang.code}
                 onClick={() => setTargetLanguage(lang.code)}
-                className={`flex items-center gap-2.5 px-4 py-2 border rounded-xl text-sm transition-all cursor-pointer bg-white font-medium ${
+                className={`flex items-center justify-center gap-2 px-3 py-2.5 border rounded-xl text-sm transition-all cursor-pointer bg-white font-medium w-full ${
                   isSelected
-                    ? "border-black bg-gray-50 text-gray-900 shadow-2xs"
+                    ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
                     : "border-gray-200/70 text-gray-600 hover:border-gray-300 hover:bg-gray-50/50"
                 }`}
               >
@@ -217,29 +218,21 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                     className="object-cover"
                   />
                 </div>
-                <span>{lang.label}</span>
-                {isSelected && <div className="w-1.5 h-1.5 bg-black rounded-full ml-0.5" />}
+                <span className="truncate">{lang.label}</span>
               </button>
             );
           })}
       </div>
-    </div>
 
-    {/* 2. ÚROVEŇ POKROČILOSTI */}
-    <div className="space-y-3 pt-2">
-      <div>
-        <h4 className="text-sm font-medium text-gray-900">Úroveň náročnosti</h4>
-        <p className="text-xs text-gray-400 mt-0.5">Výchozí úroveň gramatiky a slovní zásoby.</p>
-      </div>
-      
-      <div className="flex flex-wrap gap-2">
+      {/* Úrovně roztažené na 100 % šířky (6 sloupců) */}
+      <div className="grid grid-cols-6 gap-2 w-full pt-1">
         {levels.map((lvl) => {
           const isSelected = targetLevel === lvl;
           return (
             <button
               key={lvl}
               onClick={() => setTargetLevel(lvl)}
-              className={`min-w-[54px] flex items-center justify-center py-2 px-3 border rounded-xl text-sm transition cursor-pointer bg-white font-semibold ${
+              className={`flex items-center justify-center py-2.5 px-3 border rounded-xl text-sm transition cursor-pointer bg-white font-semibold w-full ${
                 isSelected
                   ? "border-black bg-gray-50 text-gray-900 shadow-2xs"
                   : "border-gray-200/70 text-gray-600 hover:bg-gray-50"
@@ -252,29 +245,27 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
       </div>
     </div>
 
-    <hr className="border-gray-100 my-2" />
+    <hr className="border-gray-100" />
 
-    {/* 3. JAZYK WEBU (LOKALIZACE) */}
-    <div className="space-y-3 pt-2">
+    {/* 2. JAZYK APLIKACE */}
+    <div className="space-y-3">
       <div>
-        <h4 className="text-sm font-medium text-gray-900">Jazyk aplikace (Interface)</h4>
-        <p className="text-xs text-gray-400 mt-0.5">V jakém jazyce chceš mít zobrazené ovládací prvky a menu webu.</p>
+        <h4 className="text-sm font-medium text-gray-900">Jazyk aplikace – App Language</h4>
       </div>
 
-      <div className="flex gap-2">
+      {/* Dvě tlačítka roztažená na 100 % šířky (2 sloupce) */}
+      <div className="grid grid-cols-2 gap-2 w-full">
         {/* Čeština */}
         <button
           onClick={() => {
-            // Zde případně nastavíš stav pro jazyk lokalizace, pokud ho zavedeme do DB.
-            // Pro teď můžeme simulovat aktivní/neaktivní stav.
+            // Logika pro přepnutí rozhraní do CS
           }}
-          className="flex items-center gap-2.5 px-4 py-2 border border-black bg-gray-50 text-gray-900 text-sm font-medium rounded-xl shadow-2xs cursor-pointer"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 border border-black bg-gray-50 text-gray-900 text-sm font-semibold rounded-xl shadow-2xs cursor-pointer w-full"
         >
           <div className="w-5 h-3.5 relative shadow-3xs rounded-xs overflow-hidden shrink-0">
             <Image src="https://flagcdn.com/cz.svg" alt="Čeština" fill className="object-cover" />
           </div>
           <span>Čeština</span>
-          <div className="w-1.5 h-1.5 bg-black rounded-full ml-0.5" />
         </button>
 
         {/* Angličtina */}
@@ -282,7 +273,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           onClick={() => {
             // Logika pro přepnutí rozhraní do EN
           }}
-          className="flex items-center gap-2.5 px-4 py-2 border border-gray-200/70 text-gray-600 text-sm font-medium rounded-xl hover:border-gray-300 hover:bg-gray-50/50 cursor-pointer"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-200/70 text-gray-600 text-sm font-medium rounded-xl hover:border-gray-300 hover:bg-gray-50/50 cursor-pointer w-full"
         >
           <div className="w-5 h-3.5 relative shadow-3xs rounded-xs overflow-hidden shrink-0">
             <Image src="https://flagcdn.com/gb.svg" alt="Angličtina" fill className="object-cover" />
