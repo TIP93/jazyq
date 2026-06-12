@@ -1064,13 +1064,7 @@ if (authLoading) {
 {view === "settings" && (
   <SettingsPage 
     setView={setView} 
-    user={{
-      ...user,
-      user_settings: {
-        target_language: language,
-        target_level: levels[levelIndex]
-      }
-    }} 
+    user={user} // <--- TADY JE TA OPRAVA. Posílej čistý objekt user!
   />
 )}
 
