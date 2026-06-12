@@ -17,22 +17,38 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
   const [targetLanguage, setTargetLanguage] = useState(() => user?.user_settings?.target_language || "en");
   const [targetLevel, setTargetLevel] = useState(() => user?.user_settings?.target_level || "B1");
   const [appTheme, setAppTheme] = useState(() => user?.user_settings?.app_theme || "light");
-  const [showTranslations, setShowTranslations] = useState(() => user?.user_settings?.show_translations ?? false);
-  const [pdfWithTranslations, setPdfWithTranslations] = useState(() => user?.user_settings?.pdf_with_translations ?? true);
+  
+  // Bezpečný převod z DB (přijímá boolean i string "true")
+  const [showTranslations, setShowTranslations] = useState(() => {
+    const rawVal = user?.user_settings?.show_translations;
+    return rawVal === true || rawVal === "true";
+  });
+  
+  const [pdfWithTranslations, setPdfWithTranslations] = useState(() => {
+    const rawVal = user?.user_settings?.pdf_with_translations;
+    return rawVal === true || rawVal === "true" || rawVal === undefined;
+  });
+  
   const [appLocale, setAppLocale] = useState(() => user?.user_settings?.app_locale || "cs");
 
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
+  // Synchronizace stavů, pokud se objekt user načte asynchronně později
   useEffect(() => {
     if (user?.user_settings) {
       const settings = user.user_settings;
       if (settings.target_language) setTargetLanguage(settings.target_language);
       if (settings.target_level) setTargetLevel(settings.target_level);
       if (settings.app_theme) setAppTheme(settings.app_theme);
-      if (settings.show_translations !== undefined) setShowTranslations(settings.show_translations);
-      if (settings.pdf_with_translations !== undefined) setPdfWithTranslations(settings.pdf_with_translations);
       if (settings.app_locale) setAppLocale(settings.app_locale);
+      
+      if (settings.show_translations !== undefined) {
+        setShowTranslations(settings.show_translations === true || settings.show_translations === "true");
+      }
+      if (settings.pdf_with_translations !== undefined) {
+        setPdfWithTranslations(settings.pdf_with_translations === true || settings.pdf_with_translations === "true");
+      }
     }
   }, [user]);
 
@@ -54,7 +70,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             target_language: targetLanguage,
             target_level: targetLevel,
             app_theme: appTheme,
-            show_translations: showTranslations,
+            show_translations: showTranslations, // Uloží se již čistý boolean
             pdf_with_translations: pdfWithTranslations,
             app_locale: appLocale,
           },
@@ -118,7 +134,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
       {/* DVOU-SLOUPCOVÝ LAYOUT */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
         
-        {/* LEVÝ PANEL: NAVIGACE (Pevná výška na desktopu, aby lícovala s pravým panelem) */}
+        {/* LEVÝ PANEL: NAVIGACE (Stabilní minimální výška) */}
         <div className="md:col-span-4 flex flex-col gap-2 md:min-h-[380px]">
           <button
             onClick={() => setActiveTab("general")}
@@ -181,7 +197,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           </button>
         </div>
 
-        {/* PRAVÝ PANEL: DYNAMICKÝ OBSAH (Zde je přidána stabilní md:min-h-[380px] výška) */}
+        {/* PRAVÝ PANEL: DYNAMICKÝ OBSAH (Pevná minimální výška zabraňuje skákání layoutu) */}
         <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 flex flex-col justify-start space-y-6 md:min-h-[380px]">
           
           {/* SEKCE: VÝBĚR JAZYKA */}
@@ -278,7 +294,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                   </div>
                   <div>
                     <h4 className="text-sm font-medium text-gray-900">Výchozí styl pro tisk studijních materiálů (PDF)</h4>
-                    <p className="text-xs text-gray-400 mt-0.5">Nastav si, zda chceš generovat pracovní listy rovnou s překladem, nebo nekat místo prázdné.</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Nastav si, zda chceš generovat pracovní listy rovnou s překladem, nebo nechat místo prázdné.</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 pl-12">
