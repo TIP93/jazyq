@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Bell, Palette, Trash2, ArrowLeft, Check, Volume2, Globe, EyeOff, RotateCcw, Sliders, Loader2 } from "lucide-react";
+import { Palette, Trash2, ArrowLeft, Check, Globe, EyeOff, RotateCcw, Sliders, Loader2, Printer } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
 interface SettingsPageProps {
@@ -18,8 +18,12 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
   const [targetLanguage, setTargetLanguage] = useState(() => user?.user_settings?.target_language || "en");
   const [targetLevel, setTargetLevel] = useState(() => user?.user_settings?.target_level || "B1");
   const [appTheme, setAppTheme] = useState(() => user?.user_settings?.app_theme || "light");
-  const [autoPlayAudio, setAutoPlayAudio] = useState(() => user?.user_settings?.auto_play_audio ?? true);
-  const [showTranslations, setShowTranslations] = useState(() => user?.user_settings?.show_translations ?? true);
+  
+  // Zobrazování překladů (očičko) je defaultně vypnuté (false)
+  const [showTranslations, setShowTranslations] = useState(() => user?.user_settings?.show_translations ?? false);
+  
+  // Nové nastavení pro tisk PDF dokumentů
+  const [pdfWithTranslations, setPdfWithTranslations] = useState(() => user?.user_settings?.pdf_with_translations ?? true);
 
   // Pomocné stavy pro UI
   const [isSaving, setIsSaving] = useState(false);
@@ -32,8 +36,8 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
       if (settings.target_language) setTargetLanguage(settings.target_language);
       if (settings.target_level) setTargetLevel(settings.target_level);
       if (settings.app_theme) setAppTheme(settings.app_theme);
-      if (settings.auto_play_audio !== undefined) setAutoPlayAudio(settings.auto_play_audio);
       if (settings.show_translations !== undefined) setShowTranslations(settings.show_translations);
+      if (settings.pdf_with_translations !== undefined) setPdfWithTranslations(settings.pdf_with_translations);
     }
   }, [user]);
 
@@ -61,8 +65,8 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             target_language: targetLanguage,
             target_level: targetLevel,
             app_theme: appTheme,
-            auto_play_audio: autoPlayAudio,
             show_translations: showTranslations,
+            pdf_with_translations: pdfWithTranslations,
           },
           { onConflict: "user_id" }
         );
@@ -252,28 +256,8 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           {/* SEKCE: CHOVÁNÍ APLIKACE */}
           {activeTab === "behavior" && (
             <div className="space-y-4">
-              {/* Automatické přehrávání audia */}
-              <div className="flex items-center justify-between bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gray-50 text-gray-500 rounded-lg">
-                    <Volume2 size={16} />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-900">Automatické přehrávání audia</h4>
-                    <p className="text-xs text-gray-400 mt-0.5">Spustí hlasový poslech okamžitě po načtení věty.</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setAutoPlayAudio(!autoPlayAudio)}
-                  className={`w-12 h-6 flex items-center rounded-full p-1 transition-all duration-200 cursor-pointer ${
-                    autoPlayAudio ? "bg-green-500 justify-end" : "bg-gray-200 justify-start"
-                  }`}
-                >
-                  <div className="bg-white w-4 h-4 rounded-full shadow-md" />
-                </button>
-              </div>
 
-              {/* Skrýt překlady na začátku */}
+              {/* Zobrazování překladů okamžitě */}
               <div className="flex items-center justify-between bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-gray-50 text-gray-500 rounded-lg">
@@ -293,6 +277,42 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                   <div className="bg-white w-4 h-4 rounded-full shadow-md" />
                 </button>
               </div>
+
+              {/* Tisk PDF dokumentů */}
+              <div className="bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-gray-50 text-gray-500 rounded-lg">
+                    <Printer size={16} />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-900">Výchozí styl pro tisk studijních materiálů (PDF)</h4>
+                    <p className="text-xs text-gray-400 mt-0.5">Nastav si, zda chceš generovat pracovní listy rovnou s překladem, nebo nechat místo prázdné.</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 pt-1">
+                  <button
+                    onClick={() => setPdfWithTranslations(true)}
+                    className={`flex items-center justify-center p-3 border rounded-xl text-xs font-medium transition cursor-pointer bg-white ${
+                      pdfWithTranslations
+                        ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
+                        : "border-gray-100 text-gray-500 hover:bg-gray-50"
+                    }`}
+                  >
+                    Tisknout s překlady
+                  </button>
+                  <button
+                    onClick={() => setPdfWithTranslations(false)}
+                    className={`flex items-center justify-center p-3 border rounded-xl text-xs font-medium transition cursor-pointer bg-white ${
+                      !pdfWithTranslations
+                        ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
+                        : "border-gray-100 text-gray-500 hover:bg-gray-50"
+                    }`}
+                  >
+                    Tisknout bez překladů
+                  </button>
+                </div>
+              </div>
+
             </div>
           )}
 
