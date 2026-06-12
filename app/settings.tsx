@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Bell, Palette, Trash2, ArrowLeft, Check, Volume2, Target, RotateCcw, Sliders, Loader2 } from "lucide-react";
-// 1. Změna: Importujeme klientský supabase klient místo Server Action
+import { Bell, Palette, Trash2, ArrowLeft, Check, Volume2, Globe, EyeOff, RotateCcw, Sliders, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
 interface SettingsPageProps {
@@ -13,72 +12,47 @@ interface SettingsPageProps {
 
 export default function SettingsPage({ user, setView }: SettingsPageProps) {
   // --- STAVY NASTAVENÍ ---
- // --- STAVY NASTAVENÍ ---
-const [activeTab, setActiveTab] = useState<"general" | "notifications" | "appearance" | "danger" >("general");
+  const [activeTab, setActiveTab] = useState<"general" | "behavior" | "appearance" | "danger">("general");
 
-// Inicializujeme stavy přímo z props, pokud existují, jinak dáme fallback "en" / "B1"
-const [targetLanguage, setTargetLanguage] = useState(() => user?.user_settings?.target_language || "en");
-const [targetLevel, setTargetLevel] = useState(() => user?.user_settings?.target_level || "B1");
+  // Inicializujeme stavy přímo z props, pokud existují, jinak dáme fallbacky
+  const [targetLanguage, setTargetLanguage] = useState(() => user?.user_settings?.target_language || "en");
+  const [targetLevel, setTargetLevel] = useState(() => user?.user_settings?.target_level || "B1");
+  const [appTheme, setAppTheme] = useState(() => user?.user_settings?.app_theme || "light");
+  const [autoPlayAudio, setAutoPlayAudio] = useState(() => user?.user_settings?.auto_play_audio ?? true);
+  const [showTranslations, setShowTranslations] = useState(() => user?.user_settings?.show_translations ?? true);
 
-// Pomocné stavy pro UI
-const [isSaving, setIsSaving] = useState(false);
-const [saveError, setSaveError] = useState<string | null>(null);
+  // Pomocné stavy pro UI
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
-const [dailyReminder, setDailyReminder] = useState(() => user?.user_settings?.daily_reminder ?? true);
-const [reminderTime, setReminderTime] = useState(() => user?.user_settings?.reminder_time || "08:00");
-const [appTheme, setAppTheme] = useState(() => user?.user_settings?.app_theme || "light");
-const [autoPlayAudio, setAutoPlayAudio] = useState(() => user?.user_settings?.auto_play_audio ?? true);
-const [dailyGoal, setDailyGoal] = useState(() => user?.user_settings?.daily_goal || "standard");
+  // Tento useEffect pojistí situaci, kdy se objekt `user` načte asynchronně až PO renderu
+  useEffect(() => {
+    if (user?.user_settings) {
+      const settings = user.user_settings;
+      if (settings.target_language) setTargetLanguage(settings.target_language);
+      if (settings.target_level) setTargetLevel(settings.target_level);
+      if (settings.app_theme) setAppTheme(settings.app_theme);
+      if (settings.auto_play_audio !== undefined) setAutoPlayAudio(settings.auto_play_audio);
+      if (settings.show_translations !== undefined) setShowTranslations(settings.show_translations);
+    }
+  }, [user]);
 
-// Tento useEffect pojistí situaci, kdy se objekt `user` načte asynchronně až PO renderu
-useEffect(() => {
-  if (user?.user_settings) {
-    const settings = user.user_settings;
-    if (settings.target_language) setTargetLanguage(settings.target_language);
-    if (settings.target_level) setTargetLevel(settings.target_level);
-    if (settings.daily_reminder !== undefined) setDailyReminder(settings.daily_reminder);
-    if (settings.reminder_time) setReminderTime(settings.reminder_time);
-    if (settings.app_theme) setAppTheme(settings.app_theme);
-    if (settings.auto_play_audio !== undefined) setAutoPlayAudio(settings.auto_play_audio);
-    if (settings.daily_goal) setDailyGoal(settings.daily_goal);
-  }
-}, [user]);
-
- // Načtení kompletních uložených dat z objektu user při otevření stránky
-useEffect(() => {
-  if (user?.user_settings) {
-    const settings = user.user_settings;
-    
-    if (settings.target_language) setTargetLanguage(settings.target_language);
-    if (settings.target_level) setTargetLevel(settings.target_level);
-    
-    // Načtení nových polí (s ošetřením undefined stavů)
-    if (settings.daily_reminder !== undefined) setDailyReminder(settings.daily_reminder);
-    if (settings.reminder_time) setReminderTime(settings.reminder_time);
-    if (settings.app_theme) setAppTheme(settings.app_theme);
-    if (settings.auto_play_audio !== undefined) setAutoPlayAudio(settings.auto_play_audio);
-    if (settings.daily_goal) setDailyGoal(settings.daily_goal);
-  }
-}, [user]);
-
-  // 2. Změna: Kompletně přepsaný handler pro přímé ukládání z klienta
+  // Handler pro přímé ukládání z klienta
   const handleSaveSettings = async () => {
     if (!user?.id) {
       setSaveError("Uživatel není přihlášen.");
       return;
     }
 
-    // --- TADY PŘIDEJ TYTO DVA ŘÁDKY ---
     console.log("1. Hodnota user.id z props:", user.id);
     const sessionRes = await supabase.auth.getSession();
     console.log("2. Reálné ID z aktivní Supabase session:", sessionRes.data.session?.user?.id);
-    // ----------------------------------
 
     setIsSaving(true);
     setSaveError(null);
 
     try {
-      // Zapíšeme nebo aktualizujeme data přímo v tabulce user_settings
+      // Zapíšeme nebo aktualizujeme všechna data v tabulce user_settings
       const { error } = await supabase
         .from("user_settings")
         .upsert(
@@ -86,6 +60,9 @@ useEffect(() => {
             user_id: user.id,
             target_language: targetLanguage,
             target_level: targetLevel,
+            app_theme: appTheme,
+            auto_play_audio: autoPlayAudio,
+            show_translations: showTranslations,
           },
           { onConflict: "user_id" }
         );
@@ -93,8 +70,7 @@ useEffect(() => {
       if (error) {
         setSaveError(error.message);
       } else {
-        // Po úspěšném uložení tvrdě reloadneme okno, aby page.tsx 
-        // znovu načetla aktuální profil z DB, a přesměrujeme uživatele zpět.
+        // Po úspěšném uložení reloadneme okno, aby page.tsx znovu načetla aktuální profil z DB
         setView("learn");
         window.location.reload();
       }
@@ -133,7 +109,7 @@ useEffect(() => {
               Nastavení aplikace
             </h1>
             <p className="text-sm text-gray-400 mt-0.5">
-              Správa tvých preferencí výuky, upozornění a vzhledu rozhraní
+              Správa tvých preferencí výuky, chování lekcí a vzhledu rozhraní
             </p>
           </div>
         </div>
@@ -159,20 +135,20 @@ useEffect(() => {
                 : "bg-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
             }`}
           >
-            <Sliders size={18} />
+            <Globe size={18} />
             Výběr jazyka
           </button>
 
           <button
-            onClick={() => setActiveTab("notifications")}
+            onClick={() => setActiveTab("behavior")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all cursor-pointer ${
-              activeTab === "notifications"
+              activeTab === "behavior"
                 ? "bg-gray-900 text-white shadow-xs"
                 : "bg-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
             }`}
           >
-            <Bell size={18} />
-            Upozornění a cíle
+            <Sliders size={18} />
+            Chování aplikace
           </button>
 
           <button
@@ -273,38 +249,10 @@ useEffect(() => {
             </div>
           )}
 
-          {activeTab === "notifications" && (
+          {/* SEKCE: CHOVÁNÍ APLIKACE */}
+          {activeTab === "behavior" && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-900">Denní připomenutí e-mailem</h4>
-                  <p className="text-xs text-gray-400 mt-0.5">Upozorníme tě, ať nepřerušíš svoji aktivní sérii dní.</p>
-                </div>
-                <button
-                  onClick={() => setDailyReminder(!dailyReminder)}
-                  className={`w-12 h-6 flex items-center rounded-full p-1 transition-all duration-200 cursor-pointer ${
-                    dailyReminder ? "bg-green-500 justify-end" : "bg-gray-200 justify-start"
-                  }`}
-                >
-                  <div className="bg-white w-4 h-4 rounded-full shadow-md" />
-                </button>
-              </div>
-
-              {dailyReminder && (
-                <div className="flex items-center justify-between bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs animate-fade-in">
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-900">Čas odeslání e-mailu</h4>
-                    <p className="text-xs text-gray-400 mt-0.5">Kdy ti ranní pětiminutovka nejvíce vyhovuje.</p>
-                  </div>
-                  <input
-                    type="time"
-                    value={reminderTime}
-                    onChange={(e) => setReminderTime(e.target.value)}
-                    className="border border-gray-200 rounded-xl px-3 py-1.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black font-medium"
-                  />
-                </div>
-              )}
-
+              {/* Automatické přehrávání audia */}
               <div className="flex items-center justify-between bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-gray-50 text-gray-500 rounded-lg">
@@ -312,7 +260,7 @@ useEffect(() => {
                   </div>
                   <div>
                     <h4 className="text-sm font-medium text-gray-900">Automatické přehrávání audia</h4>
-                    <p className="text-xs text-gray-400 mt-0.5">Spustí hlasový poslemek okamžitě po načtení věty.</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Spustí hlasový poslech okamžitě po načtení věty.</p>
                   </div>
                 </div>
                 <button
@@ -325,40 +273,30 @@ useEffect(() => {
                 </button>
               </div>
 
-              <div className="bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs space-y-3">
+              {/* Skrýt překlady na začátku */}
+              <div className="flex items-center justify-between bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-gray-50 text-gray-500 rounded-lg">
-                    <Target size={16} />
+                    <EyeOff size={16} />
                   </div>
                   <div>
-                    <h4 className="text-sm font-medium text-gray-900">Tvůj denní cíl cvičení</h4>
-                    <p className="text-xs text-gray-400 mt-0.5">Nastav si ideální tempo každodenního studia.</p>
+                    <h4 className="text-sm font-medium text-gray-900">Zobrazovat překlady okamžitě</h4>
+                    <p className="text-xs text-gray-400 mt-0.5">Pokud vypneš, překlad věty se zobrazí až po kliknutí na nápovědu.</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-2 pt-1">
-                  {[
-                    { code: "casual", label: "Lehký", desc: "1 fráze / den" },
-                    { code: "standard", label: "Standardní", desc: "3 fráze / den" },
-                    { code: "serious", label: "Vážný", desc: "5 frází / den" },
-                  ].map((goal) => (
-                    <button
-                      key={goal.code}
-                      onClick={() => setDailyGoal(goal.code)}
-                      className={`flex flex-col items-start p-3 border rounded-xl text-left transition cursor-pointer ${
-                        dailyGoal === goal.code
-                          ? "border-black bg-gray-50 text-gray-900 font-semibold"
-                          : "border-gray-200 text-gray-500 hover:bg-gray-50"
-                      }`}
-                    >
-                      <span className="text-xs">{goal.label}</span>
-                      <span className="text-[10px] text-gray-400 font-normal mt-0.5">{goal.desc}</span>
-                    </button>
-                  ))}
-                </div>
+                <button
+                  onClick={() => setShowTranslations(!showTranslations)}
+                  className={`w-12 h-6 flex items-center rounded-full p-1 transition-all duration-200 cursor-pointer ${
+                    showTranslations ? "bg-green-500 justify-end" : "bg-gray-200 justify-start"
+                  }`}
+                >
+                  <div className="bg-white w-4 h-4 rounded-full shadow-md" />
+                </button>
               </div>
             </div>
           )}
 
+          {/* SEKCE: BARVA APLIKACE */}
           {activeTab === "appearance" && (
             <div className="space-y-4">
               <div className="bg-white border border-gray-200/60 rounded-2xl p-4 shadow-xs space-y-3">
@@ -387,6 +325,7 @@ useEffect(() => {
             </div>
           )}
 
+          {/* SEKCE: NEBEZPEČNÁ ZÓNA */}
           {activeTab === "danger" && (
             <div className="space-y-4">
               <div className="bg-white border border-red-100 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
