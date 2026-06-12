@@ -190,42 +190,48 @@ useEffect(() => {
     console.log("Auth event:", event, "Session:", session);
     
     if (session?.user) {
-      const currentUser = session.user;
-      setUser(currentUser);
-      
-      // 1. Nejdříve počkáme na načtení nastavení z DB
-      const settings = await loadUserSettings(currentUser.id);
-      if (settings) {
-
-        console.log("KONTROLA HODNOTY V SETTINGS:", {
-    raw: settings.show_translations,
-    typ: typeof settings.show_translations,
-    jeToTrue: settings.show_translations === true
+  const currentUser = session.user;
+  
+  // 1. Nejdříve počkáme na načtení nastavení z DB
+  const settings = await loadUserSettings(currentUser.id);
+  
+  // 2. AKTUALIZACE STAVU USER: Zabalíme nastavení přímo do objektu uživatele!
+  // Tímto zajistíme, že SettingsPage v prop "user" najde "user.user_settings"
+  setUser({
+    ...currentUser,
+    user_settings: settings // Pokud settings neexistují (nový uživatel), bude tu null/undefined, což ošetří fallbacky
   });
 
-        if (settings.target_language) {
-          setLanguage(settings.target_language as Language);
-        }
-        if (settings.target_level) {
-          const idx = levels.indexOf(settings.target_level);
-          if (idx !== -1) setLevelIndex(idx);
-        }
+  if (settings) {
+    console.log("KONTROLA HODNOTY V SETTINGS:", {
+      raw: settings.show_translations,
+      typ: typeof settings.show_translations,
+      jeToTrue: settings.show_translations === true
+    });
 
-        // OPRAVA ZDE: Zápis přímo do React stavu místo nefunkční reference
-        if (settings.show_translations === true || settings.show_translations === "true") {
-          setDbShowTranslations(true); 
-          setShowTranslations(true);
-          setShowExampleTranslation(true);
-          setShowAnswer(true);
-          setReadingFlipped(false);
-        } else {
-          setDbShowTranslations(false);
-          setShowTranslations(false);
-          setShowExampleTranslation(false);
-          setShowAnswer(false);
-          setReadingFlipped(false);
-        }
-      }
+    if (settings.target_language) {
+      setLanguage(settings.target_language as Language);
+    }
+    if (settings.target_level) {
+      const idx = levels.indexOf(settings.target_level);
+      if (idx !== -1) setLevelIndex(idx);
+    }
+
+    // Tvoje stávající nastavování lokálních stavů rodiče
+    if (settings.show_translations === true || settings.show_translations === "true") {
+      setDbShowTranslations(true); 
+      setShowTranslations(true);
+      setShowExampleTranslation(true);
+      setShowAnswer(true);
+      setReadingFlipped(false);
+    } else {
+      setDbShowTranslations(false);
+      setShowTranslations(false);
+      setShowExampleTranslation(false);
+      setShowAnswer(false);
+      setReadingFlipped(false);
+    }
+  }
       
       try {
         const todayDate = new Date().toISOString().split("T")[0];
