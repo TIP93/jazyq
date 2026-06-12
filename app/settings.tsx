@@ -19,10 +19,11 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
   const [appTheme, setAppTheme] = useState(() => user?.user_settings?.app_theme || "light");
   
   // Bezpečný převod z DB při inicializaci (přijímá boolean i string "true")
-  const [showTranslations, setShowTranslations] = useState(() => {
-    const rawVal = user?.user_settings?.show_translations;
-    return rawVal === true || rawVal === "true";
-  });
+ const [showTranslations, setShowTranslations] = useState<boolean>(() => {
+  const rawVal = user?.user_settings?.show_translations;
+  // Pokud je to string "true" nebo čistý boolean true, vrátí to natvrdo true. Jinak false.
+  return String(rawVal) === "true" || rawVal === true;
+});
   
   const [pdfWithTranslations, setPdfWithTranslations] = useState(() => {
     const rawVal = user?.user_settings?.pdf_with_translations;
@@ -36,22 +37,28 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
   // Synchronizace stavů, pokud se objekt user načte asynchronně později
   useEffect(() => {
-    if (user?.user_settings) {
-      const settings = user.user_settings;
-      if (settings.target_language) setTargetLanguage(settings.target_language);
-      if (settings.target_level) setTargetLevel(settings.target_level);
-      if (settings.app_theme) setAppTheme(settings.app_theme);
-      if (settings.app_locale) setAppLocale(settings.app_locale);
-      
-      if (settings.show_translations !== undefined) {
-        // Tady striktně převádíme textové "true" na reálný JS boolean true
-        setShowTranslations(settings.show_translations === true || settings.show_translations === "true");
-      }
-      if (settings.pdf_with_translations !== undefined) {
-        setPdfWithTranslations(settings.pdf_with_translations === true || settings.pdf_with_translations === "true");
-      }
+  if (user?.user_settings) {
+    const settings = user.user_settings;
+    
+    // Zachovávám tvůj kompletní kód pro ostatní pole
+    if (settings.target_language) setTargetLanguage(settings.target_language);
+    if (settings.target_level) setTargetLevel(settings.target_level);
+    if (settings.app_theme) setAppTheme(settings.app_theme);
+    if (settings.app_locale) setAppLocale(settings.app_locale);
+    
+    // TADY JE TA ZMĚNA: Použijeme tvou logiku, ale přidáme kontrolu existence
+    if (settings.show_translations !== undefined && settings.show_translations !== null) {
+      // Převedeme na boolean okamžitě při každém načtení
+      const boolValue = String(settings.show_translations) === "true";
+      setShowTranslations(boolValue);
     }
-  }, [user]);
+
+    if (settings.pdf_with_translations !== undefined && settings.pdf_with_translations !== null) {
+      const boolValue = String(settings.pdf_with_translations) === "true";
+      setPdfWithTranslations(boolValue);
+    }
+  }
+}, [user]);
 
   const handleSaveSettings = async () => {
     if (!user?.id) {
