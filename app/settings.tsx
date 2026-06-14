@@ -60,18 +60,22 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
     }
   }, [user?.id]);
 
-  // POMOCNÁ FUNKCE: Pro čistý zápis jednoho řádku do historie
+  // POMOCNÁ FUNKCE: Pro čistý zápis jednoho řádku do historie (Opraveno odchytávání chyb ze Supabase)
   const logUserAction = async (action: AuditAction, details: Record<string, any> = {}) => {
-    try {
-      await supabase
-        .from("user_settings_history")
-        .insert({
-          user_id: user.id,
-          action: action,
-          details: details
-        });
-    } catch (err) {
-      console.error(`Nepodařilo se uložit audit log pro ${action}:`, err);
+    console.log(`%c[Audit Log] Pokus o zápis do historie: ${action}`, "color: #3b82f6; font-weight: bold;", details);
+    
+    const { error } = await supabase
+      .from("user_settings_history")
+      .insert({
+        user_id: user.id,
+        action: action,
+        details: details
+      });
+
+    if (error) {
+      console.error(`%c[Audit Log] CHYBA v tabulce user_settings_history pro akci ${action}:`, "color: #ef4444; font-weight: bold;", error);
+    } else {
+      console.log(`%c[Audit Log] ÚSPĚŠNĚ zapsáno do DB pro akci: ${action}`, "color: #22c55e; font-weight: bold;");
     }
   };
 
@@ -87,6 +91,12 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
     try {
       // 1. Zjistíme původní hodnoty z DB (pro porovnání změn)
       const oldSettings = user?.user_settings || {};
+      
+      console.log("%c[Debug] Původní data (oldSettings):", "color: #6b7280;", oldSettings);
+      console.log("%c[Debug] Nově odesílaná data z formuláře:", "color: #6b7280;", { 
+        targetLanguage, targetLevel, appTheme, showTranslations, pdfWithTranslations, appLocale 
+      });
+
       const oldTranslations = oldSettings.show_translations === true || String(oldSettings.show_translations) === "true";
       const oldPdf = oldSettings.pdf_with_translations === undefined || oldSettings.pdf_with_translations === null 
         ? true 
@@ -109,12 +119,15 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
         );
 
       if (error) {
+        console.error("%c[Debug] Selhal hlavní upsert v tabulce user_settings:", "color: #ef4444; font-weight: bold;", error);
         setSaveError(error.message);
         setIsSaving(false);
         return;
       }
 
-      // 3. ANALÝZA ZMĚN: Pokud se stav liší od původního v DB, zapíšeme řádek do historie
+      console.log("%c[Debug] Hlavní nastavení (user_settings) uloženo v pořádku. Vyhodnocuji změny pro historii...", "color: #eab308;");
+
+      // 3. ANALÝZA ZMĚN: Pokud se stav liší od původního v DB, připravíme zápis do historie
       const historyPromises: Promise<void>[] = [];
 
       if (targetLanguage !== (oldSettings.target_language || "en")) {
@@ -136,16 +149,23 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
         historyPromises.push(logUserAction("CHANGE_LOCALE", { old: oldSettings.app_locale || "cs", new: appLocale }));
       }
 
+      console.log(`%c[Debug] Celkový počet zjištěných změn k zápisu: ${historyPromises.length}`, "color: #6b7280; font-weight: bold;");
+
       // Počkáme, až se zapíšou všechny vygenerované logy do historie
       if (historyPromises.length > 0) {
         await Promise.all(historyPromises);
       }
 
-      // 4. Přesměrování a reload aplikace
+      console.log("%c[Debug] Všechny zápisy dokončeny. Přesměrovávám pohled...", "color: #22c55e; font-weight: bold;");
+
+      // 4. Přesměrování zpět na výuku
       setView("learn");
-      window.location.reload();
+      
+      // ⚠️ DOČASNĚ ZAKOMENTOVÁNO: Aby ti z konzole nezmizely chyby při debugování!
+      // window.location.reload();
 
     } catch (err) {
+      console.error("%c[Debug] Neočekávaná chyba v bloku try-catch na frontendu:", "color: #ef4444;", err);
       setSaveError("Došlo k neočekávané chybě při komunikaci s databází.");
     } finally {
       setIsSaving(false);
@@ -508,7 +528,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           {isSaving ? (
             <>
               <Loader2 size={16} className="animate-spin" />
-              Ukládám...
+              Uklám...
             </>
           ) : (
             "Uložit a pokračovat ve studiu"
