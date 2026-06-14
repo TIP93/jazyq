@@ -20,16 +20,16 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
   languages,
 }) => {
   return (
-    /* OPRAVA: Změněno w-[210mm] h-[297mm] na tiskové standardy w-full h-full s max limity, aby nedocházelo k přetékání subpixelů */
-    <div className="print-only relative w-full max-w-[210mm] h-full max-h-[297mm] text-slate-900 pt-[10mm] pb-[10mm] px-[11mm] flex flex-col justify-between box-border font-['Inter',sans-serif] bg-white antialiased overflow-hidden">
+    /* OPRAVA: Odstraněna fixní výška h-full/max-h, která způsobovala přetečení kvůli systémovým okrajům prohlížeče. */
+    <div className="print-only relative w-full text-slate-900 pt-[4mm] pb-[4mm] px-[11mm] flex flex-col justify-start box-border font-['Inter',sans-serif] bg-white antialiased overflow-hidden">
       
       {/* HEADER */}
-      <div className="w-full flex flex-col items-center mb-2 flex-shrink-0">
+      <div className="w-full flex flex-col items-center mb-1 flex-shrink-0">
         <div className="font-['Poppins',sans-serif] text-4xl font-black tracking-[0.2em] text-slate-950 mb-2">
           JAZYQ
         </div>
         
-        <div className="font-['Inter',sans-serif] text-[10px] text-slate-400 uppercase tracking-[0.15em] flex items-center gap-3 mb-4 font-semibold">
+        <div className="font-['Inter',sans-serif] text-[10px] text-slate-400 uppercase tracking-[0.15em] flex items-center gap-3 mb-3 font-semibold">
           <span className="flex items-center gap-1.5 text-slate-500">
             <Globe size={12} className="text-slate-400" /> 
             {languages.find(l => l.code === language)?.code || "Zahraniční"}
@@ -49,8 +49,8 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
       </div>
 
       {/* MAIN CONTENT AREA */}
-   
-      <div className="flex-1 flex flex-col justify-start gap-6 mt-6">
+      {/* OPRAVA: Vyladěný gap na 5 pro perfektní vzdušnost bez rizika zalomení stránky */}
+      <div className="flex-1 flex flex-col justify-start gap-5 mt-6">
         
         {/* SPOJENÝ ŘÁDEK: SLOVÍČKO DNE (35 %) & PŘÍKLADOVÁ VĚTA (65 %) */}
         <div className="w-full flex flex-row gap-4 items-stretch flex-shrink-0">
@@ -119,7 +119,7 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
               {content?.grammarTranslationOrig}
             </p>
           ) : (
-            <div className="w-full h-7 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-2 select-none" />
+            <div className="w-full h-7 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-2 select-none flex-shrink-0" />
           )}
         </div>
 
@@ -137,15 +137,16 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
               {content?.readingNative}
             </p>
           ) : (
-            <div className="w-full h-20 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-3 select-none" />
+            <div className="w-full h-20 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-3 select-none flex-shrink-0" />
           )}
         </div>
 
       </div>
 
       {/* FOOTER */}
-      <div className="w-full flex flex-col items-center mt-4 flex-shrink-0">
-        <div className="w-full border-t border-slate-100 mb-3" />
+      {/* OPRAVA: Přidán fixní odstup mt-8, aby se patička elegantně oddělila, ale neodskakovala na další stranu */}
+      <div className="w-full flex flex-col items-center mt-8 flex-shrink-0">
+        <div className="w-full border-t border-slate-100 mb-2" />
         <div className="font-['Poppins',sans-serif] text-xs font-semibold text-slate-400 uppercase tracking-[0.15em] mb-1">
           tvoje denní pětiminutovka
         </div>
