@@ -20,10 +20,11 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
   languages,
 }) => {
   return (
-    <div className="print-only relative w-[210mm] h-[297mm] max-h-[297mm] text-slate-900 pt-[12mm] pb-[12mm] px-[11mm] flex flex-col justify-between box-border font-['Inter',sans-serif] bg-white antialiased">
+    /* OPRAVA: Změněno w-[210mm] h-[297mm] na tiskové standardy w-full h-full s max limity, aby nedocházelo k přetékání subpixelů */
+    <div className="print-only relative w-full max-w-[210mm] h-full max-h-[297mm] text-slate-900 pt-[10mm] pb-[10mm] px-[11mm] flex flex-col justify-between box-border font-['Inter',sans-serif] bg-white antialiased overflow-hidden">
       
       {/* HEADER */}
-      <div className="w-full flex flex-col items-center mb-4">
+      <div className="w-full flex flex-col items-center mb-2 flex-shrink-0">
         <div className="font-['Poppins',sans-serif] text-4xl font-black tracking-[0.2em] text-slate-950 mb-2">
           JAZYQ
         </div>
@@ -48,18 +49,19 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
       </div>
 
       {/* MAIN CONTENT AREA */}
-      <div className="flex-1 flex flex-col justify-start gap-8 mt-8">
+      /* OPRAVA: Snížen gap z 8 na 6 pro lepší vertikální rezervu a zamezení přetečení na druhou stranu */
+      <div className="flex-1 flex flex-col justify-start gap-6 mt-6">
         
         {/* SPOJENÝ ŘÁDEK: SLOVÍČKO DNE (35 %) & PŘÍKLADOVÁ VĚTA (65 %) */}
-        <div className="w-full flex flex-row gap-4 items-stretch">
+        <div className="w-full flex flex-row gap-4 items-stretch flex-shrink-0">
           
           {/* SLOVÍČKO DNE (35 %) */}
-          <div className="w-[45%] relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60 flex flex-col justify-center">
+          <div className="w-[35%] relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60 flex flex-col justify-start">
             <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
               <Sparkles size={14} className="text-slate-400" />
               Slovíčko dne
             </div>
-            <h1 className="font-['Poppins',sans-serif] text-2xl font-bold tracking-wide text-slate-950 mb-1 leading-tight">
+            <h1 className="font-['Poppins',sans-serif] text-2xl font-bold tracking-wide text-slate-950 mb-1 leading-tight mt-1">
               {content?.wordForeign}
             </h1>
             <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
@@ -68,12 +70,12 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
           </div>
 
           {/* PŘÍKLADOVÁ VĚTA (65 %) */}
-          <div className="w-[55%] relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60 flex flex-col justify-center">
+          <div className="w-[65%] relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60 flex flex-col justify-start">
             <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
               <Languages size={14} className="text-slate-400" />
               Příkladová věta
             </div>
-            <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 tracking-wide leading-relaxed mb-1.5">
+            <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 tracking-wide leading-relaxed mb-1.5 mt-1">
               {content?.wordExampleForeign}
             </p>
             {pdfWithTranslations ? (
@@ -81,14 +83,14 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
                 {content?.wordExampleNative}
               </p>
             ) : (
-              <div className="w-full h-7 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-1 select-none" />
+              <div className="w-full h-7 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-1 select-none flex-shrink-0" />
             )}
           </div>
 
         </div>
 
         {/* SEKCE: GRAMATIKA */}
-        <div className="relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60">
+        <div className="relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60 flex-shrink-0">
           <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
             <Lightbulb size={14} className="text-slate-400" />
             Gramatika
@@ -104,7 +106,7 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
         </div>
 
         {/* SEKCE: PŘEKLAD GRAMATIKY */}
-        <div className="relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60">
+        <div className="relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60 flex-shrink-0">
           <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
             <BookOpen size={14} className="text-slate-400" />
             Překlad gramatiky
@@ -122,7 +124,7 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
         </div>
 
         {/* SEKCE: ČTENÍ / READING */}
-        <div className="relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60">
+        <div className="relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60 flex-shrink-0">
           <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
             <FileText size={14} className="text-slate-400" />
             Čtení
@@ -142,7 +144,7 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
       </div>
 
       {/* FOOTER */}
-      <div className="w-full flex flex-col items-center mt-5">
+      <div className="w-full flex flex-col items-center mt-4 flex-shrink-0">
         <div className="w-full border-t border-slate-100 mb-3" />
         <div className="font-['Poppins',sans-serif] text-xs font-semibold text-slate-400 uppercase tracking-[0.15em] mb-1">
           tvoje denní pětiminutovka
