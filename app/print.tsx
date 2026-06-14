@@ -50,37 +50,41 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
       {/* MAIN CONTENT AREA */}
       <div className="flex-1 flex flex-col justify-start gap-8 mt-8">
         
-        {/* SLOVÍČKO DNE */}
-        <div className="relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60">
-          <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
-            <Sparkles size={14} className="text-slate-400" />
-            Slovíčko dne
-          </div>
-          <h1 className="font-['Poppins',sans-serif] text-3xl font-bold tracking-wide text-slate-950 mb-1 leading-tight">
-            {content?.wordForeign}
-          </h1>
-          <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
-            {content?.wordNative}
-          </p>
-        </div>
-
-        {/* SEKCE: PŘÍKLAD */}
-        <div className="relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60">
-          <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
-            <Languages size={14} className="text-slate-400" />
-            Příkladová věta
-          </div>
-          <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 tracking-wide leading-relaxed mb-1.5">
-            {content?.wordExampleForeign}
-          </p>
-          {pdfWithTranslations ? (
+        {/* SPOJENÝ ŘÁDEK: SLOVÍČKO DNE (35 %) & PŘÍKLADOVÁ VĚTA (65 %) */}
+        <div className="w-full flex flex-row gap-4 items-stretch">
+          
+          {/* SLOVÍČKO DNE (35 %) */}
+          <div className="w-[35%] relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60 flex flex-col justify-center">
+            <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
+              <Sparkles size={14} className="text-slate-400" />
+              Slovíčko dne
+            </div>
+            <h1 className="font-['Poppins',sans-serif] text-2xl font-bold tracking-wide text-slate-950 mb-1 leading-tight">
+              {content?.wordForeign}
+            </h1>
             <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
-              {content?.wordExampleNative}
+              {content?.wordNative}
             </p>
-          ) : (
-            /* Kratší vertikální box na jeden řádek textu */
-            <div className="w-full h-7 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-2 select-none" />
-          )}
+          </div>
+
+          {/* PŘÍKLADOVÁ VĚTA (65 %) */}
+          <div className="w-[65%] relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60 flex flex-col justify-center">
+            <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
+              <Languages size={14} className="text-slate-400" />
+              Příkladová věta
+            </div>
+            <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 tracking-wide leading-relaxed mb-1.5">
+              {content?.wordExampleForeign}
+            </p>
+            {pdfWithTranslations ? (
+              <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
+                {content?.wordExampleNative}
+              </p>
+            ) : (
+              <div className="w-full h-7 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-1 select-none" />
+            )}
+          </div>
+
         </div>
 
         {/* SEKCE: GRAMATIKA */}
@@ -105,7 +109,6 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
             <BookOpen size={14} className="text-slate-400" />
             Překlad gramatiky
           </div>
-          {/* Prohozeno: První jde česká verze překladu */}
           <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 tracking-wide leading-relaxed mb-1.5">
             {content?.grammarTranslationCz}
           </p>
@@ -114,7 +117,6 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
               {content?.grammarTranslationOrig}
             </p>
           ) : (
-            /* Kratší vertikální box na jeden řádek textu */
             <div className="w-full h-7 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-2 select-none" />
           )}
         </div>
@@ -133,7 +135,6 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
               {content?.readingNative}
             </p>
           ) : (
-            /* Zde ponechán větší prostor pro rozepsání delšího textu */
             <div className="w-full h-20 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-3 select-none" />
           )}
         </div>
