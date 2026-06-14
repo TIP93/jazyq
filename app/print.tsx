@@ -4,13 +4,12 @@
 import React from "react";
 import { Globe, BookOpen, Calendar, Sparkles, Languages, Lightbulb, FileText } from "lucide-react";
 
-// Tady definujeme, co přesně tato komponenta přijímá za data z page.tsx
 interface PrintLayoutProps {
   language: string;
   level: string;
-  content: any; // Zjednodušeno, aby to přesně sedělo na tvůj allLevels?.levels?.[level]
+  content: any;
   pdfWithTranslations: boolean;
-  languages: { code: string; flag: string }[]; // ZDE OPRAVENO: z 'name' na 'flag'
+  languages: { code: string; flag: string }[];
 }
 
 export const PrintLayout: React.FC<PrintLayoutProps> = ({
@@ -79,7 +78,8 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
               {content?.wordExampleNative}
             </p>
           ) : (
-            <div className="w-full h-10 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-2 select-none" />
+            /* Kratší vertikální box na jeden řádek textu */
+            <div className="w-full h-7 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-2 select-none" />
           )}
         </div>
 
@@ -105,15 +105,17 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
             <BookOpen size={14} className="text-slate-400" />
             Překlad gramatiky
           </div>
+          {/* Prohozeno: První jde česká verze překladu */}
           <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 tracking-wide leading-relaxed mb-1.5">
-            {content?.grammarTranslationOrig}
+            {content?.grammarTranslationCz}
           </p>
           {pdfWithTranslations ? (
             <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
-              {content?.grammarTranslationCz}
+              {content?.grammarTranslationOrig}
             </p>
           ) : (
-            <div className="w-full h-10 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-2 select-none" />
+            /* Kratší vertikální box na jeden řádek textu */
+            <div className="w-full h-7 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-2 select-none" />
           )}
         </div>
 
@@ -131,6 +133,7 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
               {content?.readingNative}
             </p>
           ) : (
+            /* Zde ponechán větší prostor pro rozepsání delšího textu */
             <div className="w-full h-20 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-3 select-none" />
           )}
         </div>
