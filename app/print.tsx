@@ -49,7 +49,7 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
       </div>
 
       {/* MAIN CONTENT AREA */}
-      /* OPRAVA: Snížen gap z 8 na 6 pro lepší vertikální rezervu a zamezení přetečení na druhou stranu */
+   
       <div className="flex-1 flex flex-col justify-start gap-6 mt-6">
         
         {/* SPOJENÝ ŘÁDEK: SLOVÍČKO DNE (35 %) & PŘÍKLADOVÁ VĚTA (65 %) */}

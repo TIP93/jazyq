@@ -54,14 +54,3 @@ body {
     background: white;
   }
 }
-
-@media print {
-  @page {
-    size: A4;
-    margin: 0; /* Odstraní výchozí hlušinu prohlížeče */
-  }
-  body {
-    margin: 0;
-    -webkit-print-color-adjust: exact;
-  }
-}
