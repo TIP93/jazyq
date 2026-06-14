@@ -232,7 +232,7 @@ useEffect(() => {
   } else {
     setPdfWithTranslations(true);
   }
-
+  
   }
       
       try {
@@ -1101,7 +1101,7 @@ if (authLoading) {
   {/* MAIN CONTENT AREA - Čisté ploché bloky s moderní typografií bez stínů */}
   <div className="flex-1 flex flex-col justify-start gap-8 mt-8">
     
-    {/* SLOVÍČKO DNE */}
+    {/* SLOVÍČKO DNE - Nyní má překlad vždy navrdo */}
     <div className="relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60">
       <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
         <Sparkles size={14} className="text-slate-400" />
@@ -1110,13 +1110,9 @@ if (authLoading) {
       <h1 className="font-['Poppins',sans-serif] text-3xl font-bold tracking-wide text-slate-950 mb-1 leading-tight">
         {content?.wordForeign}
       </h1>
-      {pdfWithTranslations ? (
-        <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
-          {content?.wordNative}
-        </p>
-      ) : (
-        <div className="border-b border-dashed border-slate-300 w-1/2 h-5 mt-1" />
-      )}
+      <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
+        {content?.wordNative}
+      </p>
     </div>
 
     {/* SEKCE: PŘÍKLAD */}
@@ -1133,7 +1129,8 @@ if (authLoading) {
           {content?.wordExampleNative}
         </p>
       ) : (
-        <div className="border-b border-dashed border-slate-300 w-full h-5 mt-1.5" />
+        /* Moderní box s vertikální linkou pro ruční zápis */
+        <div className="w-full h-10 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-2 select-none" />
       )}
     </div>
 
@@ -1146,7 +1143,6 @@ if (authLoading) {
       <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-600 leading-relaxed mb-3">
         {content?.grammarExplanation}
       </p>
-      {/* Stylová přerušovaná čára typická pro moderní workbooky roku 2026 */}
       <div className="mt-3 pt-3 border-t border-dashed border-slate-200">
         <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 tracking-wide">
           {content?.grammarExample}
@@ -1158,7 +1154,7 @@ if (authLoading) {
     <div className="relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60">
       <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
         <BookOpen size={14} className="text-slate-400" />
-        Překlad
+        Překlad gramatiky
       </div>
       <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 tracking-wide leading-relaxed mb-1.5">
         {content?.grammarTranslationOrig}
@@ -1168,7 +1164,8 @@ if (authLoading) {
           {content?.grammarTranslationCz}
         </p>
       ) : (
-        <div className="border-b border-dashed border-slate-300 w-full h-5 mt-1.5" />
+        /* Moderní box s vertikální linkou pro ruční zápis */
+        <div className="w-full h-10 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-2 select-none" />
       )}
     </div>
 
@@ -1186,11 +1183,8 @@ if (authLoading) {
           {content?.readingNative}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 mt-4 select-none">
-          <div className="border-b border-dashed border-slate-300 w-full h-1" />
-          <div className="border-b border-dashed border-slate-300 w-full h-1" />
-          <div className="border-b border-dashed border-slate-300 w-5/6 h-1" />
-        </div>
+        /* Větší prostor (h-20) s vertikální linkou, ideální pro delší text čtení */
+        <div className="w-full h-20 bg-slate-100/50 border-l-2 border-indigo-400 rounded-r-md mt-3 select-none" />
       )}
     </div>
 
