@@ -19,12 +19,42 @@ type AuditAction =
   | "CHANGE_LOCALE"
   | "RESET_PROGRESS";
 
+// Definice lokálních témat pro dynamický preview design nastavení
+type Theme = "light" | "sepia" | "dark";
+
+const themeClasses: Record<Theme, { card: string; text: string; textMuted: string; border: string; subPanel: string; textInverted: string }> = {
+  light: {
+    card: "bg-white border-gray-200 text-black",
+    text: "text-gray-900",
+    textMuted: "text-gray-400",
+    border: "border-gray-200",
+    subPanel: "bg-gray-50/40 border-gray-100",
+    textInverted: "text-gray-600"
+  },
+  sepia: {
+    card: "bg-[#FCF6E8] border-[#E4D5B7] text-[#433422]",
+    text: "text-[#433422]",
+    textMuted: "text-[#7C6A52]",
+    border: "border-[#E4D5B7]",
+    subPanel: "bg-[#F4ECD8]/40 border-[#E4D5B7]/60",
+    textInverted: "text-[#433422]/80"
+  },
+  dark: {
+    card: "bg-[#1E1E1E] border-[#2D2D2D] text-gray-100",
+    text: "text-gray-100",
+    textMuted: "text-gray-500",
+    border: "border-[#2D2D2D]",
+    subPanel: "bg-[#121212]/40 border-[#2D2D2D]",
+    textInverted: "text-gray-400"
+  }
+};
+
 export default function SettingsPage({ user, setView }: SettingsPageProps) {
   const [activeTab, setActiveTab] = useState<"general" | "behavior" | "appearance" | "locale" | "danger">("general");
 
   const [targetLanguage, setTargetLanguage] = useState(() => user?.user_settings?.target_language || "en");
   const [targetLevel, setTargetLevel] = useState(() => user?.user_settings?.target_level || "B1");
-  const [appTheme, setAppTheme] = useState(() => user?.user_settings?.app_theme || "light");
+  const [appTheme, setAppTheme] = useState<Theme>(() => user?.user_settings?.app_theme || "light");
   
   const [showTranslations, setShowTranslations] = useState<boolean>(() => {
     const raw = user?.user_settings?.show_translations;
@@ -43,13 +73,16 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [shouldResetProgress, setShouldResetProgress] = useState(false);
 
+  // Načtení aktivního motivu pro okamžitou změnu vzhledu komponenty nastavení
+  const theme = themeClasses[appTheme] || themeClasses.light;
+
   useEffect(() => {
     if (user?.user_settings) {
       const settings = user.user_settings;
       
       if (settings.target_language) setTargetLanguage(settings.target_language);
       if (settings.target_level) setTargetLevel(settings.target_level);
-      if (settings.app_theme) setAppTheme(settings.app_theme);
+      if (settings.app_theme) setAppTheme(settings.app_theme as Theme);
       if (settings.app_locale) setAppLocale(settings.app_locale);
       
       const isTranslationsTrue = settings.show_translations === true || String(settings.show_translations) === "true";
@@ -165,22 +198,23 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
   const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-white border border-gray-200 rounded-3xl p-8 sm:p-10 space-y-8 shadow-sm">
+    // DYNAMICKÉ TŘÍDY PRO CELOU KARTU NASTAVENÍ podle theme.*
+    <div className={`w-full max-w-4xl mx-auto border rounded-3xl p-8 sm:p-10 space-y-8 shadow-sm transition-colors duration-300 ${theme.card}`}>
       
       {/* HLAVIČKA NASTAVENÍ */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-6">
+      <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-6 ${theme.border}`}>
         <div className="flex items-center gap-4">
           <button
             onClick={() => setView("learn")}
-            className="p-2.5 bg-white border border-gray-200 text-gray-500 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition shadow-xs cursor-pointer"
+            className={`p-2.5 bg-white border text-gray-500 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition shadow-xs cursor-pointer ${theme.border}`}
           >
             <ArrowLeft size={18} className="stroke-[2.5px]" />
           </button>
           <div>
-            <h1 className="text-3xl font-semibold tracking-tight text-gray-900">
+            <h1 className={`text-3xl font-semibold tracking-tight ${theme.text}`}>
               Nastavení aplikace
             </h1>
-            <p className="text-sm text-gray-400 mt-0.5">
+            <p className={`text-sm mt-0.5 ${theme.textMuted}`}>
               Správa tvých preferencí výuky, chování lekcí a vzhledu rozhraní
             </p>
           </div>
@@ -203,8 +237,8 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             onClick={() => setActiveTab("general")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all cursor-pointer ${
               activeTab === "general"
-                ? "bg-gray-900 text-white shadow-xs"
-                : "bg-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                ? (appTheme === 'dark' ? "bg-white text-black font-semibold" : "bg-gray-900 text-white shadow-xs")
+                : `bg-transparent ${theme.textInverted} hover:bg-black/5`
             }`}
           >
             <Globe size={18} />
@@ -215,8 +249,8 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             onClick={() => setActiveTab("behavior")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all cursor-pointer ${
               activeTab === "behavior"
-                ? "bg-gray-900 text-white shadow-xs"
-                : "bg-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                ? (appTheme === 'dark' ? "bg-white text-black font-semibold" : "bg-gray-900 text-white shadow-xs")
+                : `bg-transparent ${theme.textInverted} hover:bg-black/5`
             }`}
           >
             <Sliders size={18} />
@@ -227,8 +261,8 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             onClick={() => setActiveTab("appearance")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all cursor-pointer ${
               activeTab === "appearance"
-                ? "bg-gray-900 text-white shadow-xs"
-                : "bg-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                ? (appTheme === 'dark' ? "bg-white text-black font-semibold" : "bg-gray-900 text-white shadow-xs")
+                : `bg-transparent ${theme.textInverted} hover:bg-black/5`
             }`}
           >
             <Palette size={18} />
@@ -239,8 +273,8 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             onClick={() => setActiveTab("locale")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all cursor-pointer ${
               activeTab === "locale"
-                ? "bg-gray-900 text-white shadow-xs"
-                : "bg-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                ? (appTheme === 'dark' ? "bg-white text-black font-semibold" : "bg-gray-900 text-white shadow-xs")
+                : `bg-transparent ${theme.textInverted} hover:bg-black/5`
             }`}
           >
             <Languages size={18} />
@@ -251,8 +285,8 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             onClick={() => setActiveTab("danger")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all cursor-pointer ${
               activeTab === "danger"
-                ? "bg-red-50 text-red-600 shadow-xs font-semibold"
-                : "bg-transparent text-gray-500 hover:bg-red-50/50 hover:text-red-600"
+                ? "bg-red-600 text-white shadow-xs font-semibold"
+                : "bg-transparent text-red-500 hover:bg-red-500/10"
             }`}
           >
             <Trash2 size={18} />
@@ -261,13 +295,13 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
         </div>
 
         {/* PRAVÝ PANEL: DYNAMICKÝ OBSAH */}
-        <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 flex flex-col justify-start space-y-6">
+        <div className={`md:col-span-8 border rounded-2xl p-6 flex flex-col justify-start space-y-6 ${theme.subPanel}`}>
           
           {/* SEKCE: VÝBĚR JAZYKA */}
           {activeTab === "general" && (
             <div className="space-y-6 w-full">
               <div className="space-y-4">
-                <h4 className="text-sm font-medium text-gray-900">Výchozí jazyk a úroveň studovaného jazyka</h4>
+                <h4 className={`text-sm font-medium ${theme.text}`}>Výchozí jazyk a úroveň studovaného jazyka</h4>
                 
                 <div className="grid grid-cols-3 gap-2 w-full">
                   {languages.map((lang) => {
@@ -277,10 +311,10 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                         key={lang.code}
                         type="button"
                         onClick={() => setTargetLanguage(lang.code)}
-                        className={`flex items-center justify-start gap-3 px-4 py-2.5 border rounded-xl text-sm transition-all cursor-pointer bg-white font-medium w-full ${
+                        className={`flex items-center justify-start gap-3 px-4 py-2.5 border rounded-xl text-sm transition-all cursor-pointer font-medium w-full ${
                           isSelected
-                            ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs ring-2 ring-black ring-offset-2"
-                            : "border-gray-200/70 text-gray-600 hover:border-gray-300 hover:bg-gray-50/50"
+                            ? "border-current bg-black/5 font-semibold ring-2 ring-current ring-offset-2"
+                            : `${theme.border} bg-white/50 text-current hover:bg-black/5`
                         }`}
                       >
                         <div className="w-5 h-3.5 relative shadow-3xs rounded-xs overflow-hidden shrink-0">
@@ -298,7 +332,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                 </div>
 
                 <div className="py-2">
-                  <hr className="border-gray-100/70" />
+                  <hr className={theme.border} />
                 </div>
 
                 <div className="grid grid-cols-6 gap-2 w-full">
@@ -309,10 +343,10 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                         key={lvl}
                         type="button"
                         onClick={() => setTargetLevel(lvl)}
-                        className={`flex items-center justify-center py-2.5 px-3 border rounded-xl text-sm transition cursor-pointer bg-white font-semibold w-full ${
+                        className={`flex items-center justify-center py-2.5 px-3 border rounded-xl text-sm transition cursor-pointer font-semibold w-full ${
                           isSelected
-                            ? "border-black bg-gray-50 text-gray-900 shadow-2xs ring-2 ring-black ring-offset-2"
-                            : "border-gray-200/70 text-gray-600 hover:bg-gray-50"
+                            ? "border-current bg-black/5 ring-2 ring-current ring-offset-2"
+                            : `${theme.border} bg-white/50 text-current hover:bg-black/5`
                         }`}
                       >
                         {lvl}
@@ -331,12 +365,12 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
               {/* SLIDER 1: PŘEKLADY NA WEBU */}
               <div className="flex items-center justify-between gap-4">
                 <div className="flex gap-3">
-                  <div className="p-2 bg-gray-200/50 text-gray-600 rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
+                  <div className="p-2 bg-black/5 text-current rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
                     <EyeOff size={16} />
                   </div>
                   <div>
-                    <h4 className="text-sm font-medium text-gray-900">Zobrazovat překlady na webu</h4>
-                    <p className="text-xs text-gray-400 mt-0.5">Pokud zapneš, všechny překlady se na webu zobrazí automaticky.</p>
+                    <h4 className={`text-sm font-medium ${theme.text}`}>Zobrazovat překlady na webu</h4>
+                    <p className={`text-xs mt-0.5 ${theme.textMuted}`}>Pokud zapneš, všechny překlady se na webu zobrazí automaticky.</p>
                   </div>
                 </div>
                 
@@ -357,17 +391,17 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                 </div>
               </div>
 
-              <hr className="border-gray-100/70" />
+              <hr className={theme.border} />
 
               {/* SLIDER 2: PŘEKLADY V PDF */}
               <div className="flex items-center justify-between gap-4">
                 <div className="flex gap-3">
-                  <div className="p-2 bg-gray-200/50 text-gray-600 rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
+                  <div className="p-2 bg-black/5 text-current rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
                     <Printer size={16} />
                   </div>
                   <div>
-                    <h4 className="text-sm font-medium text-gray-900">Zobrazovat překlady v PDF</h4>
-                    <p className="text-xs text-gray-400 mt-0.5">Určuje, zda se do vygenerovaných materiálů pro tisk vloží překlady.</p>
+                    <h4 className={`text-sm font-medium ${theme.text}`}>Zobrazovat překlady v PDF</h4>
+                    <p className={`text-xs mt-0.5 ${theme.textMuted}`}>Určuje, zda se do vygenerovaných materiálů pro tisk vloží překlady.</p>
                   </div>
                 </div>
                 
@@ -395,24 +429,24 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           {activeTab === "appearance" && (
             <div className="space-y-4 w-full">
               <div>
-                <h4 className="text-sm font-medium text-gray-900">Vizuální motiv (Téma)</h4>
-                <p className="text-xs text-gray-400 mt-0.5">Vyber si barevné rozhraní, které lahodí tvému oku.</p>
+                <h4 className={`text-sm font-medium ${theme.text}`}>Vizuální motiv (Téma)</h4>
+                <p className={`text-xs mt-0.5 ${theme.textMuted}`}>Vyber si barevné rozhraní, které lahodí tvému oku.</p>
               </div>
               <div className="grid grid-cols-3 gap-2 pt-1">
                 {[
-                  { code: "light", label: "Čistá bílá", color: "bg-white border-gray-200" },
-                  { code: "sepia", label: "Klidná sépie", color: "bg-[#f4ecd8] border-[#e4dc18]/20 text-[#5b4636]" },
-                  { code: "dark", label: "Temný režim", color: "bg-gray-900 border-gray-800 text-gray-100" },
-                ].map((theme) => (
+                  { code: "light" as Theme, label: "Čistá bílá", color: "bg-white border-gray-200 text-black" },
+                  { code: "sepia" as Theme, label: "Klidná sépie", color: "bg-[#FCF6E8] border-[#E4D5B7] text-[#433422]" },
+                  { code: "dark" as Theme, label: "Temný režim", color: "bg-[#1E1E1E] border-[#2D2D2D] text-gray-100" },
+                ].map((t) => (
                   <button
-                    key={theme.code}
+                    key={t.code}
                     type="button"
-                    onClick={() => setAppTheme(theme.code)}
-                    className={`flex flex-col items-center justify-center p-4 border rounded-xl text-xs font-medium transition cursor-pointer ${theme.color} ${
-                      appTheme === theme.code ? "ring-2 ring-black ring-offset-2 font-semibold" : "opacity-85 hover:opacity-100"
+                    onClick={() => setAppTheme(t.code)}
+                    className={`flex flex-col items-center justify-center p-4 border rounded-xl text-xs font-medium transition cursor-pointer ${t.color} ${
+                      appTheme === t.code ? "ring-2 ring-current ring-offset-2 font-semibold scale-[1.02]" : "opacity-70 hover:opacity-100"
                     }`}
                   >
-                    {theme.label}
+                    {t.label}
                   </button>
                 ))}
               </div>
@@ -423,8 +457,8 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           {activeTab === "locale" && (
             <div className="space-y-4 w-full">
               <div>
-                <h4 className="text-sm font-medium text-gray-900">Jazyk aplikace – App Language</h4>
-                <p className="text-xs text-gray-400 mt-0.5">If you want to use the app to learn Czech, you may switch the interface to English.</p>
+                <h4 className={`text-sm font-medium ${theme.text}`}>Jazyk aplikace – App Language</h4>
+                <p className={`text-xs mt-0.5 ${theme.textMuted}`}>If you want to use the app to learn Czech, you may switch the interface to English.</p>
               </div>
 
               <div className="grid grid-cols-2 gap-2 w-full">
@@ -433,8 +467,8 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                   onClick={() => setAppLocale("cs")}
                   className={`flex items-center justify-center gap-2 px-4 py-2.5 border text-sm rounded-xl transition cursor-pointer w-full ${
                     appLocale === "cs"
-                      ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs ring-2 ring-black ring-offset-2"
-                      : "border-gray-200/70 text-gray-600 hover:border-gray-300 hover:bg-gray-50/50"
+                      ? "border-current bg-black/5 font-semibold ring-2 ring-current ring-offset-2"
+                      : `${theme.border} bg-white/50 text-current hover:bg-black/5`
                   }`}
                 >
                   <div className="w-5 h-3.5 relative shadow-3xs rounded-xs overflow-hidden shrink-0">
@@ -446,10 +480,10 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                 <button
                   type="button"
                   onClick={() => setAppLocale("en")}
-                  className={`flex items-center justify-center gap-2 px-4 py-2.5 border text-sm rounded-xl transition cursor-pointer w-full ${
+                  className={`flex items-center justify-center gap-2 px-2.5 py-2.5 border text-sm rounded-xl transition cursor-pointer w-full ${
                     appLocale === "en"
-                      ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs ring-2 ring-black ring-offset-2"
-                      : "border-gray-200/70 text-gray-600 hover:border-gray-300 hover:bg-gray-50/50"
+                      ? "border-current bg-black/5 font-semibold ring-2 ring-current ring-offset-2"
+                      : `${theme.border} bg-white/50 text-current hover:bg-black/5`
                   }`}
                 >
                   <div className="w-5 h-3.5 relative shadow-3xs rounded-xs overflow-hidden shrink-0">
@@ -466,10 +500,10 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             <div className="space-y-6 w-full">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-0.5">
-                  <h4 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                  <h4 className={`text-sm font-semibold flex items-center gap-2 ${appTheme === 'dark' ? 'text-amber-400' : 'text-amber-700'}`}>
                     Vymazat historii výuky a nastavení
                   </h4>
-                  <p className="text-xs text-gray-400 leading-normal">
+                  <p className={`text-xs leading-normal ${theme.textMuted}`}>
                     Vynuluje tvou aktuální sérii aktivních dní a vrátí veškerá nastavení do výchozího stavu. Účet ti zůstane.
                   </p>
                 </div>
@@ -479,21 +513,21 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                   className={`w-full sm:w-44 px-4 py-2 text-xs font-semibold rounded-xl transition shrink-0 cursor-pointer text-center justify-center border ${
                     shouldResetProgress 
                       ? "bg-amber-600 border-amber-600 text-white hover:bg-amber-700" 
-                      : "border-amber-200 bg-amber-50/30 text-amber-700 hover:bg-amber-50"
+                      : "border-amber-500/30 bg-amber-500/10 text-amber-500 hover:bg-amber-500/20"
                   }`}
                 >
                   {shouldResetProgress ? "Vybráno k resetu" : "Resetovat pokrok"}
                 </button>
               </div>
 
-              <hr className="border-gray-100" />
+              <hr className={theme.border} />
 
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-0.5">
-                  <h4 className="text-sm font-semibold text-red-600">
+                  <h4 className="text-sm font-semibold text-red-500">
                     Trvalé odstranění účtu
                   </h4>
-                  <p className="text-xs text-gray-400 leading-normal">
+                  <p className={`text-xs leading-normal ${theme.textMuted}`}>
                     Kompletně smaže tvůj uživatelský profil z databáze JAZYQ včetně všech statistik bez možnosti obnovy.
                   </p>
                 </div>
@@ -511,14 +545,14 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
       </div>
 
       {/* SPODNÍ DYNAMICKÉ TLAČÍTKO */}
-      <div className="pt-4 border-t border-gray-100 flex justify-center">
+      <div className={`pt-4 border-t flex justify-center ${theme.border}`}>
         <button
           onClick={handleSaveSettings}
           disabled={isSaving}
           className={`w-full sm:w-auto px-8 py-3 text-sm font-medium rounded-2xl active:scale-[0.98] transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed border ${
             shouldResetProgress 
               ? "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100/70" 
-              : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+              : (appTheme === 'dark' ? "bg-white text-black border-white hover:bg-gray-200" : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900")
           }`}
         >
           {isSaving ? (

@@ -32,6 +32,32 @@ type Language = "en" | "de" | "es" | "fr" | "it";
 
 const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
+type Theme = "light" | "sepia" | "dark";
+
+const themeClasses: Record<Theme, { bg: string; card: string; text: string; textMuted: string; border: string }> = {
+  light: {
+    bg: "bg-[#F6F7FB]",
+    card: "bg-white border-gray-200",
+    text: "text-black",
+    textMuted: "text-gray-500",
+    border: "border-gray-200"
+  },
+  sepia: {
+    bg: "bg-[#F4ECD8]",
+    card: "bg-[#FCF6E8] border-[#E4D5B7]",
+    text: "text-[#433422]",
+    textMuted: "text-[#7C6A52]",
+    border: "border-[#E4D5B7]"
+  },
+  dark: {
+    bg: "bg-[#121212]",
+    card: "bg-[#1E1E1E] border-[#2D2D2D]",
+    text: "text-gray-100",
+    textMuted: "text-gray-400",
+    border: "border-[#2D2D2D]"
+  }
+};
+
 const greetings: Record<Language, string[]> = {
   en: ["Hello", "Good day", "Hi there", "Welcome", "Hey", "Nice to see you"],
  // cs: ["Ahoj", "Dobrý den", "Vítej", "Zdravím", "Hezký den", "Nazdar"],
@@ -51,7 +77,8 @@ const languages = [
 ];
 
 export default function Home() {
-
+  // --- SEM HNED NA ZAČÁTEK FUNKCE VLOŽÍŠ STAV ---
+  const [appTheme, setAppTheme] = useState<Theme>("light");
 
   const [showAnswer, setShowAnswer] = useState(false);
 const [readingFlipped, setReadingFlipped] = useState(false);
@@ -63,6 +90,9 @@ const [pdfWithTranslations, setPdfWithTranslations] = useState<boolean>(true);
 const hasLoggedToday = useRef<string | null>(null);
 
 const isGrammarVisible = showTranslations || showAnswer;
+
+const [currentTheme, setCurrentTheme] = useState<Theme>("light");
+const theme = themeClasses[currentTheme];
 
 const [allLevels, setAllLevels] = useState<any>(null);
  const [greeting, setGreeting] = useState("");
@@ -201,6 +231,11 @@ useEffect(() => {
         } else {
           setPdfWithTranslations(true);
         }
+
+       if (settings.app_theme) {
+          setAppTheme(settings.app_theme as Theme);
+        }
+
       }
       
       // Zápis do logu a streaku
