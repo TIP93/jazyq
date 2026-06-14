@@ -114,63 +114,34 @@ const iconCircle =
   { day: "Ne", status: "future" },
 ];
 
- async function generateDaily() {
+// KROK 2: Přidej tuto funkci nad Supabase useEffect
+async function loadDailyContent(targetLang: Language, showTranslationsFromDb: boolean | null) {
   try {
-    setGenerating(true);
-
-    const res = await fetch("/api/gemini-daily", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      // Do body přidáme aktuálně zvolený jazyk ze stavu komponenty (state: language)
-      body: JSON.stringify({
-        force: true,
-        language: language, 
-      }),
-    });
-
+    const res = await fetch(`/api/daily?lang=${targetLang}`);
+    if (!res.ok) throw new Error("Nepodařilo se stáhnout denní obsah");
     const data = await res.json();
+    setAllLevels(data);
 
-    if (!res.ok) {
-      throw new Error(data.error || "Generation failed");
-    }
-
-    // reload dat po vygenerování pro daný jazyk
-    const reload = await fetch(`/api/daily?lang=${language}`);
-    const fresh = await reload.json();
-
-    setAllLevels(fresh);
-
-  } catch (e) {
-    console.error("Generation failed", e);
+    // Synchronizace zobrazení překladů na základě parametrů
+    const shouldShow = showTranslationsFromDb === true;
+    setShowTranslations(shouldShow);
+    setShowExampleTranslation(shouldShow);
+    setShowAnswer(shouldShow);
+    setReadingFlipped(false);
+  } catch (err) {
+    console.error("Chyba při stahování obsahu:", err);
   } finally {
-    setGenerating(false);
+    // Teprve až máme data (nebo chybu), vypínáme globální loading aplikace
+    setAuthLoading(false);
   }
 }
 
 useEffect(() => {
-  async function load() {
-    const res = await fetch(`/api/daily?lang=${language}`);
-    const data = await res.json();
-    setAllLevels(data);
-
-    // Pokud už máme z DB načteno, že uživatel chce překlady vidět, vynutíme to po stažení slovíčka
-    if (dbShowTranslations === true) {
-      setShowTranslations(true);
-      setShowExampleTranslation(true);
-      setShowAnswer(true);
-      setReadingFlipped(false);
-    } else if (dbShowTranslations === false) {
-      setShowTranslations(false);
-      setShowExampleTranslation(false);
-      setShowAnswer(false);
-      setReadingFlipped(false);
-    }
+  // Spustí se pouze tehdy, pokud už aplikace inicializovala auth a není v prvotním loadingu
+  if (!authLoading) {
+    loadDailyContent(language, dbShowTranslations);
   }
-
-  load();
-}, [language, dbShowTranslations]); // <--- Přidáno dbShowTranslations do závislostí
+}, [language]);
 
 useEffect(() => {
   const list = greetings[language] ?? greetings.en;
@@ -192,56 +163,53 @@ useEffect(() => {
     console.log("Auth event:", event, "Session:", session);
     
     if (session?.user) {
-  const currentUser = session.user;
-  
-  // 1. Nejdříve počkáme na načtení nastavení z DB
-  const settings = await loadUserSettings(currentUser.id);
-  
-  // 2. AKTUALIZACE STAVU USER: Zabalíme nastavení přímo do objektu uživatele!
-  // Tímto zajistíme, že SettingsPage v prop "user" najde "user.user_settings"
-  setUser({
-    ...currentUser,
-    user_settings: settings // Pokud settings neexistují (nový uživatel), bude tu null/undefined, což ošetří fallbacky
-  });
-
-  if (settings) {
-    if (settings.target_language) {
-      setLanguage(settings.target_language as Language);
-    }
-    if (settings.target_level) {
-      const idx = levels.indexOf(settings.target_level);
-      if (idx !== -1) setLevelIndex(idx);
-    }
-
-    // Tvoje stávající nastavování lokálních stavů rodiče
-    if (settings.show_translations === true || settings.show_translations === "true") {
-      setDbShowTranslations(true); 
-      setShowTranslations(true);
-      setShowExampleTranslation(true);
-      setShowAnswer(true);
-      setReadingFlipped(false);
-    } else {
-      setDbShowTranslations(false);
-      setShowTranslations(false);
-      setShowExampleTranslation(false);
-      setShowAnswer(false);
-      setReadingFlipped(false);
-    }
-
-    if (settings.pdf_with_translations === false || settings.pdf_with_translations === "false") {
-    setPdfWithTranslations(false);
-  } else {
-    setPdfWithTranslations(true);
-  }
-  
-  }
+      const currentUser = session.user;
       
+      // 1. Načteme nastavení z DB
+      const settings = await loadUserSettings(currentUser.id);
+      
+      // 2. Aktualizujeme stav uživatele
+      setUser({
+        ...currentUser,
+        user_settings: settings
+      });
+
+      // Výchozí hodnoty z DB, pokud existují
+      let activeLang: Language = language;
+      let activeShowTranslations: boolean | null = null;
+
+      if (settings) {
+        if (settings.target_language) {
+          activeLang = settings.target_language as Language;
+          setLanguage(activeLang);
+        }
+        if (settings.target_level) {
+          const idx = levels.indexOf(settings.target_level);
+          if (idx !== -1) setLevelIndex(idx);
+        }
+
+        if (settings.show_translations === true || settings.show_translations === "true") {
+          activeShowTranslations = true;
+          setDbShowTranslations(true);
+        } else {
+          activeShowTranslations = false;
+          setDbShowTranslations(false);
+        }
+
+        if (settings.pdf_with_translations === false || settings.pdf_with_translations === "false") {
+          setPdfWithTranslations(false);
+        } else {
+          setPdfWithTranslations(true);
+        }
+      }
+      
+      // Zápis do logu a streaku
       try {
         const todayDate = new Date().toISOString().split("T")[0];
         const logKey = `${currentUser.id}-${todayDate}`;
 
         if (hasLoggedToday.current === logKey) {
-          fetchStreakData(currentUser.id);
+          await fetchStreakData(currentUser.id);
         } else {
           const { error: upsertError } = await supabase
             .from("user_logs")
@@ -253,25 +221,23 @@ useEffect(() => {
           if (upsertError) throw upsertError;
 
           hasLoggedToday.current = logKey;
-          fetchStreakData(currentUser.id);
+          await fetchStreakData(currentUser.id);
         }
       } catch (error) {
         console.error("Chyba při zápisu přístupu nebo streaku:", error);
-      } finally {
-        // Teprve až je VŠE nastaveno, vypneme loading state
-        setAuthLoading(false);
       }
 
+      // POZOR: Stáhneme obsah pro zjištěný jazyk a teprve tato funkce vypne setAuthLoading(false)
+      await loadDailyContent(activeLang, activeShowTranslations);
+
     } else {
+      // Pokud uživatel není přihlášený (Anonymní režim)
       setUser(null);
-      setLanguage("en");
       setDbShowTranslations(false);
-      setShowTranslations(false);       
-      setShowExampleTranslation(false);    
-      setShowAnswer(false);               
-      setReadingFlipped(false);            
-      setLevelIndex(2);
-      setAuthLoading(false);
+      setLevelIndex(2); // Fallback na B1
+      
+      // Stáhneme obsah pro výchozí jazyk (state: language) a vypneme loading
+      await loadDailyContent(language, false);
     }
   });
 
