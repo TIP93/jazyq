@@ -16,7 +16,8 @@ type AuditAction =
   | "TOGGLE_TRANSLATIONS" 
   | "TOGGLE_PDF_TRANSLATIONS"
   | "CHANGE_THEME"
-  | "CHANGE_LOCALE";
+  | "CHANGE_LOCALE"
+  | "RESET_PROGRESS";
 
 export default function SettingsPage({ user, setView }: SettingsPageProps) {
   const [activeTab, setActiveTab] = useState<"general" | "behavior" | "appearance" | "locale" | "danger">("general");
@@ -40,6 +41,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [shouldResetProgress, setShouldResetProgress] = useState(false);
 
   useEffect(() => {
     if (user?.user_settings) {
@@ -89,25 +91,34 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
         ? true 
         : (oldSettings.pdf_with_translations === true || String(oldSettings.pdf_with_translations) === "true");
 
+      // Nastavení cílových hodnot - pokud resetujeme, vynutíme defaulty
+      const finalLanguage = shouldResetProgress ? "en" : targetLanguage;
+      const finalLevel = shouldResetProgress ? "B1" : targetLevel;
+      const finalTheme = shouldResetProgress ? "light" : appTheme;
+      const finalTranslations = shouldResetProgress ? true : showTranslations;
+      const finalPdf = shouldResetProgress ? true : pdfWithTranslations;
+      const finalLocale = shouldResetProgress ? "cs" : appLocale;
+
       const historyPromises: Promise<void>[] = [];
 
-      if (targetLanguage !== oldLanguage) {
-        historyPromises.push(logUserAction("CHANGE_LANGUAGE", { old: oldLanguage, new: targetLanguage }));
-      }
-      if (targetLevel !== oldLevel) {
-        historyPromises.push(logUserAction("CHANGE_LEVEL", { old: oldLevel, new: targetLevel }));
-      }
-      if (appTheme !== oldTheme) {
-        historyPromises.push(logUserAction("CHANGE_THEME", { old: oldTheme, new: appTheme }));
-      }
-      if (showTranslations !== oldTranslations) {
-        historyPromises.push(logUserAction("TOGGLE_TRANSLATIONS", { old: oldTranslations, new: showTranslations }));
-      }
-      if (pdfWithTranslations !== oldPdf) {
-        historyPromises.push(logUserAction("TOGGLE_PDF_TRANSLATIONS", { old: oldPdf, new: pdfWithTranslations }));
-      }
-      if (appLocale !== oldLocale) {
-        historyPromises.push(logUserAction("CHANGE_LOCALE", { old: oldLocale, new: appLocale }));
+      // Pokud resetuje, zapíšeme hlavní reset akci a zalogujeme změny oproti starému stavu
+      if (shouldResetProgress) {
+        historyPromises.push(logUserAction("RESET_PROGRESS", { triggered_by: "user" }));
+        
+        if (oldLanguage !== "en") historyPromises.push(logUserAction("CHANGE_LANGUAGE", { old: oldLanguage, new: "en" }));
+        if (oldLevel !== "B1") historyPromises.push(logUserAction("CHANGE_LEVEL", { old: oldLevel, new: "B1" }));
+        if (oldTheme !== "light") historyPromises.push(logUserAction("CHANGE_THEME", { old: oldTheme, new: "light" }));
+        if (oldTranslations !== true) historyPromises.push(logUserAction("TOGGLE_TRANSLATIONS", { old: oldTranslations, new: true }));
+        if (oldPdf !== true) historyPromises.push(logUserAction("TOGGLE_PDF_TRANSLATIONS", { old: oldPdf, new: true }));
+        if (oldLocale !== "cs") historyPromises.push(logUserAction("CHANGE_LOCALE", { old: oldLocale, new: "cs" }));
+      } else {
+        // Standardní ukládání změn
+        if (targetLanguage !== oldLanguage) historyPromises.push(logUserAction("CHANGE_LANGUAGE", { old: oldLanguage, new: targetLanguage }));
+        if (targetLevel !== oldLevel) historyPromises.push(logUserAction("CHANGE_LEVEL", { old: oldLevel, new: targetLevel }));
+        if (appTheme !== oldTheme) historyPromises.push(logUserAction("CHANGE_THEME", { old: oldTheme, new: appTheme }));
+        if (showTranslations !== oldTranslations) historyPromises.push(logUserAction("TOGGLE_TRANSLATIONS", { old: oldTranslations, new: showTranslations }));
+        if (pdfWithTranslations !== oldPdf) historyPromises.push(logUserAction("TOGGLE_PDF_TRANSLATIONS", { old: oldPdf, new: pdfWithTranslations }));
+        if (appLocale !== oldLocale) historyPromises.push(logUserAction("CHANGE_LOCALE", { old: oldLocale, new: appLocale }));
       }
 
       const { error } = await supabase
@@ -115,12 +126,12 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
         .upsert(
           {
             user_id: user.id,
-            target_language: targetLanguage,
-            target_level: targetLevel,
-            app_theme: appTheme,
-            show_translations: showTranslations,
-            pdf_with_translations: pdfWithTranslations,
-            app_locale: appLocale,
+            target_language: finalLanguage,
+            target_level: finalLevel,
+            app_theme: finalTheme,
+            show_translations: finalTranslations,
+            pdf_with_translations: finalPdf,
+            app_locale: finalLocale,
           },
           { onConflict: "user_id" }
         );
@@ -453,20 +464,28 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             </div>
           )}
 
-          {/* SEKCE: NEBEZPEČNÁ ZÓNA */}
+         {/* SEKCE: NEBEZPEČNÁ ZÓNA */}
           {activeTab === "danger" && (
             <div className="space-y-6 w-full">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-0.5">
                   <h4 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-                    Vymazat pouze historii výuky
+                    Vymazat historii výuky a nastavení
                   </h4>
                   <p className="text-xs text-gray-400 leading-normal">
-                    Vynuluje tvou aktuální sérii aktivních dní a smaže všechna nastavení. Účet ti zůstane.
+                    Vynuluje tvou aktuální sérii aktivních dní (streak) na 1 a vrátí veškerá nastavení aplikace do výchozího stavu. Účet ti zůstane.
                   </p>
                 </div>
-                <button type="button" className="w-full sm:w-auto px-4 py-2 border border-amber-200 bg-amber-50/30 text-amber-700 text-xs font-semibold rounded-xl hover:bg-amber-50 transition shrink-0 cursor-pointer">
-                  Resetovat pokrok
+                <button 
+                  type="button" 
+                  onClick={() => setShouldResetProgress(!shouldResetProgress)}
+                  className={`w-full sm:w-44 px-4 py-2 text-xs font-semibold rounded-xl transition shrink-0 cursor-pointer text-center justify-center border ${
+                    shouldResetProgress 
+                      ? "bg-amber-600 border-amber-600 text-white hover:bg-amber-700" 
+                      : "border-amber-200 bg-amber-50/30 text-amber-700 hover:bg-amber-50"
+                  }`}
+                >
+                  {shouldResetProgress ? "Vybráno k resetu" : "Resetovat pokrok"}
                 </button>
               </div>
 
@@ -481,7 +500,10 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                     Kompletně smaže tvůj uživatelský profil z databáze JAZYQ včetně všech statistik bez možnosti obnovy.
                   </p>
                 </div>
-                <button type="button" className="w-full sm:w-auto px-4 py-2 bg-red-600 text-white text-xs font-semibold rounded-xl hover:bg-red-700 transition shadow-xs shrink-0 cursor-pointer">
+                <button 
+                  type="button" 
+                  className="w-full sm:w-44 px-4 py-2 bg-red-600 text-white text-xs font-semibold rounded-xl hover:bg-red-700 transition shadow-xs shrink-0 cursor-pointer text-center justify-center"
+                >
                   Smazat účet navždy
                 </button>
               </div>
@@ -489,6 +511,33 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           )}
 
         </div>
+      </div>
+
+      {/* SPODNÍ TLAČÍTKO */}
+      <div className="pt-4 border-t border-gray-100 flex justify-center">
+        <button
+          onClick={handleSaveSettings}
+          disabled={isSaving}
+          className={`w-full sm:w-auto px-8 py-3 text-sm font-medium rounded-2xl active:scale-[0.98] transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed border ${
+            shouldResetProgress 
+              ? "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100/70" 
+              : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+          }`}
+        >
+          {isSaving ? (
+            <>
+              <Loader2 size={16} className="animate-spin" />
+              Ukládám...
+            </>
+          ) : shouldResetProgress ? (
+            <>
+              <span className="flex h-2 w-2 rounded-full bg-amber-600 animate-pulse" />
+              Uložit a resetovat pokrok!
+            </>
+          ) : (
+            "Uložit a pokračovat ve studiu"
+          )}
+        </button>
       </div>
 
       {/* SPODNÍ TLAČÍTKO */}
