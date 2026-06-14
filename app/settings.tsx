@@ -91,7 +91,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
         ? true 
         : (oldSettings.pdf_with_translations === true || String(oldSettings.pdf_with_translations) === "true");
 
-      // Nastavení cílových hodnot - pokud resetujeme, vynutíme defaulty
       const finalLanguage = shouldResetProgress ? "en" : targetLanguage;
       const finalLevel = shouldResetProgress ? "B1" : targetLevel;
       const finalTheme = shouldResetProgress ? "light" : appTheme;
@@ -101,7 +100,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
       const historyPromises: Promise<void>[] = [];
 
-      // Pokud resetuje, zapíšeme hlavní reset akci a zalogujeme změny oproti starému stavu
       if (shouldResetProgress) {
         historyPromises.push(logUserAction("RESET_PROGRESS", { triggered_by: "user" }));
         
@@ -112,7 +110,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
         if (oldPdf !== true) historyPromises.push(logUserAction("TOGGLE_PDF_TRANSLATIONS", { old: oldPdf, new: true }));
         if (oldLocale !== "cs") historyPromises.push(logUserAction("CHANGE_LOCALE", { old: oldLocale, new: "cs" }));
       } else {
-        // Standardní ukládání změn
         if (targetLanguage !== oldLanguage) historyPromises.push(logUserAction("CHANGE_LANGUAGE", { old: oldLanguage, new: targetLanguage }));
         if (targetLevel !== oldLevel) historyPromises.push(logUserAction("CHANGE_LEVEL", { old: oldLevel, new: targetLevel }));
         if (appTheme !== oldTheme) historyPromises.push(logUserAction("CHANGE_THEME", { old: oldTheme, new: appTheme }));
@@ -464,7 +461,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             </div>
           )}
 
-         {/* SEKCE: NEBEZPEČNÁ ZÓNA */}
+          {/* SEKCE: NEBEZPEČNÁ ZÓNA */}
           {activeTab === "danger" && (
             <div className="space-y-6 w-full">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -473,7 +470,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                     Vymazat historii výuky a nastavení
                   </h4>
                   <p className="text-xs text-gray-400 leading-normal">
-                    Vynuluje tvou aktuální sérii aktivních dní (streak) na 1 a vrátí veškerá nastavení aplikace do výchozího stavu. Účet ti zůstane.
+                    Vynuluje tvou aktuální sérii aktivních dní a vrátí veškerá nastavení do výchozího stavu. Účet ti zůstane.
                   </p>
                 </div>
                 <button 
@@ -513,7 +510,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
         </div>
       </div>
 
-      {/* SPODNÍ TLAČÍTKO */}
+      {/* SPODNÍ DYNAMICKÉ TLAČÍTKO */}
       <div className="pt-4 border-t border-gray-100 flex justify-center">
         <button
           onClick={handleSaveSettings}
@@ -533,24 +530,6 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
             <>
               <span className="flex h-2 w-2 rounded-full bg-amber-600 animate-pulse" />
               Uložit a resetovat pokrok!
-            </>
-          ) : (
-            "Uložit a pokračovat ve studiu"
-          )}
-        </button>
-      </div>
-
-      {/* SPODNÍ TLAČÍTKO */}
-      <div className="pt-4 border-t border-gray-100 flex justify-center">
-        <button
-          onClick={handleSaveSettings}
-          disabled={isSaving}
-          className="w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-2xl hover:bg-gray-50 hover:text-gray-900 active:scale-[0.98] transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isSaving ? (
-            <>
-              <Loader2 size={16} className="animate-spin" />
-              Ukládám...
             </>
           ) : (
             "Uložit a pokračovat ve studiu"
