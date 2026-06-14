@@ -142,7 +142,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
         
         {/* LEVÝ PANEL: NAVIGACE */}
-        <div className="md:col-span-4 flex flex-col gap-2 md:min-h-[380px]">
+        <div className="md:col-span-4 flex flex-col gap-2 md:min-h-[320px]">
           <button
             onClick={() => setActiveTab("general")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all cursor-pointer ${

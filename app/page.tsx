@@ -57,6 +57,7 @@ const [readingFlipped, setReadingFlipped] = useState(false);
 const [showExampleTranslation, setShowExampleTranslation] = useState(false);
 const [showTranslations, setShowTranslations] = useState(false);
 const [dbShowTranslations, setDbShowTranslations] = useState<boolean | null>(null);
+const [pdfWithTranslations, setPdfWithTranslations] = useState<boolean>(true);
 
 const hasLoggedToday = useRef<string | null>(null);
 
@@ -203,12 +204,6 @@ useEffect(() => {
   });
 
   if (settings) {
-    console.log("KONTROLA HODNOTY V SETTINGS:", {
-      raw: settings.show_translations,
-      typ: typeof settings.show_translations,
-      jeToTrue: settings.show_translations === true
-    });
-
     if (settings.target_language) {
       setLanguage(settings.target_language as Language);
     }
@@ -231,6 +226,13 @@ useEffect(() => {
       setShowAnswer(false);
       setReadingFlipped(false);
     }
+
+    if (settings.pdf_with_translations === false || settings.pdf_with_translations === "false") {
+    setPdfWithTranslations(false);
+  } else {
+    setPdfWithTranslations(true);
+  }
+
   }
       
       try {
@@ -1069,6 +1071,7 @@ if (authLoading) {
 )}
 
   {/* ========================================================= */}
+{/* ========================================================= */}
 {/* MODERN PRINTABLE A4 INFOGRAPHIC (TRENDY 2026 FLAT EDITION) */}
 {/* ========================================================= */}
 <div className="print-only relative w-[210mm] h-[297mm] max-h-[297mm] text-slate-900 pt-[12mm] pb-[12mm] px-[11mm] flex flex-col justify-between box-border font-['Inter',sans-serif] bg-white antialiased">
@@ -1107,9 +1110,13 @@ if (authLoading) {
       <h1 className="font-['Poppins',sans-serif] text-3xl font-bold tracking-wide text-slate-950 mb-1 leading-tight">
         {content?.wordForeign}
       </h1>
-      <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
-        {content?.wordNative}
-      </p>
+      {pdfWithTranslations ? (
+        <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
+          {content?.wordNative}
+        </p>
+      ) : (
+        <div className="border-b border-dashed border-slate-300 w-1/2 h-5 mt-1" />
+      )}
     </div>
 
     {/* SEKCE: PŘÍKLAD */}
@@ -1121,9 +1128,13 @@ if (authLoading) {
       <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 tracking-wide leading-relaxed mb-1.5">
         {content?.wordExampleForeign}
       </p>
-      <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
-        {content?.wordExampleNative}
-      </p>
+      {pdfWithTranslations ? (
+        <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
+          {content?.wordExampleNative}
+        </p>
+      ) : (
+        <div className="border-b border-dashed border-slate-300 w-full h-5 mt-1.5" />
+      )}
     </div>
 
     {/* SEKCE: GRAMATIKA */}
@@ -1152,9 +1163,13 @@ if (authLoading) {
       <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 tracking-wide leading-relaxed mb-1.5">
         {content?.grammarTranslationOrig}
       </p>
-      <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
-        {content?.grammarTranslationCz}
-      </p>
+      {pdfWithTranslations ? (
+        <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
+          {content?.grammarTranslationCz}
+        </p>
+      ) : (
+        <div className="border-b border-dashed border-slate-300 w-full h-5 mt-1.5" />
+      )}
     </div>
 
     {/* SEKCE: ČTENÍ / READING */}
@@ -1166,9 +1181,17 @@ if (authLoading) {
       <p className="font-['Inter',sans-serif] text-sm font-semibold text-slate-900 tracking-wide leading-relaxed mb-2">
         {content?.readingForeign}
       </p>
-      <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
-        {content?.readingNative}
-      </p>
+      {pdfWithTranslations ? (
+        <p className="font-['Inter',sans-serif] text-sm font-normal text-slate-500 leading-relaxed">
+          {content?.readingNative}
+        </p>
+      ) : (
+        <div className="flex flex-col gap-4 mt-4 select-none">
+          <div className="border-b border-dashed border-slate-300 w-full h-1" />
+          <div className="border-b border-dashed border-slate-300 w-full h-1" />
+          <div className="border-b border-dashed border-slate-300 w-5/6 h-1" />
+        </div>
+      )}
     </div>
 
   </div>
