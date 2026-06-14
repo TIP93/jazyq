@@ -20,11 +20,11 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
   languages,
 }) => {
   return (
-    /* OPRAVA: Odstraněna fixní výška h-full/max-h, která způsobovala přetečení kvůli systémovým okrajům prohlížeče. */
-    <div className="print-only relative w-full text-slate-900 pt-[4mm] pb-[4mm] px-[11mm] flex flex-col justify-start box-border font-['Inter',sans-serif] bg-white antialiased overflow-hidden">
+    <div className="print-only relative w-full max-w-[210mm] h-full max-h-[297mm] text-slate-900 pt-[10mm] pb-[10mm] px-[11mm] flex flex-col justify-start box-border font-['Inter',sans-serif] bg-white antialiased overflow-hidden">
       
       {/* HEADER */}
-      <div className="w-full flex flex-col items-center mb-1 flex-shrink-0">
+      {/* UPRAVENO: mb-6 dává čáře krásný odstup od textu hlavičky */}
+      <div className="w-full flex flex-col items-center mb-6 flex-shrink-0">
         <div className="font-['Poppins',sans-serif] text-4xl font-black tracking-[0.2em] text-slate-950 mb-2">
           JAZYQ
         </div>
@@ -49,8 +49,8 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
       </div>
 
       {/* MAIN CONTENT AREA */}
-      {/* OPRAVA: Vyladěný gap na 5 pro perfektní vzdušnost bez rizika zalomení stránky */}
-      <div className="flex-1 flex flex-col justify-start gap-5 mt-6">
+      {/* UPRAVENO: mt-7 (28px) vytváří čistý, vzdušný prostor pod dělící čárou */}
+      <div className="flex-1 flex flex-col justify-start gap-6 mt-7">
         
         {/* SPOJENÝ ŘÁDEK: SLOVÍČKO DNE (35 %) & PŘÍKLADOVÁ VĚTA (65 %) */}
         <div className="w-full flex flex-row gap-4 items-stretch flex-shrink-0">
@@ -144,7 +144,6 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
       </div>
 
       {/* FOOTER */}
-      {/* OPRAVA: Přidán fixní odstup mt-8, aby se patička elegantně oddělila, ale neodskakovala na další stranu */}
       <div className="w-full flex flex-col items-center mt-8 flex-shrink-0">
         <div className="w-full border-t border-slate-100 mb-2" />
         <div className="font-['Poppins',sans-serif] text-xs font-semibold text-slate-400 uppercase tracking-[0.15em] mb-1">
