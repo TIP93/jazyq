@@ -55,8 +55,8 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
         {/* SPOJENÝ ŘÁDEK: SLOVÍČKO DNE (35 %) & PŘÍKLADOVÁ VĚTA (65 %) */}
         <div className="w-full flex flex-row gap-4 items-stretch flex-shrink-0">
           
-          {/* SLOVÍČKO DNE (35 %) */}
-          <div className="w-[35%] relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60 flex flex-col justify-start">
+          {/* SLOVÍČKO DNE (45 %) */}
+          <div className="w-[45%] relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60 flex flex-col justify-start">
             <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
               <Sparkles size={14} className="text-slate-400" />
               Slovíčko dne
@@ -69,8 +69,8 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({
             </p>
           </div>
 
-          {/* PŘÍKLADOVÁ VĚTA (65 %) */}
-          <div className="w-[65%] relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60 flex flex-col justify-start">
+          {/* PŘÍKLADOVÁ VĚTA (55 %) */}
+          <div className="w-[55%] relative bg-slate-50/40 rounded-2xl p-5 border border-slate-200/60 flex flex-col justify-start">
             <div className="absolute -top-3 left-5 z-10 bg-white px-2.5 font-['Poppins',sans-serif] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 flex items-center gap-2 select-none h-5">
               <Languages size={14} className="text-slate-400" />
               Příkladová věta
