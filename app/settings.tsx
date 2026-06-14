@@ -279,7 +279,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                         onClick={() => setTargetLanguage(lang.code)}
                         className={`flex items-center justify-start gap-3 px-4 py-2.5 border rounded-xl text-sm transition-all cursor-pointer bg-white font-medium w-full ${
                           isSelected
-                            ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
+                            ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs ring-2 ring-black ring-offset-2"
                             : "border-gray-200/70 text-gray-600 hover:border-gray-300 hover:bg-gray-50/50"
                         }`}
                       >
@@ -311,7 +311,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                         onClick={() => setTargetLevel(lvl)}
                         className={`flex items-center justify-center py-2.5 px-3 border rounded-xl text-sm transition cursor-pointer bg-white font-semibold w-full ${
                           isSelected
-                            ? "border-black bg-gray-50 text-gray-900 shadow-2xs"
+                            ? "border-black bg-gray-50 text-gray-900 shadow-2xs ring-2 ring-black ring-offset-2"
                             : "border-gray-200/70 text-gray-600 hover:bg-gray-50"
                         }`}
                       >
@@ -433,7 +433,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                   onClick={() => setAppLocale("cs")}
                   className={`flex items-center justify-center gap-2 px-4 py-2.5 border text-sm rounded-xl transition cursor-pointer w-full ${
                     appLocale === "cs"
-                      ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
+                      ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs ring-2 ring-black ring-offset-2"
                       : "border-gray-200/70 text-gray-600 hover:border-gray-300 hover:bg-gray-50/50"
                   }`}
                 >
@@ -448,7 +448,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                   onClick={() => setAppLocale("en")}
                   className={`flex items-center justify-center gap-2 px-4 py-2.5 border text-sm rounded-xl transition cursor-pointer w-full ${
                     appLocale === "en"
-                      ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
+                      ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs ring-2 ring-black ring-offset-2"
                       : "border-gray-200/70 text-gray-600 hover:border-gray-300 hover:bg-gray-50/50"
                   }`}
                 >
