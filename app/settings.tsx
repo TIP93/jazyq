@@ -205,7 +205,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
         </div>
 
         {/* PRAVÝ PANEL: DYNAMICKÝ OBSAH */}
-        <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 flex flex-col justify-start space-y-6 md:min-h-[380px]">
+        <div className="md:col-span-8 bg-gray-50/40 border border-gray-100 rounded-2xl p-6 flex flex-col justify-start space-y-6">
           
           {/* SEKCE: VÝBĚR JAZYKA */}
           {activeTab === "general" && (
@@ -269,80 +269,71 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
           )}
 
           {/* SEKCE: CHOVÁNÍ APLIKACE */}
-          {activeTab === "behavior" && (
-            <div className="space-y-6 w-full">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex gap-3">
-                  <div className="p-2 bg-gray-200/50 text-gray-600 rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
-                    <EyeOff size={16} />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-900">Zobrazovat překlady okamžitě</h4>
-                    <p className="text-xs text-gray-400 mt-0.5">Pokud zapneš, všechny překlady se budou zobrazovat automaticky.</p>
-                  </div>
-                </div>
-                
-                {/* OBLAST SE SLIDEREM A NATVRDO VYPSANÝM STAVEM PRO KONTROLU */}
-                <div className="flex items-center gap-3 shrink-0">
-                  <span className="text-xs font-mono px-2 py-1 bg-gray-200 text-gray-700 rounded-md">
-                    DB: {dbValueRaw === undefined ? "loading" : String(dbValueRaw)}
-                  </span>
+{activeTab === "behavior" && (
+  <div className="space-y-6 w-full">
+    
+    {/* SLIDER 1: PŘEKLADY NA WEBU */}
+    <div className="flex items-center justify-between gap-4">
+      <div className="flex gap-3">
+        <div className="p-2 bg-gray-200/50 text-gray-600 rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
+          <EyeOff size={16} />
+        </div>
+        <div>
+          <h4 className="text-sm font-medium text-gray-900">Zobrazovat překlady na webu</h4>
+          <p className="text-xs text-gray-400 mt-0.5">Pokud zapneš, všechny překlady se na webu zobrazí automaticky.</p>
+        </div>
+      </div>
+      
+      <div className="flex items-center gap-3 shrink-0">
+        <button
+          type="button"
+          onClick={() => setShowTranslations(!showTranslations)}
+          className={`w-11 h-6 flex items-center rounded-full p-1 transition-all duration-200 cursor-pointer relative ${
+            showTranslations ? "bg-green-500" : "bg-gray-300"
+          }`}
+        >
+          <div 
+            className={`bg-white w-4 h-4 rounded-full shadow-md transition-all duration-200 ${
+              showTranslations ? "translate-x-5" : "translate-x-0"
+            }`} 
+          />
+        </button>
+      </div>
+    </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setShowTranslations(!showTranslations)}
-                    className={`w-11 h-6 flex items-center rounded-full p-1 transition-all duration-200 cursor-pointer relative ${
-                      showTranslations ? "bg-green-500" : "bg-gray-300"
-                    }`}
-                  >
-                    <div 
-                      className={`bg-white w-4 h-4 rounded-full shadow-md transition-all duration-200 ${
-                        showTranslations ? "translate-x-5" : "translate-x-0"
-                      }`} 
-                    />
-                  </button>
-                </div>
-              </div>
+    <hr className="border-gray-100/70" />
 
-              <hr className="border-gray-100/70" />
+    {/* SLIDER 2: PŘEKLADY V PDF */}
+    <div className="flex items-center justify-between gap-4">
+      <div className="flex gap-3">
+        <div className="p-2 bg-gray-200/50 text-gray-600 rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
+          <Printer size={16} />
+        </div>
+        <div>
+          <h4 className="text-sm font-medium text-gray-900">Zobrazovat překlady v PDF</h4>
+          <p className="text-xs text-gray-400 mt-0.5">Určuje, zda se do vygenerovaných materiálů pro tisk vloží překlady.</p>
+        </div>
+      </div>
+      
+      <div className="flex items-center gap-3 shrink-0">
+        <button
+          type="button"
+          onClick={() => setPdfWithTranslations(!pdfWithTranslations)}
+          className={`w-11 h-6 flex items-center rounded-full p-1 transition-all duration-200 cursor-pointer relative ${
+            pdfWithTranslations ? "bg-green-500" : "bg-gray-300"
+          }`}
+        >
+          <div 
+            className={`bg-white w-4 h-4 rounded-full shadow-md transition-all duration-200 ${
+              pdfWithTranslations ? "translate-x-5" : "translate-x-0"
+            }`} 
+          />
+        </button>
+      </div>
+    </div>
 
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="p-2 bg-gray-200/50 text-gray-600 rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
-                    <Printer size={16} />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-900">Výchozí styl pro tisk studijních materiálů (PDF)</h4>
-                    <p className="text-xs text-gray-400 mt-0.5">Nastav si, zda chceš generovat pracovní listy rovnou s překladem, nebo nechat místo prázdné.</p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3 pl-12">
-                  <button
-                    type="button"
-                    onClick={() => setPdfWithTranslations(true)}
-                    className={`flex items-center justify-center p-3 border rounded-xl text-xs font-medium transition cursor-pointer bg-white ${
-                      pdfWithTranslations === true
-                        ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
-                        : "border-gray-200/70 text-gray-500 hover:bg-gray-50"
-                    }`}
-                  >
-                    Tisknout s překlady
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPdfWithTranslations(false)}
-                    className={`flex items-center justify-center p-3 border rounded-xl text-xs font-medium transition cursor-pointer bg-white ${
-                      pdfWithTranslations === false
-                        ? "border-black bg-gray-50 text-gray-900 font-semibold shadow-2xs"
-                        : "border-gray-200/70 text-gray-500 hover:bg-gray-50"
-                    }`}
-                  >
-                    Tisknout bez překladů
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+  </div>
+)}
 
           {/* SEKCE: BARVA APLIKACE */}
           {activeTab === "appearance" && (
