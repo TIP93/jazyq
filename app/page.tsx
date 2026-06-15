@@ -340,6 +340,13 @@ useEffect(() => {
   setView("learn");
 }, [language, levelIndex]);
 
+// Pokud uživatel překlikne z nastavení jinam, vrátíme motiv podle toho, co je uloženo v user_settings
+useEffect(() => {
+  if (view !== "settings" && user?.user_settings?.app_theme) {
+    setCurrentTheme(user.user_settings.app_theme as Theme);
+  }
+}, [view, user]);
+
 if (authLoading) {
   return (
     <div className="min-h-screen bg-[#F6F7FB] flex items-center justify-center text-black font-[Poppins]">
@@ -573,20 +580,20 @@ if (authLoading) {
     )}
   </div>
 
-  {/* USER INFO */}
-  <div className="min-w-0 flex-1">
-    <div className="flex items-center justify-between gap-2">
-      <p className="text-[10px] uppercase tracking-wider text-gray-400">
-        Free uživatel
-      </p>
-    </div>
-
-    <p className="text-sm font-medium text-black truncate mt-1">
-      {user?.user_metadata?.full_name ||
-        user?.user_metadata?.name ||
-        user?.email}
+  {/* USER INFO */} 
+<div className="min-w-0 flex-1">
+  <div className="flex items-center justify-between gap-2">
+    <p className={`text-[10px] uppercase tracking-wider ${theme.textMuted}`}>
+      Free uživatel
     </p>
   </div>
+
+  <p className="text-sm font-medium truncate mt-1">
+    {user?.user_metadata?.full_name ||
+      user?.user_metadata?.name ||
+      user?.email}
+  </p>
+</div>
 
 </div>
 
