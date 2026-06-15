@@ -359,7 +359,7 @@ if (authLoading) {
     <div className={`min-h-screen ${theme.bg} ${theme.text} flex font-[Poppins]`}>
 
       {/* SIDEBAR */}
-      <div className="w-72 bg-white border-r border-gray-200 p-6 flex flex-col justify-between no-print">
+      <div className={`w-72 ${theme.card} border-r ${theme.border} p-6 flex flex-col justify-between no-print`}>
 
         {/* TOP */}
         <div className="space-y-10">
@@ -454,11 +454,7 @@ if (authLoading) {
 
   <div
   onClick={() => console.log("premium")}
-  className="
-    border border-gray-200 rounded-2xl p-4
-    flex items-center gap-3
-    hover:bg-gray-50 transition cursor-pointer
-  "
+  className={`border ${theme.border} ${theme.card} rounded-2xl p-4 flex items-center gap-3 hover:bg-opacity-80 transition cursor-pointer`}
 >
   <div className="w-10 h-10 rounded-full border border-purple-200 bg-purple-50 flex items-center justify-center">
     <Crown size={18} className="text-purple-500" />
@@ -481,7 +477,7 @@ if (authLoading) {
 
 
 {/* HISTORY */}
-<div className="relative border border-gray-200 rounded-2xl p-4 hover:bg-gray-50 transition cursor-pointer">
+<div className={`relative border ${theme.border} ${theme.card} rounded-2xl p-4 hover:bg-opacity-80 transition cursor-pointer`}>
   {/* LEFT */}
   <div className="flex items-center gap-3">
 
@@ -517,7 +513,7 @@ if (authLoading) {
  
 <div
   onClick={() => setView("streak")}
-  className="border border-gray-200 rounded-2xl p-4 bg-white flex items-center justify-between hover:bg-gray-50 transition cursor-pointer"
+  className={`border ${theme.border} ${theme.card} rounded-2xl p-4 flex items-center justify-between hover:bg-opacity-80 transition cursor-pointer`}
 >
 
   {/* LEFT SIDE */}
@@ -548,7 +544,7 @@ if (authLoading) {
   {user && (
   <>
     {/* USER CARD */}
-    <div className="border border-gray-200 rounded-2xl p-4 bg-white flex gap-3">
+   <div className={`border ${theme.border} ${theme.card} rounded-2xl p-4 flex gap-3`}>
 
   {/* AVATAR + PROVIDER BADGE */}
   <div className="flex-shrink-0 relative w-10 h-10"> {/* Přidáno 'w-10 h-10' pro explicitní velikost */}
