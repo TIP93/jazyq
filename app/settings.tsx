@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabaseClient";
 interface SettingsPageProps {
   user: any;
   setView: (view: "learn" | "streak" | "settings") => void;
+  onThemeChange?: (theme: Theme) => void; // <-- Přidáno pro živý náhled
 }
 
 type AuditAction = 
@@ -49,7 +50,7 @@ const themeClasses: Record<Theme, { card: string; text: string; textMuted: strin
   }
 };
 
-export default function SettingsPage({ user, setView }: SettingsPageProps) {
+export default function SettingsPage({ user, setView, onThemeChange }: SettingsPageProps) {
   const [activeTab, setActiveTab] = useState<"general" | "behavior" | "appearance" | "locale" | "danger">("general");
 
   const [targetLanguage, setTargetLanguage] = useState(() => user?.user_settings?.target_language || "en");
@@ -135,7 +136,7 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
 
       if (shouldResetProgress) {
         historyPromises.push(logUserAction("RESET_PROGRESS", { triggered_by: "user" }));
-        
+        if (onThemeChange) onThemeChange("light");
         if (oldLanguage !== "en") historyPromises.push(logUserAction("CHANGE_LANGUAGE", { old: oldLanguage, new: "en" }));
         if (oldLevel !== "B1") historyPromises.push(logUserAction("CHANGE_LEVEL", { old: oldLevel, new: "B1" }));
         if (oldTheme !== "light") historyPromises.push(logUserAction("CHANGE_THEME", { old: oldTheme, new: "light" }));
@@ -441,7 +442,10 @@ export default function SettingsPage({ user, setView }: SettingsPageProps) {
                   <button
                     key={t.code}
                     type="button"
-                    onClick={() => setAppTheme(t.code)}
+                    onClick={() => {
+  setAppTheme(t.code);
+  if (onThemeChange) onThemeChange(t.code); // <-- Spustí okamžitou změnu v page.tsx
+}}
                     className={`flex flex-col items-center justify-center p-4 border rounded-xl text-xs font-medium transition cursor-pointer ${t.color} ${
                       appTheme === t.code ? "ring-2 ring-current ring-offset-2 font-semibold scale-[1.02]" : "opacity-70 hover:opacity-100"
                     }`}

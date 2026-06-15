@@ -77,9 +77,6 @@ const languages = [
 ];
 
 export default function Home() {
-  // --- SEM HNED NA ZAČÁTEK FUNKCE VLOŽÍŠ STAV ---
-  const [appTheme, setAppTheme] = useState<Theme>("light");
-
   const [showAnswer, setShowAnswer] = useState(false);
 const [readingFlipped, setReadingFlipped] = useState(false);
 const [showExampleTranslation, setShowExampleTranslation] = useState(false);
@@ -232,10 +229,9 @@ useEffect(() => {
           setPdfWithTranslations(true);
         }
 
-       if (settings.app_theme) {
-          setAppTheme(settings.app_theme as Theme);
-        }
-
+      if (settings.app_theme) {
+   setCurrentTheme(settings.app_theme as Theme);
+}
       }
       
       // Zápis do logu a streaku
@@ -360,7 +356,7 @@ if (authLoading) {
 }
 
   return (
-    <div className="min-h-screen bg-[#F6F7FB] flex text-black font-[Poppins]">
+    <div className={`min-h-screen ${theme.bg} ${theme.text} flex font-[Poppins]`}>
 
       {/* SIDEBAR */}
       <div className="w-72 bg-white border-r border-gray-200 p-6 flex flex-col justify-between no-print">
@@ -771,7 +767,7 @@ if (authLoading) {
       {/* MAIN */}
 
 
-     <div className="flex-1 flex flex-col items-center justify-center p-8 gap-4 min-h-screen overflow-y-auto">
+     <div className={`flex-1 flex flex-col items-center justify-center p-8 gap-4 min-h-screen overflow-y-auto ${theme.bg}`}>
 
  {view === "learn" && (
 
@@ -1068,7 +1064,8 @@ if (authLoading) {
 {view === "settings" && (
   <SettingsPage 
     setView={setView} 
-    user={user} // <--- TADY JE TA OPRAVA. Posílej čistý objekt user!
+    user={user}
+    onThemeChange={(newTheme) => setCurrentTheme(newTheme)} // <-- TENTO ŘÁDEK ZAJISTÍ ŽIVÉ PŘEBARVENÍ
   />
 )}
 
