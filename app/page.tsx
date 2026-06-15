@@ -359,7 +359,7 @@ if (authLoading) {
     <div className={`min-h-screen ${theme.bg} ${theme.text} flex font-[Poppins]`}>
 
       {/* SIDEBAR */}
-      <div className={`w-72 ${theme.card} border-r ${theme.border} p-6 flex flex-col justify-between no-print`}>
+      <div className={`w-72 ${theme.card} border-r ${theme.border} ${theme.text} p-6 flex flex-col justify-between no-print`}>
 
         {/* TOP */}
         <div className="space-y-10">
@@ -370,15 +370,15 @@ if (authLoading) {
               JAZYQ
             </h1>
 
-            <p className="text-sm text-gray-500 mt-2">
-              tvoje denní pětiminutovka
-            </p>
+            <p className={`text-sm ${theme.textMuted} mt-2`}>
+  tvoje denní pětiminutovka
+</p>
           </div>
 
 {/* LANGUAGE */}
 <div className="space-y-4">
 
-  <p className="text-xs uppercase text-gray-400 flex items-center gap-2">
+  <p className={`text-xs uppercase ${theme.textMuted} flex items-center gap-2`}>
     <Globe size={16} />
     Jazyk
   </p>
@@ -435,9 +435,9 @@ if (authLoading) {
               className="w-full accent-black"
             />
 
-            <div className="flex justify-between text-xs text-gray-500">
+            <div className={`flex justify-between text-xs ${theme.textMuted}`}>
   {levels.map((l) => (
-    <span key={l} className={levels[levelIndex] === l ? "font-bold text-black" : ""}>
+    <span key={l} className={levels[levelIndex] === l ? `font-bold ${theme.text}` : ""}>
       {l}
     </span>
   ))}
@@ -461,13 +461,8 @@ if (authLoading) {
   </div>
 
   <div>
-    <p className="text-xs text-gray-500">
-      Premium
-    </p>
-
-    <p className="text-sm font-medium text-black">
-      30 Kč za měsíc
-    </p>
+    <p className={`text-xs ${theme.textMuted}`}>Premium</p>
+<p className="text-sm font-medium">30 Kč za měsíc</p>
 
     <p className="text-xs text-purple-500 mt-0.5">
       Poslechy, historie a další
@@ -486,12 +481,8 @@ if (authLoading) {
   </div>
 
   <div>
-    <p className="text-xs text-gray-500">
-      Historie
-    </p>
-    <p className="text-sm text-black">
-      Předchozí dny
-    </p>
+    <p className={`text-xs ${theme.textMuted}`}>Historie</p>
+<p className="text-sm">Předchozí dny</p>
   </div>
 
 </div>
@@ -526,11 +517,9 @@ if (authLoading) {
 
     {/* TEXT */}
     <div>
-      <p className="text-xs text-gray-500">
-        Série
-      </p>
+      <p className={`text-xs ${theme.textMuted}`}>Série</p>
 
-      <p className="text-sm font-medium text-black">
+      <p className="text-sm font-medium">
   {streakStats.current_streak} {streakStats.current_streak === 1 ? 'den' : (streakStats.current_streak > 1 && streakStats.current_streak < 5 ? 'dny' : 'dní')} v řadě
 </p>
     </div>
@@ -606,12 +595,7 @@ if (authLoading) {
 
       <button
   onClick={() => setView("settings")} // <--- PŘIDAT TENTO ŘÁDEK
-  className="
-    border border-gray-200 rounded-2xl py-2 px-3
-    flex items-center justify-center gap-2
-    text-sm text-gray-600
-    hover:bg-gray-50 transition cursor-pointer
-  "
+  className={`border ${theme.border} ${theme.card} rounded-2xl py-2 px-3 flex items-center justify-center gap-2 text-sm hover:bg-opacity-80 transition cursor-pointer`}
 >
   <Settings size={14} />
   Nastavení
@@ -622,12 +606,7 @@ if (authLoading) {
           await supabase.auth.signOut();
           window.location.reload();
         }}
-        className="
-          border border-gray-200 rounded-2xl py-2 px-3
-          flex items-center justify-center gap-2
-          text-sm text-gray-600
-          hover:bg-gray-50 transition cursor-pointer
-        "
+        className={`border ${theme.border} ${theme.card} rounded-2xl py-2 px-3 flex items-center justify-center gap-2 text-sm hover:bg-opacity-80 transition cursor-pointer`}
       >
         <LogOut size={14} />
         Odhlásit
