@@ -265,9 +265,9 @@ export default function SettingsPage({ user, setView, onThemeChange }: SettingsP
           <button
             onClick={() => setActiveTab("general")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all cursor-pointer ${
-              activeTab === "general"
-                ? (appTheme === 'dark' ? "bg-white text-black font-semibold" : "bg-gray-900 text-white shadow-xs")
-                : `bg-transparent ${theme.textInverted} hover:bg-black/5`
+              activeTab === "general" // (zde se liší podle tabu: "behavior", "appearance", "locale")
+  ? (appTheme === 'dark' ? "bg-[#2D3139] text-white font-semibold" : "bg-gray-900 text-white shadow-xs")
+  : `bg-transparent ${theme.textInverted} hover:bg-black/5 dark:hover:bg-white/5`
             }`}
           >
             <Globe size={18} />
@@ -460,7 +460,7 @@ export default function SettingsPage({ user, setView, onThemeChange }: SettingsP
               <div className="grid grid-cols-3 gap-2 pt-1">
                 {[
                   { code: "light" as Theme, label: "Čistá bílá", color: "bg-white border-gray-200 text-black" },
-                  { code: "dark" as Theme, label: "Temný režim", color: "bg-[#1E1E1E] border-[#2D2D2D] text-gray-100" },
+                  { code: "dark" as Theme, label: "Temný režim", color: "bg-[#22252A] border-[#2D3139] text-[#E2E8F0]" },
                   { code: "sepia" as Theme, label: "Klidná sépie", color: "bg-[#FCF6E8] border-[#E4D5B7] text-[#433422]" },
                   { code: "seaglass" as Theme, label: "Seaglass Blue", color: "bg-[#F0F7F9] border-[#D1E4E8] text-[#1E3A42]" },
                   { code: "sage" as Theme, label: "Sage Garden", color: "bg-[#F3F6F2] border-[#D5E0D2] text-[#2D3B29]" },
@@ -584,8 +584,8 @@ export default function SettingsPage({ user, setView, onThemeChange }: SettingsP
           disabled={isSaving}
           className={`w-full sm:w-auto px-8 py-3 text-sm font-medium rounded-2xl active:scale-[0.98] transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed border ${
             shouldResetProgress 
-              ? "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100/70" 
-              : (appTheme === 'dark' ? "bg-white text-black border-white hover:bg-gray-200" : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900")
+  ? "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100/70" 
+  : (appTheme === 'dark' ? "bg-[#3A3F47] text-white border-[#4A505A] hover:bg-[#4A505A]" : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900")
           }`}
         >
           {isSaving ? (

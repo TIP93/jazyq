@@ -400,33 +400,35 @@ if (authLoading) {
 </div>
 
           {/* LEVEL */}
-          <div className="space-y-4">
+          {/* LEVEL */}
+<div className="space-y-4">
 
-            <p className="text-xs uppercase text-gray-400 flex items-center gap-2">
-              <BookOpen size={16} />
-              Úroveň
-            </p>
+  <p className="text-xs uppercase text-gray-400 flex items-center gap-2">
+    <BookOpen size={16} />
+    Úroveň
+  </p>
 
-            <input
-              type="range"
-              min={0}
-              max={levels.length - 1}
-              value={levelIndex}
-              onChange={(e) => {
-                setLevelIndex(Number(e.target.value));
-              }}
-              className="w-full accent-black"
-            />
+  <input
+  type="range"
+  min={0}
+  max={levels.length - 1}
+  value={levelIndex}
+  onChange={(e) => {
+    setLevelIndex(Number(e.target.value));
+  }}
+  className={`w-full cursor-pointer transition-all ${
+    currentTheme === 'dark' ? 'accent-[#E2E8F0]' : 'accent-black'
+  }`}
+/>
 
-            <div className={`flex justify-between text-xs ${theme.textMuted}`}>
-  {levels.map((l) => (
-    <span key={l} className={levels[levelIndex] === l ? `font-bold ${theme.text}` : ""}>
-      {l}
-    </span>
-  ))}
+  <div className={`flex justify-between text-xs ${theme.textMuted}`}>
+    {levels.map((l) => (
+      <span key={l} className={levels[levelIndex] === l ? `font-bold ${theme.text}` : ""}>
+        {l}
+      </span>
+    ))}
+  </div>
 </div>
-
-          </div>
 
         </div>
 
