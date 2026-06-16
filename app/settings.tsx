@@ -21,9 +21,9 @@ type AuditAction =
   | "RESET_PROGRESS";
 
 // Rozšířená definice témat o moderní jemné tóny
-type Theme = "light" | "dark" | "sepia" | "seaglass" | "sage" | "blush";
+export type Theme = "light" | "dark" | "sepia" | "seaglass" | "sage" | "blush";
 
-const themeClasses: Record<Theme, { card: string; text: string; textMuted: string; border: string; subPanel: string; textInverted: string }> = {
+export const themeClasses: Record<Theme, { card: string; text: string; textMuted: string; border: string; subPanel: string; textInverted: string }> = {
   light: {
     card: "bg-white border-gray-200 text-black",
     text: "text-gray-900",

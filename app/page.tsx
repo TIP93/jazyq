@@ -6,7 +6,6 @@ import StreakPage from "./streak";
 import SettingsPage from "./settings";
 import { Roboto } from "next/font/google"; // Tady je velké R, protože importuješ funkci/typ
 import { PrintLayout } from "./print"; 
-
 // Tady vytváříš instanci s malým r
 const roboto = Roboto({
   subsets: ["latin"],
@@ -32,31 +31,8 @@ type Language = "en" | "de" | "es" | "fr" | "it";
 
 const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
-type Theme = "light" | "sepia" | "dark";
+import { Theme, themeClasses } from "./settings";
 
-const themeClasses: Record<Theme, { bg: string; card: string; text: string; textMuted: string; border: string }> = {
-  light: {
-    bg: "bg-[#F6F7FB]",
-    card: "bg-white border-gray-200",
-    text: "text-black",
-    textMuted: "text-gray-500",
-    border: "border-gray-200"
-  },
-  sepia: {
-    bg: "bg-[#F4ECD8]",
-    card: "bg-[#FCF6E8] border-[#E4D5B7]",
-    text: "text-[#433422]",
-    textMuted: "text-[#7C6A52]",
-    border: "border-[#E4D5B7]"
-  },
-  dark: {
-    bg: "bg-[#121212]",
-    card: "bg-[#1E1E1E] border-[#2D2D2D]",
-    text: "text-gray-100",
-    textMuted: "text-gray-400",
-    border: "border-[#2D2D2D]"
-  }
-};
 
 const greetings: Record<Language, string[]> = {
   en: ["Hello", "Good day", "Hi there", "Welcome", "Hey", "Nice to see you"],
