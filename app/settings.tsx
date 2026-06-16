@@ -34,13 +34,13 @@ export const themeClasses: Record<Theme, { bg: string; card: string; text: strin
     textInverted: "text-gray-600"
   },
   dark: {
-    bg: "bg-[#121212]",
-    card: "bg-[#1E1E1E] border-[#2D2D2D] text-gray-100",
-    text: "text-gray-100",
-    textMuted: "text-gray-500",
-    border: "border-[#2D2D2D]",
-    subPanel: "bg-[#121212]/40 border-[#2D2D2D]",
-    textInverted: "text-gray-400"
+    bg: "bg-[#1A1C20]",          // Moderní temný grafit s kapkou modré (místo ostré černé)
+    card: "bg-[#22252A] border-[#2D3139] text-[#E2E8F0]", // Jemnější kontrast, břidlicový panel
+    text: "text-[#E2E8F0]",       // Off-white text (příjemný pro oči, netahá)
+    textMuted: "text-[#94A3B8]",  // Slate-400 pro sekundární texty a popisky
+    border: "border-[#2D3139]",   // Tlumené ohraničení, které neruší celkový layout
+    subPanel: "bg-[#16181C]/60 border-[#252930]", // Vnořené panely jsou o kousek tmavší než karta
+    textInverted: "text-[#94A3B8]" // Sjednoceno pro sekundární stavy v navigaci
   },
   sepia: {
     bg: "bg-[#F4ECD8]",
@@ -70,13 +70,13 @@ export const themeClasses: Record<Theme, { bg: string; card: string; text: strin
     textInverted: "text-[#2D3B29]/80"
   },
   blush: {
-    bg: "bg-[#FCE4EC]",
-    card: "bg-[#FAF4F2] border-[#EADAD6] text-[#4A312A]",
-    text: "text-[#4A312A]",
-    textMuted: "text-[#9C8079]",
-    border: "border-[#EADAD6]",
-    subPanel: "bg-[#F2E6E2]/50 border-[#EADAD6]/70",
-    textInverted: "text-[#4A312A]/80"
+    bg: "bg-[#F7F2EE]",          // Matná, velmi jemná pudrová s kapkou krémové (neruší a nesvítí)
+    card: "bg-[#FFFDFB] border-[#EADED6] text-[#4E362F]", // Čistá, teplá bílá pro karty s terakotvým textem
+    text: "text-[#4E362F]",       // Hluboká zemitá hnědá s cihlovým podtónem pro skvělou čitelnost
+    textMuted: "text-[#9E867E]",  // Tlumená šedohnědá pro sekundární popisky
+    border: "border-[#EADED6]",   // Velmi soft ohraničení v barvě suché hlíny
+    subPanel: "bg-[#F1E8E1]/60 border-[#E4D5CB]", // Zapuštěný sub-panel, který drží zemitý tón
+    textInverted: "text-[#4E362F]/80"
   }
 };
 
