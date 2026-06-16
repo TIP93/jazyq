@@ -8,7 +8,7 @@ import { supabase } from "@/lib/supabaseClient";
 interface SettingsPageProps {
   user: any;
   setView: (view: "learn" | "streak" | "settings") => void;
-  onThemeChange?: (theme: Theme) => void; // <-- Přidáno pro živý náhled
+  onThemeChange?: (theme: Theme) => void;
 }
 
 type AuditAction = 
@@ -20,8 +20,8 @@ type AuditAction =
   | "CHANGE_LOCALE"
   | "RESET_PROGRESS";
 
-// Definice lokálních témat pro dynamický preview design nastavení
-type Theme = "light" | "sepia" | "dark";
+// Rozšířená definice témat o moderní jemné tóny
+type Theme = "light" | "dark" | "sepia" | "seaglass" | "sage" | "blush";
 
 const themeClasses: Record<Theme, { card: string; text: string; textMuted: string; border: string; subPanel: string; textInverted: string }> = {
   light: {
@@ -32,6 +32,14 @@ const themeClasses: Record<Theme, { card: string; text: string; textMuted: strin
     subPanel: "bg-gray-50/40 border-gray-100",
     textInverted: "text-gray-600"
   },
+  dark: {
+    card: "bg-[#1E1E1E] border-[#2D2D2D] text-gray-100",
+    text: "text-gray-100",
+    textMuted: "text-gray-500",
+    border: "border-[#2D2D2D]",
+    subPanel: "bg-[#121212]/40 border-[#2D2D2D]",
+    textInverted: "text-gray-400"
+  },
   sepia: {
     card: "bg-[#FCF6E8] border-[#E4D5B7] text-[#433422]",
     text: "text-[#433422]",
@@ -40,13 +48,29 @@ const themeClasses: Record<Theme, { card: string; text: string; textMuted: strin
     subPanel: "bg-[#F4ECD8]/40 border-[#E4D5B7]/60",
     textInverted: "text-[#433422]/80"
   },
-  dark: {
-    card: "bg-[#1E1E1E] border-[#2D2D2D] text-gray-100",
-    text: "text-gray-100",
-    textMuted: "text-gray-500",
-    border: "border-[#2D2D2D]",
-    subPanel: "bg-[#121212]/40 border-[#2D2D2D]",
-    textInverted: "text-gray-400"
+  seaglass: {
+    card: "bg-[#F0F7F9] border-[#D1E4E8] text-[#1E3A42]",
+    text: "text-[#1E3A42]",
+    textMuted: "text-[#6A939E]",
+    border: "border-[#D1E4E8]",
+    subPanel: "bg-[#E5F0F2]/50 border-[#D1E4E8]/70",
+    textInverted: "text-[#1E3A42]/80"
+  },
+  sage: {
+    card: "bg-[#F3F6F2] border-[#D5E0D2] text-[#2D3B29]",
+    text: "text-[#2D3B29]",
+    textMuted: "text-[#71876D]",
+    border: "border-[#D5E0D2]",
+    subPanel: "bg-[#E9F0E7]/50 border-[#D5E0D2]/70",
+    textInverted: "text-[#2D3B29]/80"
+  },
+  blush: {
+    card: "bg-[#FAF4F2] border-[#EADAD6] text-[#4A312A]",
+    text: "text-[#4A312A]",
+    textMuted: "text-[#9C8079]",
+    border: "border-[#EADAD6]",
+    subPanel: "bg-[#F2E6E2]/50 border-[#EADAD6]/70",
+    textInverted: "text-[#4A312A]/80"
   }
 };
 
@@ -74,7 +98,6 @@ export default function SettingsPage({ user, setView, onThemeChange }: SettingsP
   const [saveError, setSaveError] = useState<string | null>(null);
   const [shouldResetProgress, setShouldResetProgress] = useState(false);
 
-  // Načtení aktivního motivu pro okamžitou změnu vzhledu komponenty nastavení
   const theme = themeClasses[appTheme] || themeClasses.light;
 
   useEffect(() => {
@@ -199,7 +222,6 @@ export default function SettingsPage({ user, setView, onThemeChange }: SettingsP
   const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
   return (
-    // DYNAMICKÉ TŘÍDY PRO CELOU KARTU NASTAVENÍ podle theme.*
     <div className={`w-full max-w-4xl mx-auto border rounded-3xl p-8 sm:p-10 space-y-8 shadow-sm transition-colors duration-300 ${theme.card}`}>
       
       {/* HLAVIČKA NASTAVENÍ */}
@@ -314,7 +336,7 @@ export default function SettingsPage({ user, setView, onThemeChange }: SettingsP
                         onClick={() => setTargetLanguage(lang.code)}
                         className={`flex items-center justify-start gap-3 px-4 py-2.5 border rounded-xl text-sm transition-all cursor-pointer font-medium w-full ${
                           isSelected
-                            ? "border-current bg-black/5 font-semibold ring-2 ring-current ring-offset-2"
+                            ? "border-current bg-black/5 font-semibold ring-1 ring-current"
                             : `${theme.border} bg-white/50 text-current hover:bg-black/5`
                         }`}
                       >
@@ -346,7 +368,7 @@ export default function SettingsPage({ user, setView, onThemeChange }: SettingsP
                         onClick={() => setTargetLevel(lvl)}
                         className={`flex items-center justify-center py-2.5 px-3 border rounded-xl text-sm transition cursor-pointer font-semibold w-full ${
                           isSelected
-                            ? "border-current bg-black/5 ring-2 ring-current ring-offset-2"
+                            ? "border-current bg-black/5 ring-1 ring-current"
                             : `${theme.border} bg-white/50 text-current hover:bg-black/5`
                         }`}
                       >
@@ -362,8 +384,6 @@ export default function SettingsPage({ user, setView, onThemeChange }: SettingsP
           {/* SEKCE: CHOVÁNÍ APLIKACE */}
           {activeTab === "behavior" && (
             <div className="space-y-6 w-full">
-              
-              {/* SLIDER 1: PŘEKLADY NA WEBU */}
               <div className="flex items-center justify-between gap-4">
                 <div className="flex gap-3">
                   <div className="p-2 bg-black/5 text-current rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
@@ -394,7 +414,6 @@ export default function SettingsPage({ user, setView, onThemeChange }: SettingsP
 
               <hr className={theme.border} />
 
-              {/* SLIDER 2: PŘEKLADY V PDF */}
               <div className="flex items-center justify-between gap-4">
                 <div className="flex gap-3">
                   <div className="p-2 bg-black/5 text-current rounded-lg h-9 w-9 flex items-center justify-center shrink-0">
@@ -422,11 +441,10 @@ export default function SettingsPage({ user, setView, onThemeChange }: SettingsP
                   </button>
                 </div>
               </div>
-
             </div>
           )}
 
-          {/* SEKCE: BARVA APLIKACE */}
+          {/* SEKCE: BARVA APLIKACE (ZMENŠENÁ TLAČÍTKA A NOVÉ BARVY) */}
           {activeTab === "appearance" && (
             <div className="space-y-4 w-full">
               <div>
@@ -436,18 +454,23 @@ export default function SettingsPage({ user, setView, onThemeChange }: SettingsP
               <div className="grid grid-cols-3 gap-2 pt-1">
                 {[
                   { code: "light" as Theme, label: "Čistá bílá", color: "bg-white border-gray-200 text-black" },
-                  { code: "sepia" as Theme, label: "Klidná sépie", color: "bg-[#FCF6E8] border-[#E4D5B7] text-[#433422]" },
                   { code: "dark" as Theme, label: "Temný režim", color: "bg-[#1E1E1E] border-[#2D2D2D] text-gray-100" },
+                  { code: "sepia" as Theme, label: "Klidná sépie", color: "bg-[#FCF6E8] border-[#E4D5B7] text-[#433422]" },
+                  { code: "seaglass" as Theme, label: "Seaglass Blue", color: "bg-[#F0F7F9] border-[#D1E4E8] text-[#1E3A42]" },
+                  { code: "sage" as Theme, label: "Sage Garden", color: "bg-[#F3F6F2] border-[#D5E0D2] text-[#2D3B29]" },
+                  { code: "blush" as Theme, label: "Blush Clay", color: "bg-[#FAF4F2] border-[#EADAD6] text-[#4A312A]" },
                 ].map((t) => (
                   <button
                     key={t.code}
                     type="button"
                     onClick={() => {
-  setAppTheme(t.code);
-  if (onThemeChange) onThemeChange(t.code); // <-- Spustí okamžitou změnu v page.tsx
-}}
-                    className={`flex flex-col items-center justify-center p-4 border rounded-xl text-xs font-medium transition cursor-pointer ${t.color} ${
-                      appTheme === t.code ? "ring-2 ring-current ring-offset-2 font-semibold scale-[1.02]" : "opacity-70 hover:opacity-100"
+                      setAppTheme(t.code);
+                      if (onThemeChange) onThemeChange(t.code);
+                    }}
+                    className={`flex flex-col items-center justify-center p-3 border rounded-xl text-xs font-medium transition cursor-pointer ${t.color} ${
+                      appTheme === t.code 
+                        ? "ring-1 ring-current border-current font-semibold" 
+                        : "opacity-75 hover:opacity-100"
                     }`}
                   >
                     {t.label}
@@ -471,7 +494,7 @@ export default function SettingsPage({ user, setView, onThemeChange }: SettingsP
                   onClick={() => setAppLocale("cs")}
                   className={`flex items-center justify-center gap-2 px-4 py-2.5 border text-sm rounded-xl transition cursor-pointer w-full ${
                     appLocale === "cs"
-                      ? "border-current bg-black/5 font-semibold ring-2 ring-current ring-offset-2"
+                      ? "border-current bg-black/5 font-semibold ring-1 ring-current"
                       : `${theme.border} bg-white/50 text-current hover:bg-black/5`
                   }`}
                 >
@@ -486,7 +509,7 @@ export default function SettingsPage({ user, setView, onThemeChange }: SettingsP
                   onClick={() => setAppLocale("en")}
                   className={`flex items-center justify-center gap-2 px-2.5 py-2.5 border text-sm rounded-xl transition cursor-pointer w-full ${
                     appLocale === "en"
-                      ? "border-current bg-black/5 font-semibold ring-2 ring-current ring-offset-2"
+                      ? "border-current bg-black/5 font-semibold ring-1 ring-current"
                       : `${theme.border} bg-white/50 text-current hover:bg-black/5`
                   }`}
                 >
