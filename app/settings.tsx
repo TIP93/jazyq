@@ -23,8 +23,9 @@ type AuditAction =
 // Rozšířená definice témat o moderní jemné tóny
 export type Theme = "light" | "dark" | "sepia" | "seaglass" | "sage" | "blush";
 
-export const themeClasses: Record<Theme, { card: string; text: string; textMuted: string; border: string; subPanel: string; textInverted: string }> = {
+export const themeClasses: Record<Theme, { bg: string; card: string; text: string; textMuted: string; border: string; subPanel: string; textInverted: string }> = {
   light: {
+    bg: "bg-[#F6F7FB]",
     card: "bg-white border-gray-200 text-black",
     text: "text-gray-900",
     textMuted: "text-gray-400",
@@ -33,6 +34,7 @@ export const themeClasses: Record<Theme, { card: string; text: string; textMuted
     textInverted: "text-gray-600"
   },
   dark: {
+    bg: "bg-[#121212]",
     card: "bg-[#1E1E1E] border-[#2D2D2D] text-gray-100",
     text: "text-gray-100",
     textMuted: "text-gray-500",
@@ -41,6 +43,7 @@ export const themeClasses: Record<Theme, { card: string; text: string; textMuted
     textInverted: "text-gray-400"
   },
   sepia: {
+    bg: "bg-[#F4ECD8]",
     card: "bg-[#FCF6E8] border-[#E4D5B7] text-[#433422]",
     text: "text-[#433422]",
     textMuted: "text-[#7C6A52]",
@@ -49,6 +52,7 @@ export const themeClasses: Record<Theme, { card: string; text: string; textMuted
     textInverted: "text-[#433422]/80"
   },
   seaglass: {
+    bg: "bg-[#E0F2F1]",
     card: "bg-[#F0F7F9] border-[#D1E4E8] text-[#1E3A42]",
     text: "text-[#1E3A42]",
     textMuted: "text-[#6A939E]",
@@ -57,6 +61,7 @@ export const themeClasses: Record<Theme, { card: string; text: string; textMuted
     textInverted: "text-[#1E3A42]/80"
   },
   sage: {
+    bg: "bg-[#F1F8E9]",
     card: "bg-[#F3F6F2] border-[#D5E0D2] text-[#2D3B29]",
     text: "text-[#2D3B29]",
     textMuted: "text-[#71876D]",
@@ -65,6 +70,7 @@ export const themeClasses: Record<Theme, { card: string; text: string; textMuted
     textInverted: "text-[#2D3B29]/80"
   },
   blush: {
+    bg: "bg-[#FCE4EC]",
     card: "bg-[#FAF4F2] border-[#EADAD6] text-[#4A312A]",
     text: "text-[#4A312A]",
     textMuted: "text-[#9C8079]",
