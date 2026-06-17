@@ -452,53 +452,52 @@ if (authLoading) {
 
 
     {/* WORD */}
-    <div className="md:col-span-4 bg-white rounded-3xl border border-gray-200 p-6">
+<div className={`md:col-span-4 ${theme.card} rounded-3xl border p-6`}>
 
-      <div className="flex items-center gap-3 text-gray-400">
-        <Sparkles size={24} />
+  <div className={`flex items-center gap-3 ${theme.textMuted}`}>
+    <Sparkles size={24} />
 
-        <p className="uppercase text-sm tracking-wide">
-          Slovíčko dne
-        </p>
-      </div>
+    <p className="uppercase text-sm tracking-wide">
+      Slovíčko dne
+    </p>
+  </div>
 
-      <div className="mt-5">
+  <div className="mt-5">
 
-        <p className="text-3xl font-medium tracking-tight">
-           {content?.wordForeign ?? "Loading..."}
-        </p>
+    <p className="text-3xl font-medium tracking-tight">
+       {content?.wordForeign ?? "Loading..."}
+    </p>
 
-        <p className="text-base text-gray-400 mt-1">
-          {content?.wordNative ?? ""}
-        </p>
+    <p className={`text-base ${theme.textMuted} mt-1`}>
+      {content?.wordNative ?? ""}
+    </p>
 
-      </div>
+  </div>
 
-    </div>
+</div>
 
 
 {/* PRIKLADOVA VETA */}
-<div className="md:col-span-6 bg-white rounded-3xl border border-gray-200 p-6 min-h-[180px] flex flex-col">
+<div className={`md:col-span-6 ${theme.card} rounded-3xl border p-6 min-h-[180px] flex flex-col`}>
   <div className="flex items-center justify-between">
-    <div className="flex items-center gap-3 text-gray-400">
+    <div className={`flex items-center gap-3 ${theme.textMuted}`}>
       <Languages size={24} />
       <p className="uppercase text-sm">Příkladová věta</p>
     </div>
     <button
       onClick={() => setShowExampleTranslation(!showExampleTranslation)}
-      className="text-gray-400 hover:text-black transition"
+      className={`${theme.textMuted} hover:${theme.text} transition`}
     >
-      {/* Reaguje čistě na svůj synchronizovaný stav */}
       {showExampleTranslation ? <EyeOff size={20} /> : <Eye size={20} />}
     </button>
   </div>
 
   <div className="mt-5 flex-1">
-    <p className="text-base leading-relaxed text-gray-800">
+    <p className="text-base leading-relaxed">
        {content?.wordExampleForeign ?? ""}
     </p>
     <p
-      className={`text-sm leading-relaxed text-gray-500 mt-3 transition-opacity duration-200 ${
+      className={`text-sm leading-relaxed ${theme.textMuted} mt-3 transition-opacity duration-200 ${
         showExampleTranslation ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
@@ -508,10 +507,10 @@ if (authLoading) {
 </div>
 
 {/* GRAMMAR */}
-<div className="md:col-span-5 bg-white rounded-3xl border border-gray-200 p-6 relative">
+<div className={`md:col-span-5 ${theme.card} rounded-3xl border p-6 relative`}>
 
   {/* HEADER */}
-  <div className="flex items-center gap-3 text-gray-400">
+  <div className={`flex items-center gap-3 ${theme.textMuted}`}>
     <Lightbulb size={24} />
 
     <p className="uppercase text-sm">
@@ -520,39 +519,38 @@ if (authLoading) {
   </div>
 
   {/* RULE */}
-  <p className="text-sm text-gray-600 leading-relaxed mt-5">
+  <p className="text-sm leading-relaxed mt-5 opacity-90">
     {content?.grammarExplanation ?? ""}
   </p>
 
   {/* ENGLISH EXAMPLE (ALWAYS VISIBLE) */}
-  <p className="text-sm text-gray-800 mt-4 font-medium">
+  <p className="text-sm mt-4 font-medium">
     {content?.grammarExample ?? ""}
   </p>
 
 </div>
 
-  {/* TRANSLATION */}
-<div className="md:col-span-5 bg-white rounded-3xl border border-gray-200 p-6 min-h-[180px] flex flex-col">
+{/* TRANSLATION */}
+<div className={`md:col-span-5 ${theme.card} rounded-3xl border p-6 min-h-[180px] flex flex-col`}>
   <div className="flex items-center justify-between">
-    <div className="flex items-center gap-3 text-gray-400">
+    <div className={`flex items-center gap-3 ${theme.textMuted}`}>
       <BookOpen size={24} />
       <p className="uppercase text-sm">Překlad</p>
     </div>
     <button
       onClick={() => setShowAnswer(!showAnswer)}
-      className="text-gray-400 hover:text-black transition"
+      className={`${theme.textMuted} hover:${theme.text} transition`}
     >
-      {/* Reaguje čistě na svůj synchronizovaný stav */}
       {showAnswer ? <EyeOff size={20} /> : <Eye size={20} />}
     </button>
   </div>
 
   <div className="mt-5 flex-1">
-    <p className="text-base leading-relaxed text-gray-800">
+    <p className="text-base leading-relaxed">
       {content?.grammarTranslationCz ?? ""}
     </p>
     <p
-      className={`text-sm leading-relaxed text-gray-500 mt-3 transition-opacity duration-200 ${
+      className={`text-sm leading-relaxed ${theme.textMuted} mt-3 transition-opacity duration-200 ${
         showAnswer ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
@@ -562,36 +560,35 @@ if (authLoading) {
 </div>
 
 {/* READING */}
-<div className="md:col-span-7 bg-white rounded-3xl border border-gray-200 p-7 relative min-h-[240px] flex flex-col">
+<div className={`md:col-span-7 ${theme.card} rounded-3xl border p-7 relative min-h-[240px] flex flex-col`}>
 
   {/* HEADER */}
   <div className="flex items-center justify-between">
-    <div className="flex items-center gap-3 text-gray-400">
+    <div className={`flex items-center gap-3 ${theme.textMuted}`}>
       <FileText size={24} />
       <p className="uppercase text-sm">Čtení</p>
     </div>
 
     <button
       onClick={() => setReadingFlipped(!readingFlipped)}
-      className="text-gray-400 hover:text-black transition"
+      className={`${theme.textMuted} hover:${theme.text} transition`}
     >
       {readingFlipped ? <EyeOff size={18} /> : <Eye size={18} />}
     </button>
   </div>
 
   {/* CONTENT AREA */}
-  {/* pb-4 dává jistotu, že i kdyby byl český text o chlup delší, neuteče k okraji karty */}
   <div className="mt-5 flex-1 relative pb-4">
 
-    {/* NATIVNÍ (ČESKÝ) TEXT - Absolutní, překrývá anglický */}
-    <p className={`text-base leading-8 text-gray-500 absolute inset-x-0 top-0 transition-opacity duration-300 ${
+    {/* NATIVNÍ (ČESKÝ) TEXT */}
+    <p className={`text-base leading-8 ${theme.textMuted} absolute inset-x-0 top-0 transition-opacity duration-300 ${
       readingFlipped ? "opacity-100 pointer-events-auto z-10" : "opacity-0 pointer-events-none z-0"
     }`}>
       {content?.readingNative ?? ""}
     </p>
 
-    {/* CIZÍ (ANGLICKÝ) TEXT - Relativní, určuje a drží výšku celé karty */}
-    <p className={`text-base leading-8 text-gray-700 relative transition-opacity duration-300 ${
+    {/* CIZÍ (ANGLICKÝ) TEXT */}
+    <p className={`text-base leading-8 relative transition-opacity duration-300 ${
       readingFlipped ? "opacity-0 pointer-events-none z-0" : "opacity-100 pointer-events-auto z-10"
     }`}>
       {content?.readingForeign ?? ""}
@@ -602,11 +599,11 @@ if (authLoading) {
 </div>
 
 
- {/* LISTENING (LOCKED PREVIEW) */}
-<div className="md:col-span-3 relative bg-white border border-gray-200 rounded-3xl p-6 opacity-70">
+{/* LISTENING (LOCKED PREVIEW) */}
+<div className={`md:col-span-3 relative ${theme.card} rounded-3xl border p-6 opacity-70`}>
 
   {/* HEADER */}
-  <div className="flex items-center gap-3 text-gray-400">
+  <div className={`flex items-center gap-3 ${theme.textMuted}`}>
     <Headphones size={24} />
 
     <p className="uppercase text-sm tracking-wide">
@@ -615,17 +612,17 @@ if (authLoading) {
   </div>
 
   {/* FAKE PLAYER */}
-  <div className="mt-5 bg-gray-50 border border-gray-200 rounded-2xl p-4 flex items-center gap-4">
+  <div className={`mt-5 ${theme.subPanel} border rounded-2xl p-4 flex items-center gap-4`}>
 
-    <PlayCircle size={24} className="text-gray-400" />
+    <PlayCircle size={24} className={`${theme.textMuted}`} />
 
     <div className="flex-1">
 
-      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-        <div className="h-full w-1/3 bg-gray-400 opacity-40"></div>
+      <div className={`h-2 ${currentTheme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'} rounded-full overflow-hidden`}>
+        <div className={`h-full w-1/3 ${currentTheme === 'dark' ? 'bg-gray-600' : 'bg-gray-400'} opacity-40`}></div>
       </div>
 
-      <div className="flex justify-between text-xs text-gray-400 mt-2">
+      <div className={`flex justify-between text-xs ${theme.textMuted} mt-2`}>
         <span>0:12</span>
         <span>1:04</span>
       </div>
