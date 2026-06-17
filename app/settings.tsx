@@ -30,7 +30,7 @@ export const themeClasses: Record<Theme, { bg: string; card: string; text: strin
     text: "text-gray-900",
     textMuted: "text-gray-400",
     border: "border-gray-200",
-    subPanel: "bg-[#F8FAFC] border-gray-200", // Mírně šedivější než čistě bílá card
+    subPanel: "bg-[#FAFBFD] border-gray-200/60", // Jen ultra jemný nádech mimo čistě bílou
     textInverted: "text-gray-600"
   },
   dark: {
@@ -39,7 +39,7 @@ export const themeClasses: Record<Theme, { bg: string; card: string; text: strin
     text: "text-[#E2E8F0]",
     textMuted: "text-[#94A3B8]",
     border: "border-[#2D3139]",
-    subPanel: "bg-[#16181C] border-[#252930]", // Čistá tmavší grafitová bez průhlednosti
+    subPanel: "bg-[#262A30] border-[#31363F]", // Jen o maličko světlejší než panel, velmi diskrétní
     textInverted: "text-[#94A3B8]"
   },
   sepia: {
@@ -48,7 +48,7 @@ export const themeClasses: Record<Theme, { bg: string; card: string; text: strin
     text: "text-[#433422]",
     textMuted: "text-[#7C6A52]",
     border: "border-[#E4D5B7]",
-    subPanel: "bg-[#EEE5CE] border-[#DCCCA9]", // Trochu tmavší teplý odstín sepiové
+    subPanel: "bg-[#FAF3E3] border-[#EADFCA]", // Velmi měkký přechod v sepiovém tónu
     textInverted: "text-[#433422]/80"
   },
   seaglass: {
@@ -57,7 +57,7 @@ export const themeClasses: Record<Theme, { bg: string; card: string; text: strin
     text: "text-[#1E3A42]",
     textMuted: "text-[#6A939E]",
     border: "border-[#D1E4E8]",
-    subPanel: "bg-[#DDECEF] border-[#C2DBDF]", // Azurovější zapuštěný tón
+    subPanel: "bg-[#EDF4F6] border-[#DCEBEF]", // Skoro neznatelný rozdíl, působí čistě
     textInverted: "text-[#1E3A42]/80"
   },
   sage: {
@@ -66,7 +66,7 @@ export const themeClasses: Record<Theme, { bg: string; card: string; text: strin
     text: "text-[#2D3B29]",
     textMuted: "text-[#71876D]",
     border: "border-[#D5E0D2]",
-    subPanel: "bg-[#E5ECE3] border-[#C6D4C2]", // Šalvějový kontrastní podklad
+    subPanel: "bg-[#F0F4EF] border-[#DFE7DD]", // Šalvějový podklad, co perfektně splývá
     textInverted: "text-[#2D3B29]/80"
   },
   blush: {
@@ -75,7 +75,7 @@ export const themeClasses: Record<Theme, { bg: string; card: string; text: strin
     text: "text-[#4E362F]",
     textMuted: "text-[#9E867E]",
     border: "border-[#EADED6]",
-    subPanel: "bg-[#F3EAE3] border-[#DECFC5]", // Zemitější podklad pro jemnou pudrovou
+    subPanel: "bg-[#FAF7F4] border-[#EFE5DE]", // Pudrový nádech, co neodvádí pozornost
     textInverted: "text-[#4E362F]/80"
   }
 };
