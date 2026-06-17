@@ -30,17 +30,17 @@ export const themeClasses: Record<Theme, { bg: string; card: string; text: strin
     text: "text-gray-900",
     textMuted: "text-gray-400",
     border: "border-gray-200",
-    subPanel: "bg-gray-50/40 border-gray-100",
+    subPanel: "bg-[#F8FAFC] border-gray-200", // Mírně šedivější než čistě bílá card
     textInverted: "text-gray-600"
   },
   dark: {
-    bg: "bg-[#1A1C20]",          // Moderní temný grafit s kapkou modré (místo ostré černé)
-    card: "bg-[#22252A] border-[#2D3139] text-[#E2E8F0]", // Jemnější kontrast, břidlicový panel
-    text: "text-[#E2E8F0]",       // Off-white text (příjemný pro oči, netahá)
-    textMuted: "text-[#94A3B8]",  // Slate-400 pro sekundární texty a popisky
-    border: "border-[#2D3139]",   // Tlumené ohraničení, které neruší celkový layout
-    subPanel: "bg-[#16181C]/60 border-[#252930]", // Vnořené panely jsou o kousek tmavší než karta
-    textInverted: "text-[#94A3B8]" // Sjednoceno pro sekundární stavy v navigaci
+    bg: "bg-[#1A1C20]",
+    card: "bg-[#22252A] border-[#2D3139] text-[#E2E8F0]",
+    text: "text-[#E2E8F0]",
+    textMuted: "text-[#94A3B8]",
+    border: "border-[#2D3139]",
+    subPanel: "bg-[#16181C] border-[#252930]", // Čistá tmavší grafitová bez průhlednosti
+    textInverted: "text-[#94A3B8]"
   },
   sepia: {
     bg: "bg-[#F4ECD8]",
@@ -48,7 +48,7 @@ export const themeClasses: Record<Theme, { bg: string; card: string; text: strin
     text: "text-[#433422]",
     textMuted: "text-[#7C6A52]",
     border: "border-[#E4D5B7]",
-    subPanel: "bg-[#F4ECD8]/40 border-[#E4D5B7]/60",
+    subPanel: "bg-[#EEE5CE] border-[#DCCCA9]", // Trochu tmavší teplý odstín sepiové
     textInverted: "text-[#433422]/80"
   },
   seaglass: {
@@ -57,7 +57,7 @@ export const themeClasses: Record<Theme, { bg: string; card: string; text: strin
     text: "text-[#1E3A42]",
     textMuted: "text-[#6A939E]",
     border: "border-[#D1E4E8]",
-    subPanel: "bg-[#E5F0F2]/50 border-[#D1E4E8]/70",
+    subPanel: "bg-[#DDECEF] border-[#C2DBDF]", // Azurovější zapuštěný tón
     textInverted: "text-[#1E3A42]/80"
   },
   sage: {
@@ -66,16 +66,16 @@ export const themeClasses: Record<Theme, { bg: string; card: string; text: strin
     text: "text-[#2D3B29]",
     textMuted: "text-[#71876D]",
     border: "border-[#D5E0D2]",
-    subPanel: "bg-[#E9F0E7]/50 border-[#D5E0D2]/70",
+    subPanel: "bg-[#E5ECE3] border-[#C6D4C2]", // Šalvějový kontrastní podklad
     textInverted: "text-[#2D3B29]/80"
   },
   blush: {
-    bg: "bg-[#F7F2EE]",          // Matná, velmi jemná pudrová s kapkou krémové (neruší a nesvítí)
-    card: "bg-[#FFFDFB] border-[#EADED6] text-[#4E362F]", // Čistá, teplá bílá pro karty s terakotvým textem
-    text: "text-[#4E362F]",       // Hluboká zemitá hnědá s cihlovým podtónem pro skvělou čitelnost
-    textMuted: "text-[#9E867E]",  // Tlumená šedohnědá pro sekundární popisky
-    border: "border-[#EADED6]",   // Velmi soft ohraničení v barvě suché hlíny
-    subPanel: "bg-[#F1E8E1]/60 border-[#E4D5CB]", // Zapuštěný sub-panel, který drží zemitý tón
+    bg: "bg-[#F7F2EE]",
+    card: "bg-[#FFFDFB] border-[#EADED6] text-[#4E362F]",
+    text: "text-[#4E362F]",
+    textMuted: "text-[#9E867E]",
+    border: "border-[#EADED6]",
+    subPanel: "bg-[#F3EAE3] border-[#DECFC5]", // Zemitější podklad pro jemnou pudrovou
     textInverted: "text-[#4E362F]/80"
   }
 };

@@ -140,8 +140,8 @@ export default function Sidebar({
         {/* PREMIUM */}
         <div
           onClick={() => console.log("premium")}
-          className={`border ${theme.border} ${theme.card} rounded-2xl p-4 flex items-center gap-3 hover:bg-opacity-80 transition cursor-pointer`}
-        >
+          className={`border ${theme.border} ${theme.subPanel} rounded-2xl p-4 flex items-center gap-3 hover:brightness-95 dark:hover:brightness-110 transition cursor-pointer`}
+           >
           <div className="w-10 h-10 rounded-full border border-purple-200 bg-purple-50 flex items-center justify-center">
             <Crown size={18} className="text-purple-500" />
           </div>
@@ -156,7 +156,7 @@ export default function Sidebar({
         </div>
 
         {/* HISTORY */}
-        <div className={`relative border ${theme.border} ${theme.card} rounded-2xl p-4 hover:bg-opacity-80 transition cursor-pointer`}>
+        <div className={`relative border ${theme.border} ${theme.subPanel} rounded-2xl p-4 hover:brightness-95 dark:hover:brightness-110 transition cursor-pointer`}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center">
               <Calendar size={18} className="text-gray-500" />
@@ -180,7 +180,7 @@ export default function Sidebar({
           {user && (
             <div
               onClick={() => setView("streak")}
-              className={`border ${theme.border} ${theme.card} rounded-2xl p-4 flex items-center justify-between hover:bg-opacity-80 transition cursor-pointer`}
+              className={`border ${theme.border} ${theme.subPanel} rounded-2xl p-4 flex items-center justify-between hover:brightness-95 dark:hover:brightness-110 transition cursor-pointer`}
             >
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full border border-orange-200 bg-orange-50 flex items-center justify-center">
@@ -200,7 +200,7 @@ export default function Sidebar({
           {/* USER CARD & ACTION BUTTONS */}
           {user && (
             <>
-              <div className={`border ${theme.border} ${theme.card} rounded-2xl p-4 flex gap-3`}>
+              <div className={`border ${theme.border} ${theme.subPanel} rounded-2xl p-4 flex gap-3`}>
                 <div className="flex-shrink-0 relative w-10 h-10">
                   {user.user_metadata?.avatar_url ? (
                     <img
@@ -251,16 +251,16 @@ export default function Sidebar({
               <div className="grid grid-cols-2 gap-2 no-print">
                 <button
                   onClick={() => setView("settings")}
-                  className={`border ${theme.border} ${theme.card} rounded-2xl py-2 px-3 flex items-center justify-center gap-2 text-sm hover:bg-opacity-80 transition cursor-pointer`}
-                >
+                  className={`border ${theme.border} ${theme.subPanel} rounded-2xl py-2 px-3 flex items-center justify-center gap-2 text-sm hover:brightness-95 dark:hover:brightness-110 transition cursor-pointer`}
+                   >
                   <Settings size={14} />
                   Nastavení
                 </button>
 
                 <button
                   onClick={handleSignOut}
-                  className={`border ${theme.border} ${theme.card} rounded-2xl py-2 px-3 flex items-center justify-center gap-2 text-sm hover:bg-opacity-80 transition cursor-pointer`}
-                >
+                  className={`border ${theme.border} ${theme.subPanel} rounded-2xl py-2 px-3 flex items-center justify-center gap-2 text-sm hover:brightness-95 dark:hover:brightness-110 transition cursor-pointer`}
+                  >
                   <LogOut size={14} />
                   Odhlásit
                 </button>
